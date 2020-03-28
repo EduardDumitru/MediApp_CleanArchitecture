@@ -8,21 +8,26 @@ namespace Domain.Entities
 {
     public class Clinic : AuditableEntity
     {
-        public long Id { get; set; }
+        public Clinic()
+        {
+            MedicalChecks = new HashSet<MedicalCheck>();
+        }
+        public int Id { get; set; }
         public string Name { get; set; }
-        public int CountryId { get; set; }
-        public int CountyId { get; set; }
-        public int CityId { get; set; }
         public string Address { get; set; }
         public string StreetName { get; set; }
         public string StreetNo { get; set; }
-        [ForeignKey(nameof(CountryId))] 
+        public string PhoneNumber { get; set; }
+        public string Email { get; set; }
+        public short CountryId { get; set; }
+        public int CountyId { get; set; }
+        public int CityId { get; set; }
+
+
         public Country Country { get; set; }
-
-        [ForeignKey(nameof(CountyId))] 
         public County County { get; set; }
-
-        [ForeignKey(nameof(CityId))] 
         public City City { get; set; }
+
+        public ICollection<MedicalCheck> MedicalChecks { get; private set; }
     }
 }

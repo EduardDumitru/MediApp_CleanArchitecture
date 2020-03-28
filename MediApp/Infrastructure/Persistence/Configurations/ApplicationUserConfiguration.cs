@@ -12,33 +12,37 @@ namespace Infrastructure.Persistence.Configurations
         public void Configure(EntityTypeBuilder<ApplicationUser> builder)
         {
             builder.ToTable("User");
-            builder.Property(t => t.FirstName)
+            builder.Property(x => x.FirstName)
                 .HasMaxLength(200)
                 .IsRequired();
-            builder.Property(t => t.MiddleName)
+            builder.Property(x => x.MiddleName)
                 .HasMaxLength(200);
-            builder.Property(t => t.LastName)
+            builder.Property(x => x.LastName)
                 .HasMaxLength(200)
                 .IsRequired();
-            builder.Property(t => t.PhoneNumber)
+            builder.Property(x => x.PhoneNumber)
                 .IsRequired();
-            builder.Property(t => t.Address)
+            builder.Property(x => x.Address)
                 .HasMaxLength(200);
-            builder.Property(t => t.StreetName)
+            builder.Property(x => x.StreetName)
                 .HasMaxLength(200);
-            builder.Property(t => t.StreetNo)
+            builder.Property(x => x.StreetNo)
                 .IsRequired();
-            builder.Property(t => t.CNP)
+            builder.Property(x => x.CNP)
                 .HasMaxLength(13)
                 .IsRequired();
-            builder.Property(t => t.CountryId)
+            builder.Property(x => x.IsActive)
                 .IsRequired();
-            builder.Property(t => t.CountyId)
+            builder.Property(x => x.CountryId)
                 .IsRequired();
-            builder.Property(t => t.CityId)
+            builder.Property(x => x.CountyId)
                 .IsRequired();
-            builder.Property(t => t.ClinicId)
+            builder.Property(x => x.CityId)
                 .IsRequired();
+            builder.Property(x => x.GenderId)
+                .IsRequired();
+            builder.Property(x => x.IsActive)
+                .HasDefaultValue(true);
         }
     }
 }

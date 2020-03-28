@@ -32,11 +32,6 @@ namespace Infrastructure.Persistence
             {
                 await roleManager.CreateAsync(new ApplicationRole(RoleConstants.User));
             }
-
-            if (!await roleManager.RoleExistsAsync(RoleConstants.Receptionist))
-            {
-                await roleManager.CreateAsync(new ApplicationRole(RoleConstants.Receptionist));
-            }
         }
     }
 }

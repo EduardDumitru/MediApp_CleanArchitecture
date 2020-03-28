@@ -8,10 +8,17 @@ namespace Domain.Entities
 {
     public class County : AuditableEntity
     {
+        public County()
+        {
+            Cities = new HashSet<City>();
+            Clinics = new HashSet<Clinic>();
+        }
         public int Id { get; set; }
         public string Name { get; set; }
         public int CountryId { get; set; }
-        [ForeignKey(nameof(CountryId))]
+
         public Country Country { get; set; }
+        public ICollection<City> Cities { get; private set; }
+        public ICollection<Clinic> Clinics { get; private set; }
     }
 }

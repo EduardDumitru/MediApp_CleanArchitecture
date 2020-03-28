@@ -22,8 +22,6 @@ namespace MediApp.Installers
             services.AddIdentity<ApplicationUser, ApplicationRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
-
-            services.AddScoped<ICurrentUserService, CurrentUserService>();
         }
     }
 }

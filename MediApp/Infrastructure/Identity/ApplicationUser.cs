@@ -19,11 +19,11 @@ namespace Infrastructure.Identity
         public string StreetName { get; set; }
         public string StreetNo { get; set; }
         public string CNP { get; set; }
-        public int CountryId { get; set; }
+        public bool IsActive { get; set; }
+        public short CountryId { get; set; }
         public int CountyId { get; set; }
         public int CityId { get; set; }
-        public byte GenderId { get; set; }
-        public long ClinicId { get; set; }
+        public short GenderId { get; set; }
 
         [ForeignKey(nameof(CountryId))]
         public Country Country { get; set; }
@@ -36,8 +36,5 @@ namespace Infrastructure.Identity
 
         [ForeignKey(nameof(GenderId))]
         public Gender Gender { get; set; }
-
-        [ForeignKey(nameof(ClinicId))]
-        public Clinic Clinic { get; set; }
     }
 }

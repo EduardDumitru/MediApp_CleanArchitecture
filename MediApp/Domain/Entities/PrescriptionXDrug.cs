@@ -1,0 +1,22 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text;
+using Domain.Common;
+
+namespace Domain.Entities
+{
+    public class PrescriptionXDrug : AuditableEntity
+    {
+        public long Id { get; set; }
+        public long PrescriptionId { get; set; }
+        public long DrugId { get; set; }
+        public short Quantity { get; set; }
+        public decimal PillsPerInterval { get; set; }
+        public TimeSpan Interval { get; set; }
+
+        public Prescription Prescription { get; set; }
+        
+        public Drug Drug { get; set; }
+    }
+}
