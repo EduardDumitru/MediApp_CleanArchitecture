@@ -22,8 +22,6 @@ namespace MediApp.Installers
             configuration.Bind(nameof(jwtSettings), jwtSettings);
             services.AddSingleton(jwtSettings);
 
-            //services.AddScoped<IIdentityService, IdentityService>();
-
             services.AddMvc(options => { options.EnableEndpointRouting = false; }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             var tokenValidationParameters = new TokenValidationParameters

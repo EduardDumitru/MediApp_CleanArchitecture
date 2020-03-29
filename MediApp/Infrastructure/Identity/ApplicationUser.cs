@@ -19,7 +19,7 @@ namespace Infrastructure.Identity
         public string StreetName { get; set; }
         public string StreetNo { get; set; }
         public string CNP { get; set; }
-        public bool IsActive { get; set; }
+        public bool? IsActive { get; set; }
         public short CountryId { get; set; }
         public int CountyId { get; set; }
         public int CityId { get; set; }

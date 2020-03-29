@@ -15,7 +15,7 @@ namespace Application.Common.Behaviours
         private readonly ICurrentUserService _currentUserService;
         private readonly IIdentityService _identityService;
 
-        public RequestLoggerBehaviour(ILogger logger, ICurrentUserService currentUserService,
+        public RequestLoggerBehaviour(ILogger<TRequest> logger, ICurrentUserService currentUserService,
             IIdentityService identityService)
         {
             _logger = logger;
@@ -27,7 +27,11 @@ namespace Application.Common.Behaviours
         {
             var requestName = typeof(TRequest).Name;
             var userId = _currentUserService.UserId;
-            var userName = await _identityService.GetUserNameAsync(userId);
+            var userName = string.Empty;
+            if (userId.HasValue)
+            {
+                userName = await _identityService.GetUserNameAsync(userId.Value);
+            }
 
             _logger.LogInformation("MediApp Request: {Name} {@UserId} {@UserName} {@Request}",
                 requestName, userId, userName, request);

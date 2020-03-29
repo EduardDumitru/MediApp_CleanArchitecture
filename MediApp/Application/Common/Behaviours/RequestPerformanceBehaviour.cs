@@ -43,7 +43,11 @@ namespace Application.Common.Behaviours
             {
                 var requestName = typeof(TRequest).Name;
                 var userId = _currentUserService.UserId;
-                var userName = await _identityService.GetUserNameAsync(userId);
+                var userName = string.Empty;
+                if (userId.HasValue)
+                {
+                    userName = await _identityService.GetUserNameAsync(userId.Value);
+                }
 
                 _logger.LogWarning(
                     "MediApp Long Running Request: {Name} ({ElapsedMilliseconds} milliseconds) {@UserId} {@Request}",

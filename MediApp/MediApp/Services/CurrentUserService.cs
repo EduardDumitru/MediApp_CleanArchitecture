@@ -4,7 +4,9 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
+using Infrastructure.Identity;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 
 namespace MediApp.Services
 {
@@ -12,9 +14,13 @@ namespace MediApp.Services
     {
         public CurrentUserService(IHttpContextAccessor httpContextAccessor)
         {
-            UserId = long.Parse(httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier) ?? throw new InvalidOperationException());
+            var id = httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!string.IsNullOrEmpty(id))
+            {
+                UserId = long.Parse(id);
+            }
         }
 
-        public long UserId { get; }
+        public long? UserId { get; }
     }
 }

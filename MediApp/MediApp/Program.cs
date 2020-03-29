@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Application.System.Commands.SeedSampleData;
 using Infrastructure.Persistence;
 using MediatR;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -19,7 +20,7 @@ namespace MediApp
     {
         public static async Task Main(string[] args)
         {
-            var host = CreateHostBuilder(args).Build();
+            var host = CreateWebHostBuilder(args).Build();
 
             using (var scope = host.Services.CreateScope())
             {
@@ -29,7 +30,7 @@ namespace MediApp
                 {
 
                     var context = services.GetRequiredService<ApplicationDbContext>();
-                    context.Database.Migrate();
+                    await context.Database.MigrateAsync();
 
                     var mediator = services.GetRequiredService<IMediator>();
                     await mediator.Send(new SeedSampleDataCommand(), CancellationToken.None);
@@ -44,11 +45,8 @@ namespace MediApp
             host.Run();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+            WebHost.CreateDefaultBuilder(args)
+                .UseStartup<Startup>();
     }
 }

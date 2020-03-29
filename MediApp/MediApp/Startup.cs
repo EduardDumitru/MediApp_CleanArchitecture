@@ -10,6 +10,7 @@ using Infrastructure;
 using Infrastructure.Persistence;
 using MediApp.Installers;
 using MediApp.Options;
+using MediApp.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -42,17 +43,19 @@ namespace MediApp
                     builder => { builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(); });
             });
 
+            services.AddApplication();
+
             services.AddInfrastructure(Configuration, Environment);
 
-            services.AddApplication();
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
+
+            services.AddHttpContextAccessor();
 
             services.AddHealthChecks()
                 .AddDbContextCheck<ApplicationDbContext>();
 
             services.AddControllers()
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<IApplicationDbContext>());
-
-            services.AddHttpContextAccessor();
 
             services.AddAutoMapper(System.Reflection.Assembly.GetExecutingAssembly());
 
@@ -78,7 +81,7 @@ namespace MediApp
             app.UseHealthChecks("/health");
 
             app.UseAuthentication();
-            app.UseIdentityServer();
+
             app.UseAuthorization();
 
             var swaggerOptions = new SwaggerOptions();

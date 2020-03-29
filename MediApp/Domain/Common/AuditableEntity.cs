@@ -7,7 +7,7 @@ namespace Domain.Common
     public class AuditableEntity
     {
 
-        public long CreatedBy { get; set; }
+        public long? CreatedBy { get; set; }
 
         public DateTime CreatedOn { get; set; }
 

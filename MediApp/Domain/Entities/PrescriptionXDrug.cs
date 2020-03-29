@@ -12,7 +12,7 @@ namespace Domain.Entities
         public long PrescriptionId { get; set; }
         public long DrugId { get; set; }
         public short Box { get; set; }
-        public decimal PerInterval { get; set; }
+        public float PerInterval { get; set; }
         public TimeSpan Interval { get; set; }
 
         public Prescription Prescription { get; set; }
