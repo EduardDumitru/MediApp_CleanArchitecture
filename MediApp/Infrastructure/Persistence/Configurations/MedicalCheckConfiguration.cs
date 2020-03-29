@@ -13,10 +13,6 @@ namespace Infrastructure.Persistence.Configurations
         {
             builder.ToTable(nameof(MedicalCheck));
 
-            builder.Property(x => x.Name)
-                .HasMaxLength(200)
-                .IsRequired();
-
             builder.Property(x => x.Deleted)
                 .HasDefaultValue(false);
 

@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Application;
+using Application.Common.Interfaces;
 using AutoMapper;
+using FluentValidation.AspNetCore;
 using Infrastructure;
+using Infrastructure.Persistence;
 using MediApp.Installers;
 using MediApp.Options;
 using Microsoft.AspNetCore.Builder;
@@ -43,7 +46,11 @@ namespace MediApp
 
             services.AddApplication();
 
-            services.AddControllers();
+            services.AddHealthChecks()
+                .AddDbContextCheck<ApplicationDbContext>();
+
+            services.AddControllers()
+                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<IApplicationDbContext>());
 
             services.AddHttpContextAccessor();
 
@@ -68,6 +75,10 @@ namespace MediApp
 
             app.UseRouting();
 
+            app.UseHealthChecks("/health");
+
+            app.UseAuthentication();
+            app.UseIdentityServer();
             app.UseAuthorization();
 
             var swaggerOptions = new SwaggerOptions();

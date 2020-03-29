@@ -20,9 +20,11 @@ namespace Domain.Entities
         public long UserId { get; set; }
         public short EmployeeTypeId { get; set; }
         public short? MedicalCheckTypeId { get; set; }
+        public int ClinicId { get; set; }
 
         public EmployeeType EmployeeType { get; set; }
         public MedicalCheckType MedicalCheckType { get; set; }
+        public Clinic Clinic { get; set; }
         public ICollection<HolidayInterval> HolidayIntervals { get; private set; }
         public ICollection<MedicalCheck> MedicalChecks { get; private set; }
     }

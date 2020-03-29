@@ -22,6 +22,8 @@ namespace Infrastructure.Persistence.Configurations
                 .IsRequired();
             builder.Property(x => x.PhoneNumber)
                 .IsRequired();
+            builder.HasIndex(x => x.PhoneNumber)
+                .IsUnique();
             builder.Property(x => x.Address)
                 .HasMaxLength(200);
             builder.Property(x => x.StreetName)
@@ -31,6 +33,8 @@ namespace Infrastructure.Persistence.Configurations
             builder.Property(x => x.CNP)
                 .HasMaxLength(13)
                 .IsRequired();
+            builder.HasIndex(x => x.CNP)
+                .IsUnique();
             builder.Property(x => x.IsActive)
                 .IsRequired();
             builder.Property(x => x.CountryId)

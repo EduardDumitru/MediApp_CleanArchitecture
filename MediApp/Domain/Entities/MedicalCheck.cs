@@ -14,7 +14,6 @@ namespace Domain.Entities
         }
 
         public long Id { get; set; }
-        public string Name { get; set; }
         public DateTime Appointment { get; set; }
         public int ClinicId { get; set; }
         public int? DiagnosisId { get; set; }

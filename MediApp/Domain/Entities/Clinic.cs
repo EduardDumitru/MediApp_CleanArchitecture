@@ -11,6 +11,7 @@ namespace Domain.Entities
         public Clinic()
         {
             MedicalChecks = new HashSet<MedicalCheck>();
+            Employees = new HashSet<Employee>();
         }
         public int Id { get; set; }
         public string Name { get; set; }
@@ -29,5 +30,6 @@ namespace Domain.Entities
         public City City { get; set; }
 
         public ICollection<MedicalCheck> MedicalChecks { get; private set; }
+        public ICollection<Employee> Employees { get; private set; }
     }
 }
