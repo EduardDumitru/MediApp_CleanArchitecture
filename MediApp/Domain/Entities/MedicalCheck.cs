@@ -29,6 +29,8 @@ namespace Domain.Entities
         
         public Diagnosis Diagnosis { get; set; }
 
+        public UserProfile UserProfile { get; set; }
+
         public ICollection<Prescription> Prescriptions { get; private set; }
     }
 }

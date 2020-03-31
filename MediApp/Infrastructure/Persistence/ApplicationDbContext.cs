@@ -40,6 +40,7 @@ namespace Infrastructure.Persistence
         public DbSet<MedicalCheckType> MedicalCheckTypes { get; set; }
         public DbSet<Prescription> Prescriptions { get; set; }
         public DbSet<PrescriptionXDrug> PrescriptionXDrugs { get; set; }
+        public DbSet<UserProfile> UserProfiles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MediApp.Options
+namespace Application.Common.Models
 {
     public class JwtSettings
     {

@@ -27,6 +27,10 @@ namespace Infrastructure.Persistence.Configurations
             builder.HasOne(x => x.Clinic)
                 .WithMany(x => x.Employees)
                 .HasForeignKey(x => x.ClinicId);
+
+            builder.HasOne(x => x.UserProfile)
+                .WithMany(x => x.Employees)
+                .HasForeignKey(x => x.UserProfileId);
         }
     }
 }

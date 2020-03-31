@@ -18,8 +18,13 @@ namespace Domain.Entities
         public string Description { get; set; }
         public long PatientId { get; set; }
         public long MedicalCheckId { get; set; }
+        public long EmployeeId { get; set; }
 
         public MedicalCheck MedicalCheck { get; set; }
+
+        public UserProfile UserProfile { get; set; }
+        
+        public Employee Employee { get; set; }
 
         public ICollection<PrescriptionXDrug> PrescriptionXDrugs { get; private set; }
     }

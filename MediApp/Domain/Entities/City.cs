@@ -11,6 +11,7 @@ namespace Domain.Entities
         public City()
         {
             Clinics = new HashSet<Clinic>();
+            UserProfiles = new HashSet<UserProfile>();
         }
         public int Id { get; set; }
         public string Name { get; set; }
@@ -18,5 +19,6 @@ namespace Domain.Entities
 
         public County County { get; set; }
         public ICollection<Clinic> Clinics { get; private set; }
+        public ICollection<UserProfile> UserProfiles { get; private set; }
     }
 }

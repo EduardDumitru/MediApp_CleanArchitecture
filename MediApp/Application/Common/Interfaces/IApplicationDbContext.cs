@@ -26,6 +26,7 @@ namespace Application.Common.Interfaces
         public DbSet<MedicalCheckType> MedicalCheckTypes { get; set; }
         public DbSet<Prescription> Prescriptions { get; set; }
         public DbSet<PrescriptionXDrug> PrescriptionXDrugs { get; set; }
+        public DbSet<UserProfile> UserProfiles { get; set; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }
 }

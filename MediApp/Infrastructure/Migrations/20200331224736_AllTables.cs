@@ -143,6 +143,33 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "User",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserName = table.Column<string>(maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(maxLength: 256, nullable: true),
+                    Email = table.Column<string>(maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(nullable: false),
+                    PasswordHash = table.Column<string>(nullable: true),
+                    SecurityStamp = table.Column<string>(nullable: true),
+                    ConcurrencyStamp = table.Column<string>(nullable: true),
+                    PhoneNumber = table.Column<string>(nullable: false),
+                    PhoneNumberConfirmed = table.Column<bool>(nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
+                    LockoutEnabled = table.Column<bool>(nullable: false),
+                    AccessFailedCount = table.Column<int>(nullable: false),
+                    IsActive = table.Column<bool>(nullable: true, defaultValue: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_User", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "County",
                 columns: table => new
                 {
@@ -219,185 +246,6 @@ namespace Infrastructure.Migrations
                         name: "FK_AspNetRoleClaims_Role_RoleId",
                         column: x => x.RoleId,
                         principalTable: "Role",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "City",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CreatedBy = table.Column<long>(nullable: true),
-                    CreatedOn = table.Column<DateTime>(nullable: false),
-                    LastModifiedBy = table.Column<long>(nullable: true),
-                    LastModifiedOn = table.Column<DateTime>(nullable: true),
-                    Deleted = table.Column<bool>(nullable: false, defaultValue: false),
-                    DeletedBy = table.Column<long>(nullable: true),
-                    DeletedOn = table.Column<DateTime>(nullable: true),
-                    Name = table.Column<string>(maxLength: 200, nullable: false),
-                    CountyId = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_City", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_City_County_CountyId",
-                        column: x => x.CountyId,
-                        principalTable: "County",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Clinic",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CreatedBy = table.Column<long>(nullable: true),
-                    CreatedOn = table.Column<DateTime>(nullable: false),
-                    LastModifiedBy = table.Column<long>(nullable: true),
-                    LastModifiedOn = table.Column<DateTime>(nullable: true),
-                    Deleted = table.Column<bool>(nullable: false, defaultValue: false),
-                    DeletedBy = table.Column<long>(nullable: true),
-                    DeletedOn = table.Column<DateTime>(nullable: true),
-                    Name = table.Column<string>(nullable: true),
-                    Address = table.Column<string>(maxLength: 200, nullable: true),
-                    StreetName = table.Column<string>(maxLength: 200, nullable: true),
-                    StreetNo = table.Column<string>(nullable: false),
-                    PhoneNumber = table.Column<string>(nullable: false),
-                    Email = table.Column<string>(nullable: false),
-                    CountryId = table.Column<short>(nullable: false),
-                    CountyId = table.Column<int>(nullable: false),
-                    CityId = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Clinic", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Clinic_City_CityId",
-                        column: x => x.CityId,
-                        principalTable: "City",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Clinic_Country_CountryId",
-                        column: x => x.CountryId,
-                        principalTable: "Country",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Clinic_County_CountyId",
-                        column: x => x.CountyId,
-                        principalTable: "County",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "User",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserName = table.Column<string>(maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(maxLength: 256, nullable: true),
-                    Email = table.Column<string>(maxLength: 256, nullable: true),
-                    NormalizedEmail = table.Column<string>(maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(nullable: false),
-                    PasswordHash = table.Column<string>(nullable: true),
-                    SecurityStamp = table.Column<string>(nullable: true),
-                    ConcurrencyStamp = table.Column<string>(nullable: true),
-                    PhoneNumber = table.Column<string>(nullable: false),
-                    PhoneNumberConfirmed = table.Column<bool>(nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
-                    LockoutEnabled = table.Column<bool>(nullable: false),
-                    AccessFailedCount = table.Column<int>(nullable: false),
-                    FirstName = table.Column<string>(maxLength: 200, nullable: false),
-                    MiddleName = table.Column<string>(maxLength: 200, nullable: true),
-                    LastName = table.Column<string>(maxLength: 200, nullable: false),
-                    Address = table.Column<string>(maxLength: 200, nullable: true),
-                    StreetName = table.Column<string>(maxLength: 200, nullable: true),
-                    StreetNo = table.Column<string>(nullable: false),
-                    CNP = table.Column<string>(maxLength: 13, nullable: false),
-                    IsActive = table.Column<bool>(nullable: false, defaultValue: true),
-                    CountryId = table.Column<short>(nullable: false),
-                    CountyId = table.Column<int>(nullable: false),
-                    CityId = table.Column<int>(nullable: false),
-                    GenderId = table.Column<short>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_User", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_User_City_CityId",
-                        column: x => x.CityId,
-                        principalTable: "City",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_User_Country_CountryId",
-                        column: x => x.CountryId,
-                        principalTable: "Country",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_User_County_CountyId",
-                        column: x => x.CountyId,
-                        principalTable: "County",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_User_Gender_GenderId",
-                        column: x => x.GenderId,
-                        principalTable: "Gender",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Employee",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CreatedBy = table.Column<long>(nullable: true),
-                    CreatedOn = table.Column<DateTime>(nullable: false),
-                    LastModifiedBy = table.Column<long>(nullable: true),
-                    LastModifiedOn = table.Column<DateTime>(nullable: true),
-                    Deleted = table.Column<bool>(nullable: false, defaultValue: false),
-                    DeletedBy = table.Column<long>(nullable: true),
-                    DeletedOn = table.Column<DateTime>(nullable: true),
-                    StartHour = table.Column<TimeSpan>(nullable: false),
-                    EndHour = table.Column<TimeSpan>(nullable: false),
-                    TerminationDate = table.Column<DateTime>(nullable: true),
-                    UserId = table.Column<long>(nullable: false),
-                    EmployeeTypeId = table.Column<short>(nullable: false),
-                    MedicalCheckTypeId = table.Column<short>(nullable: true),
-                    ClinicId = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Employee", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Employee_Clinic_ClinicId",
-                        column: x => x.ClinicId,
-                        principalTable: "Clinic",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Employee_EmployeeType_EmployeeTypeId",
-                        column: x => x.EmployeeTypeId,
-                        principalTable: "EmployeeType",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Employee_MedicalCheckType_MedicalCheckTypeId",
-                        column: x => x.MedicalCheckTypeId,
-                        principalTable: "MedicalCheckType",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -488,6 +336,186 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "City",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreatedBy = table.Column<long>(nullable: true),
+                    CreatedOn = table.Column<DateTime>(nullable: false),
+                    LastModifiedBy = table.Column<long>(nullable: true),
+                    LastModifiedOn = table.Column<DateTime>(nullable: true),
+                    Deleted = table.Column<bool>(nullable: false, defaultValue: false),
+                    DeletedBy = table.Column<long>(nullable: true),
+                    DeletedOn = table.Column<DateTime>(nullable: true),
+                    Name = table.Column<string>(maxLength: 200, nullable: false),
+                    CountyId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_City", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_City_County_CountyId",
+                        column: x => x.CountyId,
+                        principalTable: "County",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Clinic",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreatedBy = table.Column<long>(nullable: true),
+                    CreatedOn = table.Column<DateTime>(nullable: false),
+                    LastModifiedBy = table.Column<long>(nullable: true),
+                    LastModifiedOn = table.Column<DateTime>(nullable: true),
+                    Deleted = table.Column<bool>(nullable: false, defaultValue: false),
+                    DeletedBy = table.Column<long>(nullable: true),
+                    DeletedOn = table.Column<DateTime>(nullable: true),
+                    Name = table.Column<string>(nullable: true),
+                    Address = table.Column<string>(maxLength: 200, nullable: true),
+                    StreetName = table.Column<string>(maxLength: 200, nullable: true),
+                    StreetNo = table.Column<string>(nullable: false),
+                    PhoneNumber = table.Column<string>(nullable: false),
+                    Email = table.Column<string>(nullable: false),
+                    CountryId = table.Column<short>(nullable: false),
+                    CountyId = table.Column<int>(nullable: false),
+                    CityId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Clinic", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Clinic_City_CityId",
+                        column: x => x.CityId,
+                        principalTable: "City",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Clinic_Country_CountryId",
+                        column: x => x.CountryId,
+                        principalTable: "Country",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Clinic_County_CountyId",
+                        column: x => x.CountyId,
+                        principalTable: "County",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserProfile",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreatedBy = table.Column<long>(nullable: true),
+                    CreatedOn = table.Column<DateTime>(nullable: false),
+                    LastModifiedBy = table.Column<long>(nullable: true),
+                    LastModifiedOn = table.Column<DateTime>(nullable: true),
+                    Deleted = table.Column<bool>(nullable: false),
+                    DeletedBy = table.Column<long>(nullable: true),
+                    DeletedOn = table.Column<DateTime>(nullable: true),
+                    FirstName = table.Column<string>(maxLength: 200, nullable: false),
+                    MiddleName = table.Column<string>(maxLength: 200, nullable: true),
+                    LastName = table.Column<string>(maxLength: 200, nullable: false),
+                    Address = table.Column<string>(maxLength: 200, nullable: true),
+                    StreetName = table.Column<string>(maxLength: 200, nullable: true),
+                    StreetNo = table.Column<string>(nullable: false),
+                    PhoneNumber = table.Column<string>(nullable: false),
+                    EmailAddress = table.Column<string>(nullable: false),
+                    CNP = table.Column<string>(maxLength: 13, nullable: false),
+                    CountryId = table.Column<short>(nullable: false),
+                    CountyId = table.Column<int>(nullable: false),
+                    CityId = table.Column<int>(nullable: false),
+                    GenderId = table.Column<short>(nullable: false),
+                    UserId = table.Column<long>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserProfile", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserProfile_City_CityId",
+                        column: x => x.CityId,
+                        principalTable: "City",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_UserProfile_Country_CountryId",
+                        column: x => x.CountryId,
+                        principalTable: "Country",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_UserProfile_County_CountyId",
+                        column: x => x.CountyId,
+                        principalTable: "County",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_UserProfile_Gender_GenderId",
+                        column: x => x.GenderId,
+                        principalTable: "Gender",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Employee",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreatedBy = table.Column<long>(nullable: true),
+                    CreatedOn = table.Column<DateTime>(nullable: false),
+                    LastModifiedBy = table.Column<long>(nullable: true),
+                    LastModifiedOn = table.Column<DateTime>(nullable: true),
+                    Deleted = table.Column<bool>(nullable: false, defaultValue: false),
+                    DeletedBy = table.Column<long>(nullable: true),
+                    DeletedOn = table.Column<DateTime>(nullable: true),
+                    StartHour = table.Column<TimeSpan>(nullable: false),
+                    EndHour = table.Column<TimeSpan>(nullable: false),
+                    TerminationDate = table.Column<DateTime>(nullable: true),
+                    UserProfileId = table.Column<long>(nullable: false),
+                    EmployeeTypeId = table.Column<short>(nullable: false),
+                    MedicalCheckTypeId = table.Column<short>(nullable: true),
+                    ClinicId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Employee", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Employee_Clinic_ClinicId",
+                        column: x => x.ClinicId,
+                        principalTable: "Clinic",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Employee_EmployeeType_EmployeeTypeId",
+                        column: x => x.EmployeeTypeId,
+                        principalTable: "EmployeeType",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Employee_MedicalCheckType_MedicalCheckTypeId",
+                        column: x => x.MedicalCheckTypeId,
+                        principalTable: "MedicalCheckType",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Employee_UserProfile_UserProfileId",
+                        column: x => x.UserProfileId,
+                        principalTable: "UserProfile",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "HolidayInterval",
                 columns: table => new
                 {
@@ -562,6 +590,12 @@ namespace Infrastructure.Migrations
                         principalTable: "MedicalCheckType",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_MedicalCheck_UserProfile_PatientId",
+                        column: x => x.PatientId,
+                        principalTable: "UserProfile",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -580,17 +614,30 @@ namespace Infrastructure.Migrations
                     NoOfDays = table.Column<int>(nullable: false),
                     Description = table.Column<string>(nullable: false),
                     PatientId = table.Column<long>(nullable: false),
-                    MedicalCheckId = table.Column<long>(nullable: false)
+                    MedicalCheckId = table.Column<long>(nullable: false),
+                    EmployeeId = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Prescription", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Prescription_Employee_EmployeeId",
+                        column: x => x.EmployeeId,
+                        principalTable: "Employee",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Prescription_MedicalCheck_MedicalCheckId",
                         column: x => x.MedicalCheckId,
                         principalTable: "MedicalCheck",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Prescription_UserProfile_PatientId",
+                        column: x => x.PatientId,
+                        principalTable: "UserProfile",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -700,6 +747,11 @@ namespace Infrastructure.Migrations
                 column: "MedicalCheckTypeId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Employee_UserProfileId",
+                table: "Employee",
+                column: "UserProfileId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_HolidayInterval_EmployeeId",
                 table: "HolidayInterval",
                 column: "EmployeeId");
@@ -725,9 +777,24 @@ namespace Infrastructure.Migrations
                 column: "MedicalCheckTypeId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_MedicalCheck_PatientId",
+                table: "MedicalCheck",
+                column: "PatientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Prescription_EmployeeId",
+                table: "Prescription",
+                column: "EmployeeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Prescription_MedicalCheckId",
                 table: "Prescription",
                 column: "MedicalCheckId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Prescription_PatientId",
+                table: "Prescription",
+                column: "PatientId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PrescriptionXDrug_DrugId",
@@ -747,32 +814,6 @@ namespace Infrastructure.Migrations
                 filter: "[NormalizedName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_User_CNP",
-                table: "User",
-                column: "CNP",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_User_CityId",
-                table: "User",
-                column: "CityId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_User_CountryId",
-                table: "User",
-                column: "CountryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_User_CountyId",
-                table: "User",
-                column: "CountyId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_User_GenderId",
-                table: "User",
-                column: "GenderId");
-
-            migrationBuilder.CreateIndex(
                 name: "EmailIndex",
                 table: "User",
                 column: "NormalizedEmail");
@@ -787,6 +828,44 @@ namespace Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_User_PhoneNumber",
                 table: "User",
+                column: "PhoneNumber",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserProfile_CNP",
+                table: "UserProfile",
+                column: "CNP",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserProfile_CityId",
+                table: "UserProfile",
+                column: "CityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserProfile_CountryId",
+                table: "UserProfile",
+                column: "CountryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserProfile_CountyId",
+                table: "UserProfile",
+                column: "CountyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserProfile_EmailAddress",
+                table: "UserProfile",
+                column: "EmailAddress",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserProfile_GenderId",
+                table: "UserProfile",
+                column: "GenderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserProfile_PhoneNumber",
+                table: "UserProfile",
                 column: "PhoneNumber",
                 unique: true);
         }
@@ -830,9 +909,6 @@ namespace Infrastructure.Migrations
                 name: "Prescription");
 
             migrationBuilder.DropTable(
-                name: "Gender");
-
-            migrationBuilder.DropTable(
                 name: "MedicalCheck");
 
             migrationBuilder.DropTable(
@@ -851,7 +927,13 @@ namespace Infrastructure.Migrations
                 name: "MedicalCheckType");
 
             migrationBuilder.DropTable(
+                name: "UserProfile");
+
+            migrationBuilder.DropTable(
                 name: "City");
+
+            migrationBuilder.DropTable(
+                name: "Gender");
 
             migrationBuilder.DropTable(
                 name: "County");

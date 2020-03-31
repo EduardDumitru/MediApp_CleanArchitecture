@@ -12,6 +12,7 @@ namespace Domain.Entities
         {
             Cities = new HashSet<City>();
             Clinics = new HashSet<Clinic>();
+            UserProfiles = new HashSet<UserProfile>();
         }
         public int Id { get; set; }
         public string Name { get; set; }
@@ -20,5 +21,6 @@ namespace Domain.Entities
         public Country Country { get; set; }
         public ICollection<City> Cities { get; private set; }
         public ICollection<Clinic> Clinics { get; private set; }
+        public ICollection<UserProfile> UserProfiles { get; private set; }
     }
 }

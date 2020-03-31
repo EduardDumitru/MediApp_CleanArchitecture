@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Constants;
 using Application.Common.Interfaces;
+using Application.Users.Commands.AddUser;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -68,39 +69,95 @@ namespace Application.System.Commands.SeedSampleData
 
         private async Task SeedUsersAsync(CancellationToken cancellationToken)
         {
-            var romania =
-                await _context.Countries.FirstOrDefaultAsync(x => x.Name == "Romania" && !x.Deleted, cancellationToken);
-
-            var galati =
-                await _context.Counties.FirstOrDefaultAsync(x => x.Name == "Galati" && !x.Deleted, cancellationToken);
-
             var galatiCity =
-                await _context.Cities.FirstOrDefaultAsync(x => x.Name == "Galati" && !x.Deleted, cancellationToken);
+                await _context.Cities.Include(x => x.County).ThenInclude(x => x.Country)
+                    .FirstOrDefaultAsync(x => x.Name == "Galati" && !x.Deleted, cancellationToken);
 
             var gender =
                 await _context.Genders.FirstOrDefaultAsync(x => x.Name == "Male", cancellationToken);
 
-            var result = await _identityService.CreateUserAsync("admin@admin.com", "Aa@12345",
-                "Admin", "Admin", "14", "1211118123456", "0712345678",
-                romania.Id, galati.Id, galatiCity.Id, gender.Id, null, "Bl 1 Ap 1", "Admin Str");
+            var userToAdd = new AddUserCommand()
+            {
+                Email = "admin@admin.com",
+                Password = "Aa@12345",
+                FirstName = "Admin",
+                LastName = "Admin",
+                StreetNo = "14",
+                Address = "Bl 1 Ap 1",
+                StreetName = "Admin Str",
+                CNP = "1211118123456",
+                PhoneNumber = "0712345678",
+                CountryId = galatiCity.County.Country.Id,
+                CountyId = galatiCity.County.Id,
+                CityId = galatiCity.Id,
+                GenderId = gender.Id
+            };
+
+            var result = await _identityService.CreateUserSeedAsync(userToAdd);
 
             await _identityService.AddToRoleAsync(result.UserId, RoleConstants.Admin);
 
-            result = await _identityService.CreateUserAsync("doctor@doctor.com", "Aa@12345",
-                "Doctor", "Doctor", "15", "1211118124456", "0713345678",
-                romania.Id, galati.Id, galatiCity.Id, gender.Id, "The", "Bl 1 Ap 2", "Doctor Str");
+            userToAdd = new AddUserCommand()
+            {
+                Email = "doctor@doctor.com",
+                Password = "Aa@12345",
+                FirstName = "Doctor",
+                LastName = "Doctor",
+                MiddleName = "The",
+                StreetNo = "15",
+                CNP = "1211118124456",
+                PhoneNumber = "0713345678",
+                Address = "Bl 1 Ap 2",
+                StreetName = "Doctor Str",
+                CountryId = galatiCity.County.Country.Id,
+                CountyId = galatiCity.County.Id,
+                CityId = galatiCity.Id,
+                GenderId = gender.Id
+            };
+
+            result = await _identityService.CreateUserSeedAsync(userToAdd);
 
             await _identityService.AddToRoleAsync(result.UserId, RoleConstants.Doctor);
 
-            result = await _identityService.CreateUserAsync("nurse@nurse.com", "Aa@12345",
-                "Nurse", "Nurse", "12", "2211118124456", "0714345678",
-                romania.Id, galati.Id, galatiCity.Id, gender.Id, null, "Bl 1 Ap 3", "Nurse Str");
+            userToAdd = new AddUserCommand()
+            {
+                Email = "nurse@nurse.com",
+                Password = "Aa@12345",
+                FirstName = "Nurse",
+                LastName = "Nurse",
+                StreetNo = "12",
+                Address = "Bl 1 Ap 3",
+                StreetName = "Nurse Str",
+                CNP = "1211218124456",
+                PhoneNumber = "0714345678",
+                CountryId = galatiCity.County.Country.Id,
+                CountyId = galatiCity.County.Id,
+                CityId = galatiCity.Id,
+                GenderId = gender.Id
+            };
+
+            result = await _identityService.CreateUserSeedAsync(userToAdd);
 
             await _identityService.AddToRoleAsync(result.UserId, RoleConstants.Nurse);
 
-            result = await _identityService.CreateUserAsync("user@user.com", "Aa@12345",
-                "User", "User", "16", "1211018124456", "0734345678",
-                romania.Id, galati.Id, galatiCity.Id, gender.Id, null, "Bl 1 Ap 4", "User Str");
+            userToAdd = new AddUserCommand()
+            {
+                Email = "user@user.com",
+                Password = "Aa@12345",
+                FirstName = "User",
+                LastName = "User",
+                StreetNo = "16",
+                Address = "Bl 1 Ap 4",
+                StreetName = "User Str",
+                CNP = "1211018124456",
+                PhoneNumber = "0734345678",
+                CountryId = galatiCity.County.Country.Id,
+                CountyId = galatiCity.County.Id,
+                CityId = galatiCity.Id,
+                GenderId = gender.Id
+            };
+
+            result = await _identityService.CreateUserSeedAsync(userToAdd);
 
             await _identityService.AddToRoleAsync(result.UserId, RoleConstants.User);
 
@@ -234,27 +291,25 @@ namespace Application.System.Commands.SeedSampleData
 
         private async Task SeedClinicsAsync(CancellationToken cancellationToken)
         {
-            var romania = await _context.Countries.FirstOrDefaultAsync(x => x.Name == "Romania" && !x.Deleted, cancellationToken);
+            var ploiestiCity = await _context.Cities.Include(x => x.County).ThenInclude(x => x.Country)
+                .FirstOrDefaultAsync(x => x.Name == "Ploiesti" && !x.Deleted, cancellationToken);
 
-            var galati = await _context.Counties.FirstOrDefaultAsync(x => x.Name == "Galati" && !x.Deleted, cancellationToken);
-            var prahova = await _context.Counties.FirstOrDefaultAsync(x => x.Name == "Prahova" && !x.Deleted, cancellationToken);
-
-            var galatiCity = await _context.Cities.FirstOrDefaultAsync(x => x.Name == "Galati" && !x.Deleted, cancellationToken);
-            var ploiesti = await _context.Cities.FirstOrDefaultAsync(x => x.Name == "Ploiesti" && !x.Deleted, cancellationToken);
-
+            var galatiCity =
+                await _context.Cities.Include(x => x.County).ThenInclude(x => x.Country)
+                    .FirstOrDefaultAsync(x => x.Name == "Galati" && !x.Deleted, cancellationToken);
             var clinics = new[]
             {
                 new Clinic
                 {
                     Name = "Clinica Cladire B", Address = "Cladirea B", StreetName = "Iulius", StreetNo = "40A",
-                    PhoneNumber = "0236432123", Email = "clinicacladireb@clinica.ro", CountryId = romania.Id,
-                    CountyId = galati.Id, CityId = galatiCity.Id
+                    PhoneNumber = "0236432123", Email = "clinicacladireb@clinica.ro", CountryId = galatiCity.County.Country.Id,
+                    CountyId = galatiCity.County.Id, CityId = galatiCity.Id
                 },
                 new Clinic
                 {
                     Name = "Clinica Cladire A", Address = "Cladirea A", StreetName = "Iulius", StreetNo = "40B",
-                    PhoneNumber = "0236432143", Email = "clinicacladirea@clinica.ro", CountryId = romania.Id,
-                    CountyId = prahova.Id, CityId = ploiesti.Id
+                    PhoneNumber = "0236432143", Email = "clinicacladirea@clinica.ro", CountryId = ploiestiCity.County.Country.Id,
+                    CountyId = ploiestiCity.County.Id, CityId = ploiestiCity.Id
                 }
             };
 
@@ -292,7 +347,11 @@ namespace Application.System.Commands.SeedSampleData
         private async Task SeedEmployeesAsync(CancellationToken cancellationToken)
         {
             var userDoctorId = await _identityService.GetUserIdAsync("doctor@doctor.com");
+            var docProfile =
+                await _context.UserProfiles.FirstOrDefaultAsync(x => x.UserId == userDoctorId.Value, cancellationToken);
             var nurseId = await _identityService.GetUserIdAsync("nurse@nurse.com");
+            var nurseProfile =
+                await _context.UserProfiles.FirstOrDefaultAsync(x => x.UserId == nurseId, cancellationToken);
             var doctorEmpType = await _context.EmployeeTypes.FirstOrDefaultAsync(x => x.Name == "Doctor" && !x.Deleted, cancellationToken);
             var nurseEmpType = await _context.EmployeeTypes.FirstOrDefaultAsync(x => x.Name == "Nurse" && !x.Deleted, cancellationToken);
             var familyType =
@@ -302,13 +361,13 @@ namespace Application.System.Commands.SeedSampleData
             {
                 new Employee
                 {
-                    StartHour = TimeSpan.Parse("08:00"), EndHour = TimeSpan.Parse("14:00"), UserId = userDoctorId.Value,
+                    StartHour = TimeSpan.Parse("08:00"), EndHour = TimeSpan.Parse("14:00"), UserProfileId = docProfile.Id,
                     MedicalCheckTypeId = familyType.Id, EmployeeTypeId = doctorEmpType.Id, TerminationDate = null,
                     ClinicId = galatiClinic.Id
                 },
                 new Employee
                 {
-                    StartHour = TimeSpan.Parse("08:00"), EndHour = TimeSpan.Parse("14:00"), UserId = nurseId.Value,
+                    StartHour = TimeSpan.Parse("08:00"), EndHour = TimeSpan.Parse("14:00"), UserProfileId = nurseProfile.Id,
                     MedicalCheckTypeId = null, EmployeeTypeId = nurseEmpType.Id, TerminationDate = null,
                     ClinicId = galatiClinic.Id
                 }
@@ -321,8 +380,8 @@ namespace Application.System.Commands.SeedSampleData
         private async Task SeedHolidayIntervalsAsync(CancellationToken cancellationToken)
         {
             var userDoctorId = await _identityService.GetUserIdAsync("doctor@doctor.com");
-            var employee = await _context.Employees.FirstOrDefaultAsync(x => x.UserId == userDoctorId.Value && !x.Deleted,
-                cancellationToken);
+            var docProfile =
+                await _context.UserProfiles.FirstOrDefaultAsync(x => x.UserId == userDoctorId.Value, cancellationToken);
 
             var holidayIntervals = new[]
             {
@@ -330,7 +389,7 @@ namespace Application.System.Commands.SeedSampleData
                 {
                     StartDate = _dateTime.Now.AddDays(100),
                     EndDate = _dateTime.Now.AddDays(105),
-                    EmployeeId = employee.Id
+                    EmployeeId = docProfile.Id
                 }
             };
 
@@ -344,9 +403,13 @@ namespace Application.System.Commands.SeedSampleData
                 await _context.Clinics.FirstOrDefaultAsync(x => x.Email == "clinicacladireb@clinica.ro" && !x.Deleted,
                     cancellationToken);
             var patientId = await _identityService.GetUserIdAsync("user@user.com");
+            var patientProfile =
+                await _context.UserProfiles.FirstOrDefaultAsync(x => x.UserId == patientId.Value, cancellationToken);
             var userDoctorId = await _identityService.GetUserIdAsync("doctor@doctor.com");
+            var docProfile =
+                await _context.UserProfiles.FirstOrDefaultAsync(x => x.UserId == userDoctorId.Value, cancellationToken);
             var doctor = await _context.Employees.Include(x => x.MedicalCheckType).FirstOrDefaultAsync(
-                x => x.UserId == userDoctorId.Value && !x.Deleted,
+                x => x.UserProfileId == docProfile.Id && !x.Deleted,
                 cancellationToken);
             var diagnosis = await _context.Diagnoses.FirstOrDefaultAsync(x => x.Name == "Flu", cancellationToken);
             var now = _dateTime.Now;
@@ -358,7 +421,7 @@ namespace Application.System.Commands.SeedSampleData
                     ClinicId = galatiClinic.Id,
                     DiagnosisId = null,
                     EmployeeId = doctor.Id,
-                    PatientId = patientId.Value,
+                    PatientId = patientProfile.Id,
                     MedicalCheckTypeId = doctor.MedicalCheckType.Id
                 },
                 new MedicalCheck
@@ -367,7 +430,7 @@ namespace Application.System.Commands.SeedSampleData
                     ClinicId = galatiClinic.Id,
                     DiagnosisId = diagnosis.Id,
                     EmployeeId = doctor.Id,
-                    PatientId = patientId.Value,
+                    PatientId = patientProfile.Id,
                     MedicalCheckTypeId = doctor.MedicalCheckType.Id
                 }
             };
@@ -379,16 +442,20 @@ namespace Application.System.Commands.SeedSampleData
         private async Task SeedPrescriptionsAsync(CancellationToken cancellationToken)
         {
             var patientId = await _identityService.GetUserIdAsync("user@user.com");
+            var patientProfile =
+                await _context.UserProfiles.FirstOrDefaultAsync(x => x.UserId == patientId.Value, cancellationToken);
             var now = _dateTime.Now;
             var medicalCheck =
-                await _context.MedicalChecks.FirstOrDefaultAsync(x => x.Appointment < now, cancellationToken);
+                await _context.MedicalChecks.FirstOrDefaultAsync(x => x.Appointment < now &&
+                                                                      x.PatientId == patientProfile.Id, cancellationToken);
             var prescriptions = new[]
             {
                 new Prescription
                 {
                     NoOfDays = 5,
                     Description = "You must stay in bed",
-                    PatientId = patientId.Value,
+                    PatientId = patientProfile.Id,
+                    EmployeeId = medicalCheck.EmployeeId,
                     MedicalCheckId = medicalCheck.Id
                 }
             };
@@ -400,11 +467,13 @@ namespace Application.System.Commands.SeedSampleData
         private async Task SeedPrescriptionXDrugsAsync(CancellationToken cancellationToken)
         {
             var patientId = await _identityService.GetUserIdAsync("user@user.com");
+            var patientProfile =
+                await _context.UserProfiles.FirstOrDefaultAsync(x => x.UserId == patientId.Value, cancellationToken);
             var now = _dateTime.Now;
             var medicalCheck =
                 await _context.MedicalChecks.FirstOrDefaultAsync(x => x.Appointment < now, cancellationToken);
             var prescription = await _context.Prescriptions.FirstOrDefaultAsync(
-                x => x.MedicalCheckId == medicalCheck.Id && x.PatientId == patientId.Value, cancellationToken);
+                x => x.MedicalCheckId == medicalCheck.Id && x.PatientId == patientProfile.Id, cancellationToken);
             var olynth =
                 await _context.Drugs.FirstOrDefaultAsync(x => x.Name == "Olynth" && !x.Deleted, cancellationToken);
             var paracetamol =

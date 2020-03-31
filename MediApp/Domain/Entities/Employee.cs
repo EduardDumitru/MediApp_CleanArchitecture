@@ -12,12 +12,13 @@ namespace Domain.Entities
         {
             HolidayIntervals = new HashSet<HolidayInterval>();
             MedicalChecks = new HashSet<MedicalCheck>();
+            Prescriptions = new HashSet<Prescription>();
         }
         public long Id { get; set; }
         public TimeSpan StartHour { get; set; }
         public TimeSpan EndHour { get; set; }
         public DateTime? TerminationDate { get; set; }
-        public long UserId { get; set; }
+        public long UserProfileId { get; set; }
         public short EmployeeTypeId { get; set; }
         public short? MedicalCheckTypeId { get; set; }
         public int ClinicId { get; set; }
@@ -25,7 +26,9 @@ namespace Domain.Entities
         public EmployeeType EmployeeType { get; set; }
         public MedicalCheckType MedicalCheckType { get; set; }
         public Clinic Clinic { get; set; }
+        public UserProfile UserProfile { get; set; }
         public ICollection<HolidayInterval> HolidayIntervals { get; private set; }
         public ICollection<MedicalCheck> MedicalChecks { get; private set; }
+        public ICollection<Prescription> Prescriptions { get; private set; }
     }
 }
