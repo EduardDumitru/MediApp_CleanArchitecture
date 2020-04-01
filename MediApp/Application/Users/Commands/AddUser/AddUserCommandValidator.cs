@@ -9,11 +9,11 @@ namespace Application.Users.Commands.AddUser
 {
     public class AddUserCommandValidator : AbstractValidator<AddUserCommand>
     {
-        private readonly IIdentityService _identityService;
+        private readonly IApplicationDbContext _context;
 
-        public AddUserCommandValidator(IIdentityService identityService)
+        public AddUserCommandValidator(IApplicationDbContext context)
         {
-            _identityService = identityService;
+            _context = context;
         }
 
         
