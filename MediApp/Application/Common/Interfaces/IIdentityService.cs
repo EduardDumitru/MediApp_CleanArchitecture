@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Application.Common.Models;
-using Application.Users.Commands.AddUser;
+using Application.Users.Commands.User.AddUser;
 
 namespace Application.Common.Interfaces
 {

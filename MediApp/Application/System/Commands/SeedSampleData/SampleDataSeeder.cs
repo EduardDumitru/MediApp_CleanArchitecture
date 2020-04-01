@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Constants;
 using Application.Common.Interfaces;
-using Application.Users.Commands.AddUser;
+using Application.Users.Commands.User.AddUser;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
