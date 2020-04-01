@@ -26,11 +26,13 @@ namespace Application.Users.Commands.User.AddUser
             _dateTime = dateTime;
 
             RuleFor(x => x.Email)
+                .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("Email is required.")
                 .EmailAddress().WithMessage("The specified email is not valid.")
                 .MustAsync(BeUniqueEmail).WithMessage("The specified email already exists.");
 
             RuleFor(x => x.CNP)
+                .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("CNP is required.")
                 .Length(13).WithMessage("CNP must have 13 digits")
                 .Matches("^[0-9]*$")
@@ -38,35 +40,44 @@ namespace Application.Users.Commands.User.AddUser
                 .MustAsync(IsCNPValid).WithMessage("The specified CNP is not valid");
 
             RuleFor(x => x.PhoneNumber)
+                .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("Phone number is required.")
                 .Length(10).WithMessage("Phone number must have 10 digits")
                 .Matches("^07[0-9]*$").WithMessage("Phone number is not valid")
                 .MustAsync(BeUniquePhoneNumber).WithMessage("Phone number already exists");
 
             RuleFor(x => x.FirstName)
+                .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("First Name is required");
 
             RuleFor(x => x.LastName)
+                .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("Last Name is required");
 
             RuleFor(x => x.StreetNo)
+                .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("Street Number is required");
 
             RuleFor(x => x.CountryId)
+                .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("Country is required");
 
             RuleFor(x => x.CountyId)
+                .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("County is required");
 
             RuleFor(x => x.CityId)
+                .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("City is required")
                 .Must(IsCityMappedCorrectly).WithMessage("Country, County and City are not valid");
 
             RuleFor(x => x.GenderId)
+                .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("Gender is required")
                 .MustAsync(IsGenderValid).WithMessage("Gender is not valid");
 
             RuleFor(x => x.Password)
+                .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("Password is required");
         }
 
@@ -85,9 +96,9 @@ namespace Application.Users.Commands.User.AddUser
         private async Task<bool> IsCNPValid(string cnp, CancellationToken cancellationToken)
         {
             string gender = cnp.Substring(0, 1);
-            string day = cnp.Substring(1, 2);
+            string year = cnp.Substring(1, 2);
             string month = cnp.Substring(3, 2);
-            string year = cnp.Substring(5, 2);
+            string day = cnp.Substring(5, 2);
             string county = cnp.Substring(7, 2);
 
             short yearNr = default;
@@ -104,7 +115,7 @@ namespace Application.Users.Commands.User.AddUser
 
             if (byte.TryParse(gender, out byte genderResult))
             {
-                if (genderResult <= 0 && genderResult > 9 || genderResult == 3 || genderResult == 4)
+                if (genderResult <= 0 || genderResult > 9 || genderResult == 3 || genderResult == 4)
                 {
                     return false;
                 }
@@ -114,6 +125,16 @@ namespace Application.Users.Commands.User.AddUser
                 return false;
             }
 
+            if (genderResult == 1 || genderResult == 2)
+            {
+                yearNr = (short) (1900 + yearResult);
+            }
+
+            if (genderResult == 5 || genderResult == 6)
+            {
+                yearNr = (short) (2000 + yearResult);
+            }
+
             if (genderResult == 7 || genderResult == 8 || genderResult == 9)
             {
                 yearNr = (short)(2000 + yearResult);
@@ -121,11 +142,6 @@ namespace Application.Users.Commands.User.AddUser
                 {
                     yearNr -= 100;
                 }
-            }
-
-            if (genderResult == 1 || genderResult == 2)
-            {
-                yearNr = (short)(1900 + yearResult);
             }
 
             string date = $"{day}-{month}-{yearNr}";
