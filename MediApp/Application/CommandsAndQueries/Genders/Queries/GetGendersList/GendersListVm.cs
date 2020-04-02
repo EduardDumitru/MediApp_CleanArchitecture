@@ -4,8 +4,8 @@ using System.Text;
 
 namespace Application.CommandsAndQueries
 {
-    public class UserProfileListVm
+    public class GendersListVm
     {
-        public IList<UserProfileLookupDto> UserProfiles { get; set; }
+        public IList<GendersLookupDto> Genders { get; set; }
     }
 }

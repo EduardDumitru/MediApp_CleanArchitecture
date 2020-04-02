@@ -30,7 +30,7 @@ namespace Application.CommandsAndQueries
             var entity = await _context.UserProfiles
                 .FindAsync(request.Id);
 
-            return _mapper.Map<UserProfileDetailVm>(entity);
+            return entity == null ? null : _mapper.Map<UserProfileDetailVm>(entity);
         }
     }
 }

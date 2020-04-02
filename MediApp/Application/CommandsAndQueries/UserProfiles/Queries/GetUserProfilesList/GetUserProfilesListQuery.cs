@@ -9,7 +9,7 @@ using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.CommandsAndQueries.UserProfiles.Queries.GetUserProfilesList
+namespace Application.CommandsAndQueries
 {
     public class GetUserProfilesListQuery : IRequest<UserProfileListVm>
     { }

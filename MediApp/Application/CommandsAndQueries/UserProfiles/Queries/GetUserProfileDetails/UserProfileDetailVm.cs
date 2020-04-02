@@ -9,7 +9,6 @@ namespace Application.CommandsAndQueries
 {
     public class UserProfileDetailVm : IMapFrom<UserProfile>
     {
-        public long Id { get; set; }
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
         public string LastName { get; set; }
@@ -23,6 +22,7 @@ namespace Application.CommandsAndQueries
         public int CountyId { get; set; }
         public int CityId { get; set; }
         public short GenderId { get; set; }
+        public bool? Deleted { get; set; }
 
         public void Mapping(Profile profile)
         {

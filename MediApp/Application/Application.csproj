@@ -28,7 +28,6 @@
     <Folder Include="CommandsAndQueries\Countries\" />
     <Folder Include="CommandsAndQueries\Counties\" />
     <Folder Include="CommandsAndQueries\Cities\" />
-    <Folder Include="CommandsAndQueries\Genders\Queries\" />
   </ItemGroup>
 
 </Project>

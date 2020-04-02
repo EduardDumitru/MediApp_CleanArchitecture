@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
@@ -35,7 +36,10 @@ namespace Application.CommandsAndQueries
             }
 
             var isUsedInUserProfile =
-                await _context.UserProfiles.AnyAsync(x => x.GenderId == entity.Id, cancellationToken);
+                await _context.UserProfiles.AnyAsync(x => x.GenderId == entity.Id 
+                                                          && !x.Deleted 
+                                                          && entity.UserProfiles.Any(y => !y.Deleted),
+                                                          cancellationToken);
 
             if (isUsedInUserProfile)
             {

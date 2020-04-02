@@ -16,6 +16,10 @@ namespace Infrastructure.Persistence.Configurations
             builder.Property(x => x.Deleted)
                 .HasDefaultValue(false);
 
+            builder
+                .HasIndex(x => new {x.DiagnosisId, x.DrugId})
+                .IsUnique();
+
             builder.HasOne(x => x.Diagnosis)
                 .WithMany(x => x.DiagnosisXDrugs)
                 .HasForeignKey(x => x.DiagnosisId);

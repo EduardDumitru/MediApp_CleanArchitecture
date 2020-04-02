@@ -21,6 +21,7 @@ namespace Application.CommandsAndQueries
         public string CountyName { get; set; }
         public string CityName { get; set; }
         public string GenderName { get; set; }
+        public bool? Deleted { get; set; }
 
         public void Mapping(Profile profile)
         {
