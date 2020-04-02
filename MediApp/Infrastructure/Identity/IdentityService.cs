@@ -9,6 +9,7 @@ using Application.Common.Constants;
 using Application.Common.Interfaces;
 using Application.Common.Models;
 using Application.Users.Commands.User.AddUser;
+using Application.Users.Commands.User.LoginUser;
 using Domain.Entities;
 using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Http;
@@ -213,9 +214,9 @@ namespace Infrastructure.Identity
             }
         }
 
-        public async Task<AuthenticationResult> LoginAsync(string email, string password)
+        public async Task<AuthenticationResult> LoginAsync(LoginUserCommand loginUser)
         {
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = await _userManager.FindByEmailAsync(loginUser.Email);
 
             if (user == null)
             {
@@ -225,7 +226,7 @@ namespace Infrastructure.Identity
                 };
             }
 
-            var userHasValidPassword = await _userManager.CheckPasswordAsync(user, password);
+            var userHasValidPassword = await _userManager.CheckPasswordAsync(user, loginUser.Password);
 
             if (!userHasValidPassword)
             {
