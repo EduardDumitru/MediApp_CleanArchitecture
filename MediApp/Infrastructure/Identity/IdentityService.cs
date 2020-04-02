@@ -5,11 +5,10 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Application.CommandsAndQueries;
 using Application.Common.Constants;
 using Application.Common.Interfaces;
 using Application.Common.Models;
-using Application.Users.Commands.User.AddUser;
-using Application.Users.Commands.User.LoginUser;
 using Domain.Entities;
 using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Http;
@@ -99,9 +98,7 @@ namespace Infrastructure.Identity
                 var user = new ApplicationUser
                 {
                     UserName = userToAdd.Email,
-                    Email = userToAdd.Email,
-                    PhoneNumber = userToAdd.PhoneNumber,
-
+                    Email = userToAdd.Email
                 };
 
                 var result = await _userManager.CreateAsync(user, userToAdd.Password);

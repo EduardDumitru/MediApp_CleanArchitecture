@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Application.Users.Commands.User.LoginUser
+namespace Application.CommandsAndQueries
 {
     class LoginUserCommandValidator
     {

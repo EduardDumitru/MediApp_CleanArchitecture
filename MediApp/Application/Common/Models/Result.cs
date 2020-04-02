@@ -12,15 +12,28 @@ namespace Application.Common.Models
         {
             Succeeded = succeeded;
             Errors = errors.ToArray();
+            SuccessMessage = "";
         }
 
-        private bool Succeeded { get; }
+        internal Result(bool succeeded, string successMessage)
+        {
+            Succeeded = succeeded;
+            SuccessMessage = successMessage;
+        }
+        public bool Succeeded { get; }
 
-        private string[] Errors { get; }
+        public string SuccessMessage { get; }
+
+        public string[] Errors { get; }
 
         public static Result Success()
         {
             return new Result(true, new string[] { });
+        }
+
+        public static Result Success(string successMessage)
+        {
+            return new Result(true, successMessage);
         }
 
         public static Result Failure(IEnumerable<string> errors)

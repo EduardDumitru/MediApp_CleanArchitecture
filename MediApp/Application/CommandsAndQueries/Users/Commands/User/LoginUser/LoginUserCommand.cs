@@ -7,7 +7,7 @@ using Application.Common.Interfaces;
 using Application.Common.Models;
 using MediatR;
 
-namespace Application.Users.Commands.User.LoginUser
+namespace Application.CommandsAndQueries
 {
     public class LoginUserCommand : IRequest<AuthenticationResult>
     {

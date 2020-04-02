@@ -13,7 +13,7 @@ using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 
-namespace Application.Users.Commands.User.AddUser
+namespace Application.CommandsAndQueries
 {
     public class AddUserCommandValidator : AbstractValidator<AddUserCommand>
     {

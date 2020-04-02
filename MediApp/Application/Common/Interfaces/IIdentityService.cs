@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
+using Application.CommandsAndQueries;
 using Application.Common.Models;
-using Application.Users.Commands.User.AddUser;
-using Application.Users.Commands.User.LoginUser;
 
 namespace Application.Common.Interfaces
 {
