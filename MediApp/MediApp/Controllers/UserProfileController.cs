@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Application.CommandsAndQueries;
+using Application.CommandsAndQueries.UserProfiles.Queries.GetUserProfilesList;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,6 +23,28 @@ namespace MediApp.Controllers
             }
 
             return Ok(response.SuccessMessage);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin, Doctor, Nurse")]
+        public async Task<ActionResult<UserProfileListVm>> GetUserProfiles()
+        {
+            var vm = await Mediator.Send(new GetUserProfilesListQuery());
+
+            return Ok(vm);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<UserProfileListVm>> GetUserProfile(long id)
+        {
+            var vm = await Mediator.Send(new GetUserProfileDetailQuery() {Id = id});
+
+            if (vm == null)
+            {
+                return BadRequest("No valid user profile was found");
+            }
+
+            return Ok(vm);
         }
     }
 }

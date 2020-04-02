@@ -66,8 +66,17 @@ namespace Infrastructure.Persistence
                         entry.Entity.CreatedOn = _dateTime.Now;
                         break;
                     case EntityState.Modified:
-                        entry.Entity.LastModifiedBy = _currentUserService.UserId;
-                        entry.Entity.LastModifiedOn = _dateTime.Now;
+                        if (entry.Entity.Deleted)
+                        {
+                            entry.Entity.DeletedBy = _currentUserService.UserId;
+                            entry.Entity.DeletedOn = _dateTime.Now;
+                        }
+                        else
+                        {
+                            entry.Entity.LastModifiedBy = _currentUserService.UserId;
+                            entry.Entity.LastModifiedOn = _dateTime.Now;
+                        }
+
                         break;
                 }
             }

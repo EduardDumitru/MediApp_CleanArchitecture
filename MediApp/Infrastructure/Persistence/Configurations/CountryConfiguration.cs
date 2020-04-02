@@ -19,6 +19,9 @@ namespace Infrastructure.Persistence.Configurations
 
             builder.Property(x => x.Deleted)
                 .HasDefaultValue(false);
+
+            builder.HasIndex(x => x.Name)
+                .IsUnique();
         }
     }
 }

@@ -5,6 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="CommandsAndQueries\Users\Queries\**" />
+    <EmbeddedResource Remove="CommandsAndQueries\Users\Queries\**" />
+    <None Remove="CommandsAndQueries\Users\Queries\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="8.6.2" />
@@ -19,7 +25,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="CommandsAndQueries\Users\Queries\" />
+    <Folder Include="CommandsAndQueries\Countries\" />
+    <Folder Include="CommandsAndQueries\Counties\" />
+    <Folder Include="CommandsAndQueries\Cities\" />
+    <Folder Include="CommandsAndQueries\Genders\Queries\" />
   </ItemGroup>
 
 </Project>

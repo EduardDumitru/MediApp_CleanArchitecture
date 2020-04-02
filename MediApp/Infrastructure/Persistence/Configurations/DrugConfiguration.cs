@@ -19,6 +19,9 @@ namespace Infrastructure.Persistence.Configurations
             builder.Property(x => x.Name)
                 .HasMaxLength(150)
                 .IsRequired();
+
+            builder.HasIndex(x => x.Name)
+                .IsUnique();
         }
     }
 }
