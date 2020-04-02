@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Application.CommandsAndQueries;
-using Application.CommandsAndQueries.UserProfiles.Queries.GetUserProfilesList;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
