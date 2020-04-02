@@ -11,12 +11,8 @@ namespace MediApp.Controllers
     {
         // GET
         [HttpPut]
-        public async Task<IActionResult> UpdateUserProfile(long id, UpdateUserProfileCommand command)
+        public async Task<IActionResult> UpdateUserProfile(UpdateUserProfileCommand command)
         {
-            if (id != command.Id)
-            {
-                return BadRequest();
-            }
 
             var response = await Mediator.Send(command);
 

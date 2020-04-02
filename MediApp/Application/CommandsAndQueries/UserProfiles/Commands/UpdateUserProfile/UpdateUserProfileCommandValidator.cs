@@ -25,7 +25,7 @@ namespace Application.CommandsAndQueries
                 .NotEmpty().WithMessage("CNP is required.")
                 .Length(13).WithMessage("CNP must have 13 digits")
                 .Matches("^[0-9]*$")
-                .MustAsync(BeUniqueCNP).WithMessage("The specified CNP already exists")
+                .Must(BeUniqueCNP).WithMessage("The specified CNP already exists")
                 .MustAsync(IsCNPValid).WithMessage("The specified CNP is not valid");
 
             RuleFor(x => x.PhoneNumber)
@@ -33,7 +33,7 @@ namespace Application.CommandsAndQueries
                 .NotEmpty().WithMessage("Phone number is required.")
                 .Length(10).WithMessage("Phone number must have 10 digits")
                 .Matches("^07[0-9]*$").WithMessage("Phone number is not valid")
-                .MustAsync(BeUniquePhoneNumber).WithMessage("Phone number already exists");
+                .Must(BeUniquePhoneNumber).WithMessage("Phone number already exists");
 
             RuleFor(x => x.FirstName)
                 .Cascade(CascadeMode.StopOnFirstFailure)
@@ -65,10 +65,10 @@ namespace Application.CommandsAndQueries
                 .NotEmpty().WithMessage("Gender is required")
                 .MustAsync(IsGenderValid).WithMessage("Gender is not valid");
         }
-        private async Task<bool> BeUniqueCNP(string cnp, CancellationToken cancellationToken)
+        private bool BeUniqueCNP(UpdateUserProfileCommand userProfile, string cnp)
         {
-            return await _context.UserProfiles
-                .AllAsync(x => x.CNP != cnp, cancellationToken);
+            return _context.UserProfiles.Where(x => x.Id != userProfile.Id)
+                .All(x => x.CNP != cnp);
         }
 
         private async Task<bool> IsCNPValid(string cnp, CancellationToken cancellationToken)
@@ -151,10 +151,10 @@ namespace Application.CommandsAndQueries
             return await Task.FromResult(true);
         }
 
-        private async Task<bool> BeUniquePhoneNumber(string phoneNumber, CancellationToken cancellationToken)
+        private bool BeUniquePhoneNumber(UpdateUserProfileCommand userProfile, string phoneNumber)
         {
-            return await _context.UserProfiles
-                .AllAsync(x => x.PhoneNumber != phoneNumber, cancellationToken);
+            return _context.UserProfiles.Where(x => x.Id != userProfile.Id)
+                .All(x => x.PhoneNumber != phoneNumber);
         }
 
         private bool IsCityMappedCorrectly(UpdateUserProfileCommand user, int cityId)

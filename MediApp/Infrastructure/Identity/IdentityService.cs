@@ -250,7 +250,7 @@ namespace Infrastructure.Identity
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim("firstName", userProfile.FirstName),
                 new Claim("lastName", userProfile.LastName),
-                new Claim("id", user.Id.ToString())
+                new Claim("id", userProfile.Id.ToString())
             };
 
             var userClaims = await _userManager.GetClaimsAsync(user);
