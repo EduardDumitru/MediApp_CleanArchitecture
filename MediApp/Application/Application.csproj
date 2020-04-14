@@ -25,7 +25,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="CommandsAndQueries\Countries\" />
     <Folder Include="CommandsAndQueries\Counties\" />
     <Folder Include="CommandsAndQueries\Cities\" />
   </ItemGroup>
