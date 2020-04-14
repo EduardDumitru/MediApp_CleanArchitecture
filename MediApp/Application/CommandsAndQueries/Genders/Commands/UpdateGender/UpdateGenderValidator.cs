@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
+using Domain.Entities;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,15 +17,20 @@ namespace Application.CommandsAndQueries
         public UpdateGenderValidator(IApplicationDbContext context)
         {
             _context = context;
+            RuleFor(x => x.Id)
+                .Cascade(CascadeMode.StopOnFirstFailure)
+                .NotEmpty().WithMessage("Id is required");
             RuleFor(x => x.Name)
+                .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("Name is required")
-                .MustAsync(BeUniqueGender).WithMessage("Name already exists");
+                .Must(BeUniqueGender).WithMessage("Name already exists");
         }
 
-        private async Task<bool> BeUniqueGender(string name, CancellationToken cancellationToken)
+        private bool BeUniqueGender(UpdateGenderCommand updateGenderCommand, string name)
         {
-            return await _context.Genders
-                .AnyAsync(x => x.Name != name, cancellationToken);
+            return _context.Genders
+                .Where(x => x.Id != updateGenderCommand.Id)
+                .All(x => x.Name != name);
         }
     }
 }

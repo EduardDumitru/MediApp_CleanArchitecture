@@ -8,30 +8,31 @@ using Application.Common.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.CommandsAndQueries.Genders.Commands.RestoreGender
+namespace Application.CommandsAndQueries
 {
-    public class RestoreGenderCommand : IRequest<Result>
+    public class RestoreCountyCommand : IRequest<Result>
     {
-        public short Id { get; set; }
+        public int Id { get; set; }
     }
 
-    public class RestoreGenderCommandHandler : IRequestHandler<RestoreGenderCommand, Result>
+    public class RestoreCountyCommandHandler : IRequestHandler<RestoreCountyCommand, Result>
     {
         private readonly IApplicationDbContext _context;
-        public RestoreGenderCommandHandler(IApplicationDbContext context)
+
+        public RestoreCountyCommandHandler(IApplicationDbContext context)
         {
             _context = context;
         }
 
-        public async Task<Result> Handle(RestoreGenderCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(RestoreCountyCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _context.Genders
+            var entity = await _context.Counties
                 .FirstOrDefaultAsync(x => x.Id == request.Id && x.Deleted, cancellationToken);
             ;
 
             if (entity == null)
             {
-                return Result.Failure(new List<string> {"No valid gender found"});
+                return Result.Failure(new List<string> {"No valid county found"});
             }
 
             entity.Deleted = false;
@@ -40,7 +41,7 @@ namespace Application.CommandsAndQueries.Genders.Commands.RestoreGender
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return Result.Success("Gender was restored");
+            return Result.Success("County was restored");
         }
     }
 }

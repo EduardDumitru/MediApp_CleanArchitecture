@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.CommandsAndQueries
 {
-    public class AddGenderCommandValidator : AbstractValidator<Gender>
+    public class AddGenderCommandValidator : AbstractValidator<AddGenderCommand>
     {
         private readonly IApplicationDbContext _context;
         public AddGenderCommandValidator(IApplicationDbContext context)
@@ -24,7 +25,7 @@ namespace Application.CommandsAndQueries
         private async Task<bool> BeUniqueGender(string name, CancellationToken cancellationToken)
         {
             return await _context.Genders
-                .AnyAsync(x => x.Name != name, cancellationToken);
+                .AllAsync(x => x.Name != name, cancellationToken);
         }
     }
 }

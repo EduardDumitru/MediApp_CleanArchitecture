@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,15 +17,20 @@ namespace Application.CommandsAndQueries
         public UpdateCountryCommandValidator(IApplicationDbContext context)
         {
             _context = context;
+            RuleFor(x => x.Id)
+                .Cascade(CascadeMode.StopOnFirstFailure)
+                .NotEmpty().WithMessage("Id is required");
             RuleFor(x => x.Name)
+                .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("Name is required")
-                .MustAsync(BeUniqueCountry).WithMessage("Name already exists");
+                .Must(BeUniqueCountry).WithMessage("Name already exists");
         }
 
-        private async Task<bool> BeUniqueCountry(string name, CancellationToken cancellationToken)
+        private bool BeUniqueCountry(UpdateCountryCommand updateCountryCommand, string name)
         {
-            return await _context.Countries
-                .AnyAsync(x => x.Name != name, cancellationToken);
+            return _context.Countries
+                .Where(x => x.Id != updateCountryCommand.Id)
+                .All(x => x.Name != name);
         }
     }
 }

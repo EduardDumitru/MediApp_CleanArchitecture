@@ -8,30 +8,31 @@ using Application.Common.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.CommandsAndQueries.Genders.Commands.RestoreGender
+namespace Application.CommandsAndQueries
 {
-    public class RestoreGenderCommand : IRequest<Result>
+    public class RestoreCountryCommand : IRequest<Result>
     {
         public short Id { get; set; }
     }
 
-    public class RestoreGenderCommandHandler : IRequestHandler<RestoreGenderCommand, Result>
+    public class RestoreCountryCommandHandler : IRequestHandler<RestoreCountryCommand, Result>
     {
         private readonly IApplicationDbContext _context;
-        public RestoreGenderCommandHandler(IApplicationDbContext context)
+
+        public RestoreCountryCommandHandler(IApplicationDbContext context)
         {
             _context = context;
         }
 
-        public async Task<Result> Handle(RestoreGenderCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(RestoreCountryCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _context.Genders
+            var entity = await _context.Countries
                 .FirstOrDefaultAsync(x => x.Id == request.Id && x.Deleted, cancellationToken);
             ;
 
             if (entity == null)
             {
-                return Result.Failure(new List<string> {"No valid gender found"});
+                return Result.Failure(new List<string> {"No valid country found"});
             }
 
             entity.Deleted = false;
@@ -40,7 +41,7 @@ namespace Application.CommandsAndQueries.Genders.Commands.RestoreGender
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return Result.Success("Gender was restored");
+            return Result.Success("Country was restored");
         }
     }
 }

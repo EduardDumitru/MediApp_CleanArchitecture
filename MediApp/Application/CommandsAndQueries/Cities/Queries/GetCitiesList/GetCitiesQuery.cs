@@ -11,27 +11,32 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.CommandsAndQueries
 {
-    public class GetGendersListQuery : IRequest<GendersListVm>
-    { }
+    public class GetCitiesQuery : IRequest<CitiesListVm>
+    {
+    }
 
-    public class GetGendersListQueryHandler : IRequestHandler<GetGendersListQuery, GendersListVm>
+    public class GetCitiesQueryHandler : IRequestHandler<GetCitiesQuery, CitiesListVm>
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
-        public GetGendersListQueryHandler(IApplicationDbContext context, IMapper mapper)
+
+        public GetCitiesQueryHandler(IApplicationDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
         }
-        public async Task<GendersListVm> Handle(GetGendersListQuery request, CancellationToken cancellationToken)
+
+        public async Task<CitiesListVm> Handle(GetCitiesQuery request, CancellationToken cancellationToken)
         {
-            var genders = await _context.Genders
-                .ProjectTo<GendersLookupDto>(_mapper.ConfigurationProvider)
+            var cities = await _context.Cities
+                .Include(x => x.County)
+                .ThenInclude(x => x.Country)
+                .ProjectTo<CitiesLookupDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
 
-            var vm = new GendersListVm()
+            var vm = new CitiesListVm()
             {
-                Genders = genders
+                Cities = cities
             };
 
             return vm;

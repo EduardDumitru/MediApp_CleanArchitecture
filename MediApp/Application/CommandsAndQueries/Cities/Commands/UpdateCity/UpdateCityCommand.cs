@@ -10,36 +10,38 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.CommandsAndQueries
 {
-    public class UpdateCountryCommand : IRequest<Result>
+    public class UpdateCityCommand : IRequest<Result>
     {
-        public short Id { get; set; }
+        public int Id { get; set; }
+        public int CountyId { get; set; }
         public string Name { get; set; }
     }
 
-    public class UpdateCountryCommandHandler : IRequestHandler<UpdateCountryCommand, Result>
+    public class UpdateCityCommandHandler : IRequestHandler<UpdateCityCommand, Result>
     {
         private readonly IApplicationDbContext _context;
 
-        public UpdateCountryCommandHandler(IApplicationDbContext context)
+        public UpdateCityCommandHandler(IApplicationDbContext context)
         {
             _context = context;
         }
 
-        public async Task<Result> Handle(UpdateCountryCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(UpdateCityCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _context.Countries
+            var entity = await _context.Cities
                 .FirstOrDefaultAsync(x => x.Id == request.Id && !x.Deleted, cancellationToken);
 
             if (entity == null)
             {
-                return Result.Failure(new List<string> {"No valid country found"});
+                return Result.Failure(new List<string> {"No valid city found"});
             }
 
             entity.Name = request.Name;
+            entity.CountyId = request.CountyId;
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return Result.Success("Country update was successful");
+            return Result.Success("City update was successful");
         }
     }
 }

@@ -6,10 +6,10 @@ using Domain.Entities;
 
 namespace Application.CommandsAndQueries
 {
-    public class GendersLookupDto : IMapFrom<Gender>
+    public class CountyDetailsVm : IMapFrom<County>
     {
-        public short Id { get; set; }
         public string Name { get; set; }
+        public short CountryId { get; set; }
         public bool? Deleted { get; set; }
     }
 }

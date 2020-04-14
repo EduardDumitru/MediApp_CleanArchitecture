@@ -11,30 +11,31 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.CommandsAndQueries
 {
-    public class GetCountriesListQuery : IRequest<CountriesListVm>
+    public class GetCountiesListQuery : IRequest<CountiesListVm>
     {
     }
 
-    public class GetCountriesListQueryHandler : IRequestHandler<GetCountriesListQuery, CountriesListVm>
+    public class GetCountiesListQueryHandler : IRequestHandler<GetCountiesListQuery, CountiesListVm>
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
 
-        public GetCountriesListQueryHandler(IApplicationDbContext context, IMapper mapper)
+        public GetCountiesListQueryHandler(IApplicationDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
         }
 
-        public async Task<CountriesListVm> Handle(GetCountriesListQuery request, CancellationToken cancellationToken)
+        public async Task<CountiesListVm> Handle(GetCountiesListQuery request, CancellationToken cancellationToken)
         {
-            var countries = await _context.Countries
-                .ProjectTo<CountriesLookupDto>(_mapper.ConfigurationProvider)
+            var counties = await _context.Counties
+                .Include(x => x.Country)
+                .ProjectTo<CountiesLookupDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
 
-            var vm = new CountriesListVm()
+            var vm = new CountiesListVm()
             {
-                Countries = countries
+                Counties = counties
             };
 
             return vm;

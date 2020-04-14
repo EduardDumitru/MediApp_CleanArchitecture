@@ -8,30 +8,31 @@ using Application.Common.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.CommandsAndQueries.Genders.Commands.RestoreGender
+namespace Application.CommandsAndQueries
 {
-    public class RestoreGenderCommand : IRequest<Result>
+    public class RestoreCityCommand : IRequest<Result>
     {
-        public short Id { get; set; }
+        public int Id { get; set; }
     }
 
-    public class RestoreGenderCommandHandler : IRequestHandler<RestoreGenderCommand, Result>
+    public class RestoreCityCommandHandler : IRequestHandler<RestoreCityCommand, Result>
     {
         private readonly IApplicationDbContext _context;
-        public RestoreGenderCommandHandler(IApplicationDbContext context)
+
+        public RestoreCityCommandHandler(IApplicationDbContext context)
         {
             _context = context;
         }
 
-        public async Task<Result> Handle(RestoreGenderCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(RestoreCityCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _context.Genders
+            var entity = await _context.Cities
                 .FirstOrDefaultAsync(x => x.Id == request.Id && x.Deleted, cancellationToken);
             ;
 
             if (entity == null)
             {
-                return Result.Failure(new List<string> {"No valid gender found"});
+                return Result.Failure(new List<string> {"No valid city found"});
             }
 
             entity.Deleted = false;
@@ -40,7 +41,7 @@ namespace Application.CommandsAndQueries.Genders.Commands.RestoreGender
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return Result.Success("Gender was restored");
+            return Result.Success("City was restored");
         }
     }
 }

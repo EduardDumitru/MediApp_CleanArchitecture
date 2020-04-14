@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Application.Common.Interfaces;
 using Application.Common.Models;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.CommandsAndQueries
 {
@@ -25,7 +26,8 @@ namespace Application.CommandsAndQueries
 
         public async Task<Result> Handle(UpdateGenderCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _context.Genders.FindAsync(request.Id);
+            var entity = await _context.Genders
+                .FirstOrDefaultAsync(x => x.Id == request.Id && !x.Deleted, cancellationToken);
 
             if (entity == null)
             {

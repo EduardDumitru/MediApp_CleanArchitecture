@@ -4,9 +4,8 @@ using System.Text;
 
 namespace Application.Common.Models
 {
-    public class SelectItem
+    public class SelectItemVm
     {
-        public string Label { get; set; }
-        public long Value { get; set; }
+        public IList<SelectItemDto> SelectItems { get; set; }
     }
 }
