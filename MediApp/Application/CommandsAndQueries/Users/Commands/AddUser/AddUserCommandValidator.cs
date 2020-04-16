@@ -186,13 +186,14 @@ namespace Application.CommandsAndQueries
                 .ThenInclude(x => x.Country)
                 .Where(x => x.Id == cityId 
                             && x.County.Id == user.CountyId 
-                            && x.County.Country.Id == user.CountryId)
+                            && x.County.Country.Id == user.CountryId
+                            && !x.Deleted)
                 .Any();
         }
 
         private async Task<bool> IsGenderValid(short genderId, CancellationToken cancellationToken)
         {
-            return await _context.Genders.AnyAsync(x => x.Id == genderId, cancellationToken);
+            return await _context.Genders.AnyAsync(x => x.Id == genderId && !x.Deleted, cancellationToken);
         }
     }
 }

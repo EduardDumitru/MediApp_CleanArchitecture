@@ -24,7 +24,7 @@ namespace Application.CommandsAndQueries
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("CNP is required.")
                 .Length(13).WithMessage("CNP must have 13 digits")
-                .Matches("^[0-9]*$")
+                .Matches("^[0-9]*$").WithMessage("CNP must be only digits")
                 .Must(BeUniqueCNP).WithMessage("The specified CNP already exists")
                 .MustAsync(IsCNPValid).WithMessage("The specified CNP is not valid");
 
@@ -32,7 +32,7 @@ namespace Application.CommandsAndQueries
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("Phone number is required.")
                 .Length(10).WithMessage("Phone number must have 10 digits")
-                .Matches("^07[0-9]*$").WithMessage("Phone number is not valid")
+                .Matches("^07[0-9]*$").WithMessage("Phone number must be only digits and start with 07")
                 .Must(BeUniquePhoneNumber).WithMessage("Phone number already exists");
 
             RuleFor(x => x.FirstName)
@@ -68,7 +68,7 @@ namespace Application.CommandsAndQueries
         private bool BeUniqueCNP(UpdateUserProfileCommand userProfile, string cnp)
         {
             return _context.UserProfiles.Where(x => x.Id != userProfile.Id)
-                .All(x => x.CNP != cnp);
+                .All(x => x.CNP != cnp && !x.Deleted);
         }
 
         private async Task<bool> IsCNPValid(string cnp, CancellationToken cancellationToken)
@@ -154,7 +154,7 @@ namespace Application.CommandsAndQueries
         private bool BeUniquePhoneNumber(UpdateUserProfileCommand userProfile, string phoneNumber)
         {
             return _context.UserProfiles.Where(x => x.Id != userProfile.Id)
-                .All(x => x.PhoneNumber != phoneNumber);
+                .All(x => x.PhoneNumber != phoneNumber && !x.Deleted);
         }
 
         private bool IsCityMappedCorrectly(UpdateUserProfileCommand user, int cityId)
@@ -164,13 +164,14 @@ namespace Application.CommandsAndQueries
                 .ThenInclude(x => x.Country)
                 .Where(x => x.Id == cityId
                             && x.County.Id == user.CountyId
-                            && x.County.Country.Id == user.CountryId)
+                            && x.County.Country.Id == user.CountryId
+                            && !x.Deleted)
                 .Any();
         }
 
         private async Task<bool> IsGenderValid(short genderId, CancellationToken cancellationToken)
         {
-            return await _context.Genders.AnyAsync(x => x.Id == genderId, cancellationToken);
+            return await _context.Genders.AnyAsync(x => x.Id == genderId && !x.Deleted, cancellationToken);
         }
     }
 }

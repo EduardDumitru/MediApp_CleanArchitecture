@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using FluentValidation;
+using FluentValidation.Results;
 using ValidationException = Application.Common.Exceptions.ValidationException;
 
 namespace Application.Common.Behaviours
@@ -20,23 +21,29 @@ namespace Application.Common.Behaviours
             _validators = validators;
         }
 
-        public Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken,
+        public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken,
             RequestHandlerDelegate<TResponse> next)
         {
             var context = new ValidationContext(request);
 
-            var failures = _validators
-                .Select(v => v.Validate(context))
-                .SelectMany(result => result.Errors)
-                .Where(f => f != null)
-                .ToList();
+            var validators = _validators
+                .Select(v => v.ValidateAsync(context, cancellationToken)).ToList();
+            var failures = new List<ValidationFailure>();
+            foreach (var validator in validators)
+            {
+                var validationResult = await validator;
+                if (validationResult.Errors.Any())
+                {
+                    failures.AddRange(validationResult.Errors);
+                }
+            }
 
             if (failures.Count != 0)
             {
                 throw new ValidationException(failures);
             }
 
-            return next();
+            return await next();
         }
     }
 }

@@ -7,24 +7,16 @@ using Application.Common.Interfaces;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.CommandsAndQueries.Cities.Commands.UpdateCity
+namespace Application.CommandsAndQueries
 {
-    public class UpdateCityCommandValidator : AbstractValidator<UpdateCityCommand>
+    public class GetCityByCountyDropdownQueryValidator : AbstractValidator<GetCityByCountyDropdownQuery>
     {
         private readonly IApplicationDbContext _context;
-
-        public UpdateCityCommandValidator(IApplicationDbContext context)
+        public GetCityByCountyDropdownQueryValidator(IApplicationDbContext context)
         {
             _context = context;
-            RuleFor(x => x.Id)
-                .Cascade(CascadeMode.StopOnFirstFailure)
-                .NotEmpty().WithMessage("Id is required");
-            RuleFor(x => x.Name)
-                .Cascade(CascadeMode.StopOnFirstFailure)
-                .NotEmpty().WithMessage("Name is required");
             RuleFor(x => x.CountyId)
-                .Cascade(CascadeMode.StopOnFirstFailure)
-                .NotEmpty().WithMessage("County is required")
+                .NotEmpty().WithMessage("Id is required")
                 .MustAsync(ExistsCounty).WithMessage("County is not valid");
         }
 

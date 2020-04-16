@@ -12,6 +12,8 @@ namespace Infrastructure.Persistence.Configurations
         public void Configure(EntityTypeBuilder<Clinic> builder)
         {
             builder.ToTable(nameof(Clinic));
+            builder.Property(x => x.Name)
+                .IsRequired();
             builder.Property(x => x.PhoneNumber)
                 .IsRequired();
             builder.Property(x => x.Email)
