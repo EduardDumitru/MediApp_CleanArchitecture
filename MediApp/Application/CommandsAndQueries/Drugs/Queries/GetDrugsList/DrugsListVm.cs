@@ -4,7 +4,8 @@ using System.Text;
 
 namespace Application.CommandsAndQueries
 {
-    class RestorDiagnosisCommandValidator
+    public class DrugsListVm
     {
+        public IList<DrugsLookupDto> Drugs { get; set; }
     }
 }

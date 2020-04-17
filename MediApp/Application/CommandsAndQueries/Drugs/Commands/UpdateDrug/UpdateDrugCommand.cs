@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
@@ -10,36 +8,36 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.CommandsAndQueries
 {
-    public class UpdateDiagnosisCommand : IRequest<Result>
+    public class UpdateDrugCommand : IRequest<Result>
     {
         public int Id { get; set; }
         public string Name { get; set; }
     }
 
-    public class UpdateDiagnosisCommandHandler : IRequestHandler<UpdateDiagnosisCommand, Result>
+    public class UpdateDrugCommandHandler : IRequestHandler<UpdateDrugCommand, Result>
     {
         private readonly IApplicationDbContext _context;
 
-        public UpdateDiagnosisCommandHandler(IApplicationDbContext context)
+        public UpdateDrugCommandHandler(IApplicationDbContext context)
         {
             _context = context;
         }
 
-        public async Task<Result> Handle(UpdateDiagnosisCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(UpdateDrugCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _context.Diagnoses
+            var entity = await _context.Drugs
                 .FirstOrDefaultAsync(x => x.Id == request.Id && !x.Deleted, cancellationToken);
 
             if (entity == null)
             {
-                return Result.Failure(new List<string> {"No valid diagnosis found"});
+                return Result.Failure(new List<string> {"No valid drug found"});
             }
 
             entity.Name = request.Name;
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return Result.Success("Diagnosis update was successful");
+            return Result.Success("Drug update was successful");
         }
     }
 }

@@ -10,12 +10,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.CommandsAndQueries.Diagnoses
 {
-    public class RestorDiagnosisCommand : IRequest<Result>
+    public class RestoreDiagnosisCommand : IRequest<Result>
     {
-        public short Id { get; set; }
+        public int Id { get; set; }
     }
 
-    public class RestorDiagnosisCommandHandler : IRequestHandler<RestorDiagnosisCommand, Result>
+    public class RestorDiagnosisCommandHandler : IRequestHandler<RestoreDiagnosisCommand, Result>
     {
         private readonly IApplicationDbContext _context;
 
@@ -24,7 +24,7 @@ namespace Application.CommandsAndQueries.Diagnoses
             _context = context;
         }
 
-        public async Task<Result> Handle(RestorDiagnosisCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(RestoreDiagnosisCommand request, CancellationToken cancellationToken)
         {
             var entity = await _context.Diagnoses
                 .FirstOrDefaultAsync(x => x.Id == request.Id && x.Deleted, cancellationToken);

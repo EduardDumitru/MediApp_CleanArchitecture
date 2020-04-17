@@ -6,9 +6,8 @@ using Domain.Entities;
 
 namespace Application.CommandsAndQueries
 {
-    public class DiagnosesLookupDto : IMapFrom<Diagnosis>
+    public class DrugDetailsVm : IMapFrom<Drug>
     {
-        public int Id { get; set; }
         public string Name { get; set; }
         public bool? Deleted { get; set; }
     }

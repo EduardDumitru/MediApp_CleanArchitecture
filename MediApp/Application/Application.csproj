@@ -24,4 +24,11 @@
     <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="CommandsAndQueries\EmployeeType\Commands\" />
+    <Folder Include="CommandsAndQueries\EmployeeType\Queries\" />
+    <Folder Include="CommandsAndQueries\MedicalCheckType\Commands\" />
+    <Folder Include="CommandsAndQueries\MedicalCheckType\Queries\GetMedicalCheckTypeDetails\" />
+  </ItemGroup>
+
 </Project>

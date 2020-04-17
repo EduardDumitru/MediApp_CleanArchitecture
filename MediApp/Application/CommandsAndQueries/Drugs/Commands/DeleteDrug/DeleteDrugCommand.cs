@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
@@ -10,26 +8,26 @@ using Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.CommandsAndQueries
+namespace Application.CommandsAndQueries.Drugs.Commands.DeleteDrug
 {
-    public class DeleteDiagnosisCommand : IRequest<Result>
+    public class DeleteDrugCommand : IRequest<Result>
     {
         public int Id { get; set; }
     }
 
-    public class DeleteDiagnosisCommandHandler : IRequestHandler<DeleteDiagnosisCommand, Result>
+    public class DeleteDrugCommandHandler : IRequestHandler<DeleteDrugCommand, Result>
     {
         private readonly IApplicationDbContext _context;
 
-        public DeleteDiagnosisCommandHandler(IApplicationDbContext context)
+        public DeleteDrugCommandHandler(IApplicationDbContext context)
         {
             _context = context;
         }
 
-        public async Task<Result> Handle(DeleteDiagnosisCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(DeleteDrugCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _context.Diagnoses
-                .Include(x => x.MedicalChecks)
+            var entity = await _context.Drugs
+                .Include(x => x.PrescriptionXDrugs)
                 .Include(x => x.DiagnosisXDrugs)
                 .FirstOrDefaultAsync(x => x.Id == request.Id && !x.Deleted, cancellationToken);
 
@@ -38,32 +36,33 @@ namespace Application.CommandsAndQueries
             {
                 return validationResult;
             }
+
             entity.Deleted = true;
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return Result.Success("Diagnosis was deleted");
+            return Result.Success("Drug was deleted");
         }
 
-        private Result Validations(Diagnosis entity)
+        private Result Validations(Drug entity)
         {
             if (entity == null)
             {
-                return Result.Failure(new List<string> {"No valid diagnosis found"});
+                return Result.Failure(new List<string> {"No valid drug found"});
             }
 
-            var isUsedInMedicalCheck = entity.MedicalChecks.Any(x => !x.Deleted);
+            var isUsedInPrescriptionXDrugs = entity.PrescriptionXDrugs.Any(x => !x.Deleted);
 
-            if (isUsedInMedicalCheck)
+            if (isUsedInPrescriptionXDrugs)
             {
-                return Result.Failure(new List<string> {"Diagnosis is used in medical checks. You can't delete it"});
+                return Result.Failure(new List<string> {"Drug is linked to prescriptions. You can't delete it"});
             }
 
             var isUsedInDiagnosisXDrugs = entity.DiagnosisXDrugs.Any(x => !x.Deleted);
 
             if (isUsedInDiagnosisXDrugs)
             {
-                return Result.Failure(new List<string> {"Diagnosis is linked to drugs. You can't delete it"});
+                return Result.Failure(new List<string> {"Drug is linked to diagnoses. You can't delete it"});
             }
 
             return Result.Success();
