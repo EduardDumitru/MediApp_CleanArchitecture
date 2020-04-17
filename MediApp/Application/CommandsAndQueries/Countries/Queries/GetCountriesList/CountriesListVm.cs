@@ -6,7 +6,7 @@ using Domain.Entities;
 
 namespace Application.CommandsAndQueries
 {
-    public class CountriesListVm : IMapFrom<Country> 
+    public class CountriesListVm
     { 
         public IList<CountriesLookupDto> Countries { get; set; }
     }

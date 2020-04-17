@@ -8,7 +8,7 @@ using Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.CommandsAndQueries.Drugs.Commands.DeleteDrug
+namespace Application.CommandsAndQueries
 {
     public class DeleteDrugCommand : IRequest<Result>
     {

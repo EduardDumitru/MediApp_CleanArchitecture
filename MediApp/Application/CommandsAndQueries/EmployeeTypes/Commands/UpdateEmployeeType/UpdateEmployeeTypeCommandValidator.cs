@@ -4,11 +4,11 @@ using FluentValidation;
 
 namespace Application.CommandsAndQueries
 {
-    public class UpdateDrugCommandValidator : AbstractValidator<UpdateDrugCommand>
+    public class UpdateEmployeeTypeCommandValidator : AbstractValidator<UpdateEmployeeTypeCommand>
     {
         private readonly IApplicationDbContext _context;
 
-        public UpdateDrugCommandValidator(IApplicationDbContext context)
+        public UpdateEmployeeTypeCommandValidator(IApplicationDbContext context)
         {
             _context = context;
             RuleFor(x => x.Id)
@@ -17,13 +17,13 @@ namespace Application.CommandsAndQueries
             RuleFor(x => x.Name)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("Name is required")
-                .Must(BeUniqueDrug).WithMessage("Name already exists");
+                .Must(BeUniqueEmployeeType).WithMessage("Name already exists");
         }
 
-        private bool BeUniqueDrug(UpdateDrugCommand updateDrugCommand, string name)
+        private bool BeUniqueEmployeeType(UpdateEmployeeTypeCommand updateEmployeeTypeCommand, string name)
         {
-            return _context.Drugs
-                .Where(x => x.Id != updateDrugCommand.Id)
+            return _context.EmployeeTypes
+                .Where(x => x.Id != updateEmployeeTypeCommand.Id)
                 .All(x => x.Name != name);
         }
     }

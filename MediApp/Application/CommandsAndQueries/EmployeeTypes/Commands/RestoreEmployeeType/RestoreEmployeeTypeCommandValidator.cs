@@ -2,9 +2,9 @@
 
 namespace Application.CommandsAndQueries
 {
-    public class DeleteDrugCommandValidator : AbstractValidator<DeleteDrugCommand>
+    public class RestoreEmployeeTypeCommandValidator : AbstractValidator<RestoreEmployeeTypeCommand>
     {
-        public DeleteDrugCommandValidator()
+        public RestoreEmployeeTypeCommandValidator()
         {
             RuleFor(x => x.Id)
                 .NotEmpty().WithMessage("Id is required");
