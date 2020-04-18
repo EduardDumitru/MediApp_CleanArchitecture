@@ -45,5 +45,15 @@ namespace Domain.Entities
         public ICollection<MedicalCheck> MedicalChecks { get; private set; }
         public ICollection<Employee> Employees { get; private set; }
         public ICollection<Prescription> Prescriptions { get; private set; }
+
+        public string GetFullName()
+        {
+            if (string.IsNullOrWhiteSpace(MiddleName))
+            {
+                return FirstName + " " + LastName;
+            }
+
+            return FirstName + " " + MiddleName + " " + LastName;
+        }
     }
 }
