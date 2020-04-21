@@ -49,7 +49,7 @@ namespace Application.CommandsAndQueries
 
         private async Task<bool> ValidTimeSpan(TimeSpan interval, CancellationToken cancellationToken)
         {
-            return await Task.FromResult(interval != default);
+            return await Task.FromResult(interval.Ticks > default(TimeSpan).Ticks);
         }
     }
 }
