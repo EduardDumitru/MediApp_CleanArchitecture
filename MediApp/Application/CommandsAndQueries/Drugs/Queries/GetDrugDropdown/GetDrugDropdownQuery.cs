@@ -9,7 +9,7 @@ using Application.Common.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.CommandsAndQueries.Drugs
+namespace Application.CommandsAndQueries
 {
     public class GetDrugDropdownQuery : IRequest<SelectItemVm>
     {

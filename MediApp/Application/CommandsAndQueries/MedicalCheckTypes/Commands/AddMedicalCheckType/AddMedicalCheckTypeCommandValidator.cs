@@ -1,6 +1,9 @@
 ﻿using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Application.Common.Interfaces;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.CommandsAndQueries
 {
@@ -14,12 +17,12 @@ namespace Application.CommandsAndQueries
             RuleFor(x => x.Name)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("Name is required")
-                .Must(BeUniqueMedicalCheckType).WithMessage("Name already exists");
+                .MustAsync(BeUniqueMedicalCheckType).WithMessage("Name already exists");
         }
 
-        private bool BeUniqueMedicalCheckType(AddMedicalCheckTypeCommand addMedicalCheckTypeCommand, string name)
+        private async Task<bool> BeUniqueMedicalCheckType(string name, CancellationToken cancellationToken)
         {
-            return _context.MedicalCheckTypes.All(x => x.Name != name);
+            return await _context.MedicalCheckTypes.AllAsync(x => x.Name != name, cancellationToken);
         }
     }
 }
