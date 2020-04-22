@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
 using AutoMapper;
@@ -10,6 +11,7 @@ namespace Application.CommandsAndQueries
 {
     public class GetDrugsByPrescriptionListQuery : IRequest<PrescriptionXDrugsListVm>
     {
+        public long PrescriptionId { get; set; }
     }
 
     public class GetDrugsByPrescriptionListQueryHandler : IRequestHandler<GetDrugsByPrescriptionListQuery,
@@ -28,6 +30,7 @@ namespace Application.CommandsAndQueries
             CancellationToken cancellationToken)
         {
             var prescriptionXDrugs = await _context.PrescriptionXDrugs
+                .Where(x => x.PrescriptionId == request.PrescriptionId)
                 .Include(x => x.Drug)
                 .ProjectTo<PrescriptionXDrugsLookupDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);

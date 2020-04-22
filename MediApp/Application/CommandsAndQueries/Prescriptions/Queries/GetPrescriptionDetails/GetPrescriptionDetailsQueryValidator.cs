@@ -2,9 +2,9 @@
 
 namespace Application.CommandsAndQueries
 {
-    public class DeleteHolidayIntervalCommandValidator : AbstractValidator<DeleteHolidayIntervalCommand>
+    public class GetPrescriptionDetailsQueryValidator : AbstractValidator<GetPrescriptionDetailsQuery>
     {
-        public DeleteHolidayIntervalCommandValidator()
+        public GetPrescriptionDetailsQueryValidator()
         {
             RuleFor(x => x.Id)
                 .NotEmpty().WithMessage("Id is required");

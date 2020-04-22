@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Application.Common.Interfaces
 {
@@ -28,5 +29,6 @@ namespace Application.Common.Interfaces
         public DbSet<PrescriptionXDrug> PrescriptionXDrugs { get; set; }
         public DbSet<UserProfile> UserProfiles { get; set; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
+        public DatabaseFacade Database { get; }
     }
 }
