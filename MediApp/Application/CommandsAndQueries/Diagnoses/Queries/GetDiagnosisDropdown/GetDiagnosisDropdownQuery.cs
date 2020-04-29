@@ -11,11 +11,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.CommandsAndQueries
 {
-    public class GetDiagnoseDropdownQuery : IRequest<SelectItemVm>
+    public class GetDiagnosisDropdownQuery : IRequest<SelectItemVm>
     {
     }
 
-    public class GetDiagnoseDropdownQueryHandler : IRequestHandler<GetDiagnoseDropdownQuery, SelectItemVm>
+    public class GetDiagnoseDropdownQueryHandler : IRequestHandler<GetDiagnosisDropdownQuery, SelectItemVm>
     {
         private readonly IApplicationDbContext _context;
 
@@ -24,7 +24,7 @@ namespace Application.CommandsAndQueries
             _context = context;
         }
 
-        public async Task<SelectItemVm> Handle(GetDiagnoseDropdownQuery request, CancellationToken cancellationToken)
+        public async Task<SelectItemVm> Handle(GetDiagnosisDropdownQuery request, CancellationToken cancellationToken)
         {
             var vm = new SelectItemVm
             {
