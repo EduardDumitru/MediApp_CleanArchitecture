@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.CommandsAndQueries
 {
-    public class GetEmployeePrescriptionsListQueryValidator : AbstractValidator<GetEmployeePrescriptionsListQuery>
+    public class GetEmployeeMedicalChecksListQueryValidator : AbstractValidator<GetEmployeeMedicalChecksListQuery>
     {
         private readonly IApplicationDbContext _context;
 
-        public GetEmployeePrescriptionsListQueryValidator(IApplicationDbContext context)
+        public GetEmployeeMedicalChecksListQueryValidator(IApplicationDbContext context)
         {
             _context = context;
             RuleFor(x => x.EmployeeId)

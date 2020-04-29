@@ -11,7 +11,7 @@ namespace MediApp.Controllers
     public class PrescriptionController : ApiController
     {
         [HttpGet("{id}")]
-        public async Task<ActionResult<PrescriptionDetailsVm>> GetUserProfile(long id)
+        public async Task<ActionResult<PrescriptionDetailsVm>> GetPrescription(long id)
         {
             var vm = await Mediator.Send(new GetPrescriptionDetailsQuery() {Id = id});
 
