@@ -48,6 +48,8 @@ namespace Application.CommandsAndQueries
 
         private Result Validations(Gender entity)
         {
+            var errors = new List<string>();
+
             if (entity == null)
             {
                 return Result.Failure(new List<string> {"No valid gender found"});
@@ -57,10 +59,10 @@ namespace Application.CommandsAndQueries
 
             if (isUsedInUserProfile)
             {
-                return Result.Failure(new List<string> {"Gender is used in user profile. You can't delete it"});
+                errors.Add("Gender is used in user profile. You can't delete it while in use.");
             }
 
-            return Result.Success();
+            return errors.Any() ? Result.Failure(errors) : Result.Success();
         }
     }
 }

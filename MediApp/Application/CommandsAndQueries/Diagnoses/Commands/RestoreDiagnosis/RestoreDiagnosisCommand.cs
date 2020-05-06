@@ -15,11 +15,11 @@ namespace Application.CommandsAndQueries.Diagnoses
         public int Id { get; set; }
     }
 
-    public class RestorDiagnosisCommandHandler : IRequestHandler<RestoreDiagnosisCommand, Result>
+    public class RestoreDiagnosisCommandHandler : IRequestHandler<RestoreDiagnosisCommand, Result>
     {
         private readonly IApplicationDbContext _context;
 
-        public RestorDiagnosisCommandHandler(IApplicationDbContext context)
+        public RestoreDiagnosisCommandHandler(IApplicationDbContext context)
         {
             _context = context;
         }

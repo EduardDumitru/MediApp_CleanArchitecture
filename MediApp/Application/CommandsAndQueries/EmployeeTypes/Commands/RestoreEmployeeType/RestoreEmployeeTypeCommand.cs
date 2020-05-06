@@ -26,7 +26,6 @@ namespace Application.CommandsAndQueries
         {
             var entity = await _context.EmployeeTypes
                 .FirstOrDefaultAsync(x => x.Id == request.Id && x.Deleted, cancellationToken);
-            ;
 
             if (entity == null)
             {

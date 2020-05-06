@@ -46,6 +46,8 @@ namespace Application.CommandsAndQueries
 
         private Result Validations(Prescription entity)
         {
+            var errors = new List<string>();
+
             if (entity == null)
             {
                 return Result.Failure(new List<string> {"No valid prescription found"});
@@ -55,11 +57,11 @@ namespace Application.CommandsAndQueries
 
             if (isUsedInPrescriptionXDrugs)
             {
-                return Result.Failure(new List<string>
-                    {"Prescription is used in the link between this Prescription and Drugs. You must delete the links first."});
+                errors.Add("Prescription is used in the link between this Prescription and Drugs. " +
+                           "You must delete the links first.");
             }
 
-            return Result.Success();
+            return errors.Any() ? Result.Failure(errors) : Result.Success();
         }
     }
 }

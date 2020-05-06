@@ -46,6 +46,8 @@ namespace Application.CommandsAndQueries
 
         private Result Validations(MedicalCheckType entity)
         {
+            var errors = new List<string>();
+
             if (entity == null)
             {
                 return Result.Failure(new List<string> {"No valid medical check type found"});
@@ -55,17 +57,17 @@ namespace Application.CommandsAndQueries
 
             if (isUsedInEmployees)
             {
-                return Result.Failure(new List<string> {"Medical check type is used in employees. You can't delete it"});
+                errors.Add("Medical check type is used in employees. You can't delete it while in use.");
             }
 
             var isUsedInMedicalChecks = entity.MedicalChecks.Any(x => !x.Deleted);
 
             if (isUsedInMedicalChecks)
             {
-                return Result.Failure(new List<string> {"Medical check type is used in medical checks. You can't delete it"});
+                errors.Add("Medical check type is used in medical checks. You can't delete it while in use.");
             }
 
-            return Result.Success();
+            return errors.Any() ? Result.Failure(errors) : Result.Success();
         }
     }
 }

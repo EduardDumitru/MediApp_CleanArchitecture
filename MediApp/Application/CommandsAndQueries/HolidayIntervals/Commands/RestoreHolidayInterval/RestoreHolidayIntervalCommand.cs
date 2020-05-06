@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
@@ -28,6 +29,7 @@ namespace Application.CommandsAndQueries
         public async Task<Result> Handle(RestoreHolidayIntervalCommand request, CancellationToken cancellationToken)
         {
             var entity = await _context.HolidayIntervals
+                .Include(x => x.Employee)
                 .FirstOrDefaultAsync(x => x.Id == request.Id && x.Deleted, cancellationToken);
 
             var validationResult = Validations(entity);
@@ -47,6 +49,8 @@ namespace Application.CommandsAndQueries
 
         private Result Validations(HolidayInterval entity)
         {
+            var errors = new List<string>();
+
             if (entity == null)
             {
                 return Result.Failure(new List<string> {"No valid holiday interval found"});
@@ -58,10 +62,15 @@ namespace Application.CommandsAndQueries
 
             if (isInPast)
             {
-                return Result.Failure(new List<string> {"Holiday interval is in past. You can't restore it!"});
+                errors.Add("Holiday interval is in past. You can't restore it!");
             }
 
-            return Result.Success();
+            if (entity.Employee == null || entity.Employee != null && entity.Employee.Deleted)
+            {
+                errors.Add("Employee is deleted. You must update that first.");
+            }
+
+            return errors.Any() ? Result.Failure(errors) : Result.Success();
         }
     }
 }

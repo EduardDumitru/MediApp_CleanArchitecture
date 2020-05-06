@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MediApp.Controllers
 {
-    [Produces("application/json")]
     public class UserController : ApiController
     {
         [HttpPost("adduser")]

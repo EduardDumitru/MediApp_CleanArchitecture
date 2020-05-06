@@ -48,6 +48,7 @@ namespace Application.CommandsAndQueries
 
         private Result Validations(Clinic entity)
         {
+            var errors = new List<string>();
             if (entity == null)
             {
                 return Result.Failure(new List<string> {"No valid clinic found"});
@@ -57,17 +58,17 @@ namespace Application.CommandsAndQueries
 
             if (isUsedInEmployee)
             {
-                return Result.Failure(new List<string> {"Clinic is used in employees. You can't delete it"});
+                errors.Add("Clinic is used in employees. You can't delete it while in use.");
             }
 
             var isUsedInMedicalCheck = entity.MedicalChecks.Any(x => !x.Deleted);
 
             if (isUsedInMedicalCheck)
             {
-                return Result.Failure(new List<string> {"Clinic is used in medical checks. You can't delete it"});
+                errors.Add("Clinic is used in medical checks. You can't delete it while in use.");
             }
 
-            return Result.Success();
+            return errors.Any() ? Result.Failure(errors) : Result.Success();
         }
     }
 }

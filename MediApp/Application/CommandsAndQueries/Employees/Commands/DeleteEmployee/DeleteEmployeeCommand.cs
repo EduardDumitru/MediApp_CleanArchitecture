@@ -47,6 +47,8 @@ namespace Application.CommandsAndQueries
 
         private Result Validations(Employee entity)
         {
+            var errors = new List<string>();
+
             if (entity == null)
             {
                 return Result.Failure(new List<string> {"No valid employee found"});
@@ -56,26 +58,24 @@ namespace Application.CommandsAndQueries
 
             if (isUsedInHolidayIntervals)
             {
-                return Result.Failure(new List<string> {"Employee is used in holiday intervals. You can't delete it"});
+                errors.Add("Employee is used in holiday intervals. You can't delete it while in use.");
             }
 
             var isUsedInMedicalChecks = entity.MedicalChecks.Any(x => !x.Deleted);
 
             if (isUsedInMedicalChecks)
             {
-                return Result.Failure(new List<string>
-                    {"Employee is used in medical checks. You can't delete it"});
+                errors.Add("Employee is used in medical checks. You can't delete it while in use.");
             }
 
             var isUsedInPrescriptions = entity.Prescriptions.Any(x => !x.Deleted);
 
             if (isUsedInPrescriptions)
             {
-                return Result.Failure(new List<string>
-                    {"Employee is used in prescriptions. You can't delete it"});
+                errors.Add("Employee is used in prescriptions. You can't delete it while in use.");
             }
 
-            return Result.Success();
+            return errors.Any() ? Result.Failure(errors) : Result.Success();
         }
     }
 }

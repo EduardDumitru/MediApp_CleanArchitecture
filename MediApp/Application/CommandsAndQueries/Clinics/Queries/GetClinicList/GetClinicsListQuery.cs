@@ -11,22 +11,22 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.CommandsAndQueries
 {
-    public class GetClinicListQuery : IRequest<ClinicsListVm>
+    public class GetClinicsListQuery : IRequest<ClinicsListVm>
     {
     }
 
-    public class GetClinicListQueryHandler : IRequestHandler<GetClinicListQuery, ClinicsListVm>
+    public class GetClinicsListQueryHandler : IRequestHandler<GetClinicsListQuery, ClinicsListVm>
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
 
-        public GetClinicListQueryHandler(IApplicationDbContext context, IMapper mapper)
+        public GetClinicsListQueryHandler(IApplicationDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
         }
 
-        public async Task<ClinicsListVm> Handle(GetClinicListQuery request, CancellationToken cancellationToken)
+        public async Task<ClinicsListVm> Handle(GetClinicsListQuery request, CancellationToken cancellationToken)
         {
             var clinics = await _context.Clinics
                 .Include(x => x.Country)

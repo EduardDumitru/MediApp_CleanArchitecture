@@ -10,6 +10,7 @@ namespace MediApp.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Produces("application/json")]
     public abstract class ApiController : ControllerBase
     {
         private IMediator _mediator;

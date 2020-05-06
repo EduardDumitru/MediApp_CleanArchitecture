@@ -47,6 +47,8 @@ namespace Application.CommandsAndQueries
 
         private Result Validations(Diagnosis entity)
         {
+            var errors = new List<string>();
+
             if (entity == null)
             {
                 return Result.Failure(new List<string> {"No valid diagnosis found"});
@@ -56,17 +58,17 @@ namespace Application.CommandsAndQueries
 
             if (isUsedInMedicalCheck)
             {
-                return Result.Failure(new List<string> {"Diagnosis is used in medical checks. You can't delete it"});
+                errors.Add("Diagnosis is used in medical checks. You can't delete it while in use.");
             }
 
             var isUsedInDiagnosisXDrugs = entity.DiagnosisXDrugs.Any(x => !x.Deleted);
 
             if (isUsedInDiagnosisXDrugs)
             {
-                return Result.Failure(new List<string> {"Diagnosis is linked to drugs. You can't delete it"});
+                errors.Add("Diagnosis is linked to drugs. You can't delete it while in use.");
             }
 
-            return Result.Success();
+            return errors.Any() ? Result.Failure(errors) : Result.Success();
         }
     }
 }

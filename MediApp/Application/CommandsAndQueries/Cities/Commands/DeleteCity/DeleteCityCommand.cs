@@ -48,6 +48,8 @@ namespace Application.CommandsAndQueries
 
         private Result Validations(City entity)
         {
+            var errors = new List<string>();
+
             if (entity == null)
             {
                 return Result.Failure(new List<string> {"No valid city found"});
@@ -57,17 +59,17 @@ namespace Application.CommandsAndQueries
 
             if (isUsedInUserProfile)
             {
-                return Result.Failure(new List<string> {"City is used in user profiles. You can't delete it"});
+                errors.Add("City is used in user profiles. You can't delete it while in use.");
             }
 
             var isUsedInClinic = entity.Clinics.Any(x => !x.Deleted);
 
             if (isUsedInClinic)
             {
-                return Result.Failure(new List<string> {"City is used in clinics. You can't delete it"});
+                errors.Add("City is used in clinics. You can't delete it while in use.");
             }
 
-            return Result.Success();
+            return errors.Any() ? Result.Failure(errors) : Result.Success();
         }
     }
 }

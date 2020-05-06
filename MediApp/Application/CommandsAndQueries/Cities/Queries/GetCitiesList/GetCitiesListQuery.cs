@@ -11,22 +11,22 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.CommandsAndQueries
 {
-    public class GetCitiesQuery : IRequest<CitiesListVm>
+    public class GetCitiesListQuery : IRequest<CitiesListVm>
     {
     }
 
-    public class GetCitiesQueryHandler : IRequestHandler<GetCitiesQuery, CitiesListVm>
+    public class GetCitiesListQueryHandler : IRequestHandler<GetCitiesListQuery, CitiesListVm>
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
 
-        public GetCitiesQueryHandler(IApplicationDbContext context, IMapper mapper)
+        public GetCitiesListQueryHandler(IApplicationDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
         }
 
-        public async Task<CitiesListVm> Handle(GetCitiesQuery request, CancellationToken cancellationToken)
+        public async Task<CitiesListVm> Handle(GetCitiesListQuery request, CancellationToken cancellationToken)
         {
             var cities = await _context.Cities
                 .Include(x => x.County)

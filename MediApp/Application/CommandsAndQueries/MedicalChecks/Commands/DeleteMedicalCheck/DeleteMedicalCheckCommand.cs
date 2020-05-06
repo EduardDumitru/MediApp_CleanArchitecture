@@ -45,6 +45,8 @@ namespace Application.CommandsAndQueries
 
         private Result Validations(MedicalCheck entity)
         {
+            var errors = new List<string>();
+
             if (entity == null)
             {
                 return Result.Failure(new List<string> {"No valid medical check found"});
@@ -54,13 +56,10 @@ namespace Application.CommandsAndQueries
 
             if (isUsedInPrescriptions)
             {
-                return Result.Failure(new List<string>
-                {
-                    "Medical Check is used in the link with Prescriptions. You must delete the links first."
-                });
+                errors.Add("Medical Check is used in the link with Prescriptions. You must delete the links first.");
             }
 
-            return Result.Success();
+            return errors.Any() ? Result.Failure(errors) : Result.Success();
         }
     }
 }

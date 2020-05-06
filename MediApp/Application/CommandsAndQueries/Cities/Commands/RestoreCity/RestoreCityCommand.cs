@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
 using Application.Common.Models;
+using Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,12 +29,13 @@ namespace Application.CommandsAndQueries
         public async Task<Result> Handle(RestoreCityCommand request, CancellationToken cancellationToken)
         {
             var entity = await _context.Cities
+                .Include(x => x.County)
                 .FirstOrDefaultAsync(x => x.Id == request.Id && x.Deleted, cancellationToken);
-            ;
 
-            if (entity == null)
+            var validationResult = Validations(entity);
+            if (!validationResult.Succeeded)
             {
-                return Result.Failure(new List<string> {"No valid city found"});
+                return validationResult;
             }
 
             entity.Deleted = false;
@@ -42,6 +45,23 @@ namespace Application.CommandsAndQueries
             await _context.SaveChangesAsync(cancellationToken);
 
             return Result.Success("City was restored");
+        }
+
+        private Result Validations(City entity)
+        {
+            var errors = new List<string>();
+
+            if (entity == null)
+            {
+                return Result.Failure(new List<string> {"No valid city found"});
+            }
+
+            if (entity.County == null || entity.County != null && entity.County.Deleted)
+            {
+                errors.Add("County is deleted. You must update that first.");
+            }
+
+            return errors.Any() ? Result.Failure(errors) : Result.Success();
         }
     }
 }

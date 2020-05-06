@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MediApp.Controllers
 {
-    [Produces("application/json")]
     [Authorize]
     public class UserProfileController : ApiController
     {

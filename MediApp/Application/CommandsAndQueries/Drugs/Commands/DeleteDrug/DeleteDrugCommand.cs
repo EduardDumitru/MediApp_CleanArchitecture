@@ -46,6 +46,8 @@ namespace Application.CommandsAndQueries
 
         private Result Validations(Drug entity)
         {
+            var errors = new List<string>();
+
             if (entity == null)
             {
                 return Result.Failure(new List<string> {"No valid drug found"});
@@ -55,17 +57,17 @@ namespace Application.CommandsAndQueries
 
             if (isUsedInPrescriptionXDrugs)
             {
-                return Result.Failure(new List<string> {"Drug is linked to prescriptions. You can't delete it"});
+                errors.Add("Drug is linked to prescriptions. You can't delete it while in use.");
             }
 
             var isUsedInDiagnosisXDrugs = entity.DiagnosisXDrugs.Any(x => !x.Deleted);
 
             if (isUsedInDiagnosisXDrugs)
             {
-                return Result.Failure(new List<string> {"Drug is linked to diagnoses. You can't delete it"});
+                errors.Add("Drug is linked to diagnoses. You can't delete it while in use.");
             }
 
-            return Result.Success();
+            return errors.Any() ? Result.Failure(errors) : Result.Success();
         }
     }
 }

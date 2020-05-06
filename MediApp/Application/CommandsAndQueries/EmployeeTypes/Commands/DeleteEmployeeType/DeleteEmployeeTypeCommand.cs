@@ -44,6 +44,8 @@ namespace Application.CommandsAndQueries
 
         private Result Validations(EmployeeType entity)
         {
+            var errors = new List<string>();
+
             if (entity == null)
             {
                 return Result.Failure(new List<string> {"No valid employee type found"});
@@ -53,10 +55,10 @@ namespace Application.CommandsAndQueries
 
             if (isUsedInEmployee)
             {
-                return Result.Failure(new List<string> {"Employee type is used in employees. You can't delete it"});
+                errors.Add("Employee type is used in employees. You can't delete it while in use.");
             }
 
-            return Result.Success();
+            return errors.Any() ? Result.Failure(errors) : Result.Success();
         }
     }
 }
