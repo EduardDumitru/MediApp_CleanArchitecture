@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.CommandsAndQueries
 {
-    public class DeleteEmployeeTypeCommand: IRequest<Result>
+    public class DeleteEmployeeTypeCommand : IRequest<Result>
     {
         public short Id { get; set; }
     }

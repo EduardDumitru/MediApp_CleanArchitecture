@@ -1,4 +1,5 @@
-﻿using Application.Common.Mappings;
+﻿using System;
+using Application.Common.Mappings;
 using AutoMapper;
 using Domain.Entities;
 
@@ -9,6 +10,8 @@ namespace Application.CommandsAndQueries
         public long Id { get; set; }
         public string Name { get; set; }
         public string EmployeeName { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
         public bool? Deleted { get; set; }
 
         public void Mapping(Profile profile)
