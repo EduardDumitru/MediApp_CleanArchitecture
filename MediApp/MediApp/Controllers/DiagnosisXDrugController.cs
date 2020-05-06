@@ -54,7 +54,7 @@ namespace MediApp.Controllers
             return Ok(result);
         }
 
-        [HttpPut]
+        [HttpPut("restore")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> RestoreDiagnosisXDrug([FromBody] RestoreDiagnosisXDrugCommand command)
         {

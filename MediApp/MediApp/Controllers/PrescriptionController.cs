@@ -24,7 +24,7 @@ namespace MediApp.Controllers
         }
 
         [HttpGet("employeeprescriptions/{employeeId}")]
-        [Authorize(Roles = "Admin Doctor Nurse")]
+        [Authorize(Roles = "Admin, Doctor, Nurse")]
         public async Task<ActionResult<EmployeePrescriptionsListVm>> GetEmployeePrescriptions(long employeeId)
         {
             var vm = await Mediator.Send(new GetEmployeePrescriptionsListQuery() {EmployeeId = employeeId});
@@ -41,7 +41,7 @@ namespace MediApp.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin Doctor Nurse")]
+        [Authorize(Roles = "Admin, Doctor, Nurse")]
         public async Task<IActionResult> AddPrescription([FromBody] AddPrescriptionCommand command)
         {
             var result = await Mediator.Send(command);
@@ -55,7 +55,7 @@ namespace MediApp.Controllers
         }
 
         [HttpDelete]
-        [Authorize(Roles = "Admin Doctor Nurse")]
+        [Authorize(Roles = "Admin, Doctor, Nurse")]
         public async Task<IActionResult> DeletePrescription([FromBody] DeletePrescriptionCommand command)
         {
             var result = await Mediator.Send(command);
@@ -69,7 +69,7 @@ namespace MediApp.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = "Admin Doctor Nurse")]
+        [Authorize(Roles = "Admin, Doctor, Nurse")]
         public async Task<IActionResult> UpdatePrescription([FromBody] UpdatePrescriptionCommand command)
         {
             var result = await Mediator.Send(command);

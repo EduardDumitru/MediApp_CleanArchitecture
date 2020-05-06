@@ -9,7 +9,7 @@ namespace MediApp.Controllers
     public class HolidayIntervalController: ApiController
     {
         [HttpGet("{id}")]
-        [Authorize(Roles = "Admin Doctor Nurse")]
+        [Authorize(Roles = "Admin, Doctor, Nurse")]
         public async Task<ActionResult<HolidayIntervalDetailsVm>> GetHolidayIntervalDetails(short id)
         {
             var vm = await Mediator.Send(new GetHolidayIntervalDetailsQuery {Id = id});
@@ -23,7 +23,7 @@ namespace MediApp.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin Doctor Nurse")]
+        [Authorize(Roles = "Admin, Doctor, Nurse")]
         public async Task<ActionResult<HolidayIntervalsListVm>> GetHolidayIntervals()
         {
             var vm = await Mediator.Send(new GetHolidayIntervalsListQuery());
@@ -32,7 +32,7 @@ namespace MediApp.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin Doctor Nurse")]
+        [Authorize(Roles = "Admin, Doctor, Nurse")]
         public async Task<IActionResult> AddHolidayInterval([FromBody] AddHolidayIntervalCommand command)
         {
             var result = await Mediator.Send(command);
@@ -46,7 +46,7 @@ namespace MediApp.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = "Admin Doctor Nurse")]
+        [Authorize(Roles = "Admin, Doctor, Nurse")]
         public async Task<IActionResult> UpdateHolidayInterval([FromBody] UpdateHolidayIntervalCommand command)
         {
             var result = await Mediator.Send(command);
@@ -60,7 +60,7 @@ namespace MediApp.Controllers
         }
 
         [HttpDelete]
-        [Authorize(Roles = "Admin Doctor Nurse")]
+        [Authorize(Roles = "Admin, Doctor, Nurse")]
         public async Task<IActionResult> DeleteHolidayInterval([FromBody] DeleteHolidayIntervalCommand command)
         {
             var result = await Mediator.Send(command);
@@ -73,8 +73,8 @@ namespace MediApp.Controllers
             return Ok(result);
         }
 
-        [HttpPut]
-        [Authorize(Roles = "Admin Doctor Nurse")]
+        [HttpPut("restore")]
+        [Authorize(Roles = "Admin, Doctor, Nurse")]
         public async Task<IActionResult> RestoreHolidayInterval([FromBody] RestoreHolidayIntervalCommand command)
         {
             var result = await Mediator.Send(command);

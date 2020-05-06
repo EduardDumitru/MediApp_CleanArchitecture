@@ -8,17 +8,17 @@ namespace MediApp.Controllers
     [Authorize]
     public class PrescriptionXDrugController : ApiController
     {
-        [HttpGet]
-        public async Task<ActionResult<PrescriptionXDrugsListVm>> GetPrescriptionXDrugs()
+        [HttpGet("drugsbyprescription/{prescriptionId}")]
+        public async Task<ActionResult<PrescriptionXDrugsListVm>> GetPrescriptionXDrugs(long prescriptionId)
         {
-            var vm = await Mediator.Send(new GetDrugsByPrescriptionListQuery());
+            var vm = await Mediator.Send(new GetDrugsByPrescriptionListQuery() {PrescriptionId = prescriptionId});
 
             return Ok(vm);
         }
 
 
         [HttpPost]
-        [Authorize(Roles = "Admin Doctor")]
+        [Authorize(Roles = "Admin, Doctor")]
         public async Task<IActionResult> AddPrescriptionXDrug([FromBody] AddPrescriptionXDrugCommand command)
         {
             var result = await Mediator.Send(command);
@@ -32,7 +32,7 @@ namespace MediApp.Controllers
         }
 
         [HttpDelete]
-        [Authorize(Roles = "Admin Doctor")]
+        [Authorize(Roles = "Admin, Doctor")]
         public async Task<IActionResult> DeletePrescriptionXDrug([FromBody] DeletePrescriptionXDrugCommand command)
         {
             var result = await Mediator.Send(command);
@@ -46,7 +46,7 @@ namespace MediApp.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = "Admin Doctor")]
+        [Authorize(Roles = "Admin, Doctor")]
         public async Task<IActionResult> UpdatePrescriptionXDrug([FromBody] UpdatePrescriptionXDrugCommand command)
         {
             var result = await Mediator.Send(command);

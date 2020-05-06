@@ -25,7 +25,7 @@ namespace MediApp.Controllers
         }
 
         [HttpGet("employeemedicalchecks/{employeeId}")]
-        [Authorize(Roles = "Admin Doctor Nurse")]
+        [Authorize(Roles = "Admin, Doctor, Nurse")]
         public async Task<ActionResult<EmployeeMedicalChecksListVm>> GetEmployeeMedicalCheck(long employeeId)
         {
             var vm = await Mediator.Send(new GetEmployeeMedicalChecksListQuery() {EmployeeId = employeeId});
