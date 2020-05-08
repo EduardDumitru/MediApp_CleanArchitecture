@@ -1,7 +1,26 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { Routes, RouterModule, CanActivate } from '@angular/router';
+import { AuthGuardService as AuthGuard, AuthGuardService } from './auth/auth-guard.service';
+import { AppComponent } from './app.component';
+import { UserProfileComponent } from './components/user/userprofile/userprofile.component';
+import { LoginComponent } from './components/user/login/login.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
 
-const routes: Routes = [];
+const routes: Routes = [
+  { path: '',
+  component: DashboardComponent,
+  canActivate: [AuthGuard] },
+  {
+    path: 'profile',
+    component: UserProfileComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'login',
+    component: LoginComponent
+  },
+  { path: '**', redirectTo: '' }
+];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
