@@ -12,7 +12,7 @@ namespace Application.CommandsAndQueries
 {
     public class DeleteHolidayIntervalCommand: IRequest<Result>
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
     }
 
     public class DeleteHolidayIntervalCommandHandler : IRequestHandler<DeleteHolidayIntervalCommand, Result>

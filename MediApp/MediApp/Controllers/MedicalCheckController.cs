@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Application.CommandsAndQueries;
+using Application.Common.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -52,7 +53,7 @@ namespace MediApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddMedicalCheck([FromBody] AddMedicalCheckCommand command)
+        public async Task<ActionResult<Result>> AddMedicalCheck([FromBody] AddMedicalCheckCommand command)
         {
             var result = await Mediator.Send(command);
 
@@ -65,7 +66,7 @@ namespace MediApp.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateMedicalCheck([FromBody] UpdateMedicalCheckCommand command)
+        public async Task<ActionResult<Result>> UpdateMedicalCheck([FromBody] UpdateMedicalCheckCommand command)
         {
             var result = await Mediator.Send(command);
 
@@ -77,10 +78,10 @@ namespace MediApp.Controllers
             return Ok(result);
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> DeleteMedicalCheck([FromBody] DeleteMedicalCheckCommand command)
+        [HttpDelete("{medicalCheckId}")]
+        public async Task<ActionResult<Result>> DeleteMedicalCheck(long medicalCheckId)
         {
-            var result = await Mediator.Send(command);
+            var result = await Mediator.Send(new DeleteMedicalCheckCommand {Id = medicalCheckId});
 
             if (!result.Succeeded)
             {

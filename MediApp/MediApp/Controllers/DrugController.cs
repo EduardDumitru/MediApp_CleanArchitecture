@@ -45,7 +45,7 @@ namespace MediApp.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AddDrug([FromBody] AddDrugCommand command)
+        public async Task<ActionResult<Result>> AddDrug([FromBody] AddDrugCommand command)
         {
             var result = await Mediator.Send(command);
 
@@ -59,7 +59,7 @@ namespace MediApp.Controllers
 
         [HttpPut]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdateDrug([FromBody] UpdateDrugCommand command)
+        public async Task<ActionResult<Result>> UpdateDrug([FromBody] UpdateDrugCommand command)
         {
             var result = await Mediator.Send(command);
 
@@ -71,11 +71,11 @@ namespace MediApp.Controllers
             return Ok(result);
         }
 
-        [HttpDelete]
+        [HttpDelete("{drugId}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteDrug([FromBody] DeleteDrugCommand command)
+        public async Task<ActionResult<Result>> DeleteDrug(int drugId)
         {
-            var result = await Mediator.Send(command);
+            var result = await Mediator.Send(new DeleteDrugCommand {Id = drugId});
 
             if (!result.Succeeded)
             {
@@ -87,7 +87,7 @@ namespace MediApp.Controllers
 
         [HttpPut("restore")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> RestoreDrug([FromBody] RestoreDrugCommand command)
+        public async Task<ActionResult<Result>> RestoreDrug([FromBody] RestoreDrugCommand command)
         {
             var result = await Mediator.Send(command);
 

@@ -8,7 +8,6 @@ namespace Application.CommandsAndQueries
     public class HolidayIntervalsLookupDto : IMapFrom<HolidayInterval>
     {
         public long Id { get; set; }
-        public string Name { get; set; }
         public string EmployeeName { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }

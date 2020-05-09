@@ -45,7 +45,7 @@ namespace MediApp.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AddCountry([FromBody] AddCountryCommand command)
+        public async Task<ActionResult<Result>> AddCountry([FromBody] AddCountryCommand command)
         {
             var result = await Mediator.Send(command);
 
@@ -59,7 +59,7 @@ namespace MediApp.Controllers
 
         [HttpPut]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdateCountry([FromBody] UpdateCountryCommand command)
+        public async Task<ActionResult<Result>> UpdateCountry([FromBody] UpdateCountryCommand command)
         {
             var result = await Mediator.Send(command);
 
@@ -71,11 +71,11 @@ namespace MediApp.Controllers
             return Ok(result);
         }
 
-        [HttpDelete]
+        [HttpDelete("{countryId}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteCountry([FromBody] DeleteCountryCommand command)
+        public async Task<ActionResult<Result>> DeleteCountry(short countryId)
         {
-            var result = await Mediator.Send(command);
+            var result = await Mediator.Send(new DeleteCountryCommand {Id = countryId});
 
             if (!result.Succeeded)
             {
@@ -87,7 +87,7 @@ namespace MediApp.Controllers
 
         [HttpPut("restore")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> RestoreCountry([FromBody] RestoreCountryCommand command)
+        public async Task<ActionResult<Result>> RestoreCountry([FromBody] RestoreCountryCommand command)
         {
             var result = await Mediator.Send(command);
 

@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Application.CommandsAndQueries;
+using Application.Common.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,7 +20,7 @@ namespace MediApp.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin, Doctor")]
-        public async Task<IActionResult> AddPrescriptionXDrug([FromBody] AddPrescriptionXDrugCommand command)
+        public async Task<ActionResult<Result>> AddPrescriptionXDrug([FromBody] AddPrescriptionXDrugCommand command)
         {
             var result = await Mediator.Send(command);
 
@@ -31,11 +32,11 @@ namespace MediApp.Controllers
             return Ok(result);
         }
 
-        [HttpDelete]
+        [HttpDelete("{prescriptionXDrugId}")]
         [Authorize(Roles = "Admin, Doctor")]
-        public async Task<IActionResult> DeletePrescriptionXDrug([FromBody] DeletePrescriptionXDrugCommand command)
+        public async Task<ActionResult<Result>> DeletePrescriptionXDrug(long prescriptionXDrugId)
         {
-            var result = await Mediator.Send(command);
+            var result = await Mediator.Send(new DeletePrescriptionXDrugCommand {Id = prescriptionXDrugId});
 
             if (!result.Succeeded)
             {
@@ -47,7 +48,7 @@ namespace MediApp.Controllers
 
         [HttpPut]
         [Authorize(Roles = "Admin, Doctor")]
-        public async Task<IActionResult> UpdatePrescriptionXDrug([FromBody] UpdatePrescriptionXDrugCommand command)
+        public async Task<ActionResult<Result>> UpdatePrescriptionXDrug([FromBody] UpdatePrescriptionXDrugCommand command)
         {
             var result = await Mediator.Send(command);
 

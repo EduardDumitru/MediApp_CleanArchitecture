@@ -42,7 +42,7 @@ namespace MediApp.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AddMedicalCheckType([FromBody] AddMedicalCheckTypeCommand command)
+        public async Task<ActionResult<Result>> AddMedicalCheckType([FromBody] AddMedicalCheckTypeCommand command)
         {
             var result = await Mediator.Send(command);
 
@@ -56,7 +56,7 @@ namespace MediApp.Controllers
 
         [HttpPut]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdateMedicalCheckType([FromBody] UpdateMedicalCheckTypeCommand command)
+        public async Task<ActionResult<Result>> UpdateMedicalCheckType([FromBody] UpdateMedicalCheckTypeCommand command)
         {
             var result = await Mediator.Send(command);
 
@@ -68,11 +68,11 @@ namespace MediApp.Controllers
             return Ok(result);
         }
 
-        [HttpDelete]
+        [HttpDelete("{medicalCheckTypeId}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteMedicalCheckType([FromBody] DeleteMedicalCheckTypeCommand command)
+        public async Task<ActionResult<Result>> DeleteMedicalCheckType(short medicalCheckTypeId)
         {
-            var result = await Mediator.Send(command);
+            var result = await Mediator.Send(new DeleteMedicalCheckTypeCommand {Id = medicalCheckTypeId});
 
             if (!result.Succeeded)
             {
@@ -84,7 +84,7 @@ namespace MediApp.Controllers
 
         [HttpPut("restore")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> RestoreMedicalCheckType([FromBody] RestoreMedicalCheckTypeCommand command)
+        public async Task<ActionResult<Result>> RestoreMedicalCheckType([FromBody] RestoreMedicalCheckTypeCommand command)
         {
             var result = await Mediator.Send(command);
 

@@ -42,7 +42,7 @@ namespace MediApp.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin, Doctor, Nurse")]
-        public async Task<IActionResult> AddPrescription([FromBody] AddPrescriptionCommand command)
+        public async Task<ActionResult<Result>> AddPrescription([FromBody] AddPrescriptionCommand command)
         {
             var result = await Mediator.Send(command);
 
@@ -54,11 +54,11 @@ namespace MediApp.Controllers
             return Ok(result);
         }
 
-        [HttpDelete]
+        [HttpDelete("{prescriptionId}")]
         [Authorize(Roles = "Admin, Doctor, Nurse")]
-        public async Task<IActionResult> DeletePrescription([FromBody] DeletePrescriptionCommand command)
+        public async Task<ActionResult<Result>> DeletePrescription(long prescriptionId)
         {
-            var result = await Mediator.Send(command);
+            var result = await Mediator.Send(new DeletePrescriptionCommand {Id = prescriptionId});
 
             if (!result.Succeeded)
             {
@@ -70,7 +70,7 @@ namespace MediApp.Controllers
 
         [HttpPut]
         [Authorize(Roles = "Admin, Doctor, Nurse")]
-        public async Task<IActionResult> UpdatePrescription([FromBody] UpdatePrescriptionCommand command)
+        public async Task<ActionResult<Result>> UpdatePrescription([FromBody] UpdatePrescriptionCommand command)
         {
             var result = await Mediator.Send(command);
 

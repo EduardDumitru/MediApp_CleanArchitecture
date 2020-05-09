@@ -11,7 +11,7 @@ namespace MediApp.Controllers
     {
         [HttpGet("{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<EmployeeDetailsVm>> GetEmployeeDetails(int id)
+        public async Task<ActionResult<EmployeeDetailsVm>> GetEmployeeDetails(long id)
         {
             var vm = await Mediator.Send(new GetEmployeeDetailsQuery {Id = id});
 
@@ -42,7 +42,7 @@ namespace MediApp.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AddEmployee([FromBody] AddEmployeeCommand command)
+        public async Task<ActionResult<Result>> AddEmployee([FromBody] AddEmployeeCommand command)
         {
             var result = await Mediator.Send(command);
 
@@ -56,7 +56,7 @@ namespace MediApp.Controllers
 
         [HttpPut]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdateEmployee([FromBody] UpdateEmployeeCommand command)
+        public async Task<ActionResult<Result>> UpdateEmployee([FromBody] UpdateEmployeeCommand command)
         {
             var result = await Mediator.Send(command);
 
@@ -68,11 +68,11 @@ namespace MediApp.Controllers
             return Ok(result);
         }
 
-        [HttpDelete]
+        [HttpDelete("{employeeId}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteEmployee([FromBody] DeleteEmployeeCommand command)
+        public async Task<ActionResult<Result>> DeleteEmployee(long employeeId)
         {
-            var result = await Mediator.Send(command);
+            var result = await Mediator.Send(new DeleteEmployeeCommand {Id = employeeId});
 
             if (!result.Succeeded)
             {
@@ -84,7 +84,7 @@ namespace MediApp.Controllers
 
         [HttpPut("restore")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> RestoreEmployee([FromBody] RestoreEmployeeCommand command)
+        public async Task<ActionResult<Result>> RestoreEmployee([FromBody] RestoreEmployeeCommand command)
         {
             var result = await Mediator.Send(command);
 

@@ -43,7 +43,7 @@ namespace MediApp.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AddGender([FromBody] AddGenderCommand command)
+        public async Task<ActionResult<Result>> AddGender([FromBody] AddGenderCommand command)
         {
             var result = await Mediator.Send(command);
 
@@ -57,7 +57,7 @@ namespace MediApp.Controllers
 
         [HttpPut]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdateGender([FromBody] UpdateGenderCommand command)
+        public async Task<ActionResult<Result>> UpdateGender([FromBody] UpdateGenderCommand command)
         {
             var result = await Mediator.Send(command);
 
@@ -69,11 +69,11 @@ namespace MediApp.Controllers
             return Ok(result);
         }
 
-        [HttpDelete]
+        [HttpDelete("{genderId}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteGender([FromBody] DeleteGenderCommand command)
+        public async Task<ActionResult<Result>> DeleteGender(short genderId)
         {
-            var result = await Mediator.Send(command);
+            var result = await Mediator.Send(new DeleteGenderCommand {Id = genderId});
 
             if (!result.Succeeded)
             {
@@ -85,7 +85,7 @@ namespace MediApp.Controllers
 
         [HttpPut("restore")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> RestoreGender([FromBody] RestoreGenderCommand command)
+        public async Task<ActionResult<Result>> RestoreGender([FromBody] RestoreGenderCommand command)
         {
             var result = await Mediator.Send(command);
 

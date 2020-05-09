@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule, CanActivate } from '@angular/router';
-import { AuthGuardService as AuthGuard, AuthGuardService } from './auth/auth-guard.service';
+import { AuthGuardService as AuthGuard, AuthGuardService } from './@core/auth/auth-guard.service';
 import { AppComponent } from './app.component';
 import { UserProfileComponent } from './components/user/userprofile/userprofile.component';
 import { LoginComponent } from './components/user/login/login.component';
@@ -19,7 +19,8 @@ const routes: Routes = [
     path: 'login',
     component: LoginComponent
   },
-  { path: '**', redirectTo: '' }
+  { path: '**',
+    component: NotFoundComponent }
 ];
 
 @NgModule({

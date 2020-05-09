@@ -43,7 +43,7 @@ namespace MediApp.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AddDiagnosis([FromBody] AddDiagnosisCommand command)
+        public async Task<ActionResult<Result>> AddDiagnosis([FromBody] AddDiagnosisCommand command)
         {
             var result = await Mediator.Send(command);
 
@@ -57,7 +57,7 @@ namespace MediApp.Controllers
 
         [HttpPut]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdateDiagnosis([FromBody] UpdateDiagnosisCommand command)
+        public async Task<ActionResult<Result>> UpdateDiagnosis([FromBody] UpdateDiagnosisCommand command)
         {
             var result = await Mediator.Send(command);
 
@@ -69,11 +69,11 @@ namespace MediApp.Controllers
             return Ok(result);
         }
 
-        [HttpDelete]
+        [HttpDelete("{diagnosisId}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteDiagnosis([FromBody] DeleteDiagnosisCommand command)
+        public async Task<ActionResult<Result>> DeleteDiagnosis(int diagnosisId)
         {
-            var result = await Mediator.Send(command);
+            var result = await Mediator.Send(new DeleteDiagnosisCommand {Id = diagnosisId});
 
             if (!result.Succeeded)
             {
@@ -85,7 +85,7 @@ namespace MediApp.Controllers
 
         [HttpPut("restore")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> RestoreDiagnosis([FromBody] RestoreDiagnosisCommand command)
+        public async Task<ActionResult<Result>> RestoreDiagnosis([FromBody] RestoreDiagnosisCommand command)
         {
             var result = await Mediator.Send(command);
 

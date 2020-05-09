@@ -32,17 +32,17 @@ namespace MediApp.Controllers
             return Ok(vm);
         }
 
-        [HttpGet("clinicsdropdown")]
-        public async Task<ActionResult<SelectItemVm>> GetClinicsDropdown()
+        [HttpGet("clinicsdropdown/{countryId?}/{countyId?}/{cityId?}")]
+        public async Task<ActionResult<SelectItemVm>> GetClinicsDropdown(short? countryId, int? countyId, int? cityId)
         {
-            var vm = await Mediator.Send(new GetClinicDropdownQuery());
+            var vm = await Mediator.Send(new GetClinicDropdownQuery {CountryId = countryId, CountyId = countyId, CityId = cityId});
 
             return Ok(vm);
         }
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AddClinic([FromBody] AddClinicCommand command)
+        public async Task<ActionResult<Result>> AddClinic([FromBody] AddClinicCommand command)
         {
             var result = await Mediator.Send(command);
 
@@ -56,7 +56,7 @@ namespace MediApp.Controllers
 
         [HttpPut]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdateClinic([FromBody] UpdateClinicCommand command)
+        public async Task<ActionResult<Result>> UpdateClinic([FromBody] UpdateClinicCommand command)
         {
             var result = await Mediator.Send(command);
 
@@ -68,11 +68,11 @@ namespace MediApp.Controllers
             return Ok(result);
         }
 
-        [HttpDelete]
+        [HttpDelete("{clinicId}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteClinic([FromBody] DeleteClinicCommand command)
+        public async Task<ActionResult<Result>> DeleteClinic(int clinicId)
         {
-            var result = await Mediator.Send(command);
+            var result = await Mediator.Send(new DeleteClinicCommand {Id = clinicId});
 
             if (!result.Succeeded)
             {
@@ -84,7 +84,7 @@ namespace MediApp.Controllers
 
         [HttpPut("restore")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> RestoreClinic([FromBody] RestoreClinicCommand command)
+        public async Task<ActionResult<Result>> RestoreClinic([FromBody] RestoreClinicCommand command)
         {
             var result = await Mediator.Send(command);
 

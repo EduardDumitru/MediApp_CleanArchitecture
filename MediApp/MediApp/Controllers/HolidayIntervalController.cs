@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Application.CommandsAndQueries;
+using Application.Common.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,7 +11,7 @@ namespace MediApp.Controllers
     {
         [HttpGet("{id}")]
         [Authorize(Roles = "Admin, Doctor, Nurse")]
-        public async Task<ActionResult<HolidayIntervalDetailsVm>> GetHolidayIntervalDetails(short id)
+        public async Task<ActionResult<HolidayIntervalDetailsVm>> GetHolidayIntervalDetails(long id)
         {
             var vm = await Mediator.Send(new GetHolidayIntervalDetailsQuery {Id = id});
 
@@ -33,7 +34,7 @@ namespace MediApp.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin, Doctor, Nurse")]
-        public async Task<IActionResult> AddHolidayInterval([FromBody] AddHolidayIntervalCommand command)
+        public async Task<ActionResult<Result>> AddHolidayInterval([FromBody] AddHolidayIntervalCommand command)
         {
             var result = await Mediator.Send(command);
 
@@ -47,7 +48,7 @@ namespace MediApp.Controllers
 
         [HttpPut]
         [Authorize(Roles = "Admin, Doctor, Nurse")]
-        public async Task<IActionResult> UpdateHolidayInterval([FromBody] UpdateHolidayIntervalCommand command)
+        public async Task<ActionResult<Result>> UpdateHolidayInterval([FromBody] UpdateHolidayIntervalCommand command)
         {
             var result = await Mediator.Send(command);
 
@@ -59,11 +60,11 @@ namespace MediApp.Controllers
             return Ok(result);
         }
 
-        [HttpDelete]
+        [HttpDelete("{holidayIntervalId}")]
         [Authorize(Roles = "Admin, Doctor, Nurse")]
-        public async Task<IActionResult> DeleteHolidayInterval([FromBody] DeleteHolidayIntervalCommand command)
+        public async Task<ActionResult<Result>> DeleteHolidayInterval(long holidayIntervalId)
         {
-            var result = await Mediator.Send(command);
+            var result = await Mediator.Send(new DeleteHolidayIntervalCommand {Id = holidayIntervalId});
 
             if (!result.Succeeded)
             {
@@ -75,7 +76,7 @@ namespace MediApp.Controllers
 
         [HttpPut("restore")]
         [Authorize(Roles = "Admin, Doctor, Nurse")]
-        public async Task<IActionResult> RestoreHolidayInterval([FromBody] RestoreHolidayIntervalCommand command)
+        public async Task<ActionResult<Result>> RestoreHolidayInterval([FromBody] RestoreHolidayIntervalCommand command)
         {
             var result = await Mediator.Send(command);
 

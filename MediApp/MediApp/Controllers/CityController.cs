@@ -50,7 +50,7 @@ namespace MediApp.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AddCity([FromBody] AddCityCommand command)
+        public async Task<ActionResult<Result>> AddCity([FromBody] AddCityCommand command)
         {
             var result = await Mediator.Send(command);
 
@@ -64,7 +64,7 @@ namespace MediApp.Controllers
 
         [HttpPut]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdateCity([FromBody] UpdateCityCommand command)
+        public async Task<ActionResult<Result>> UpdateCity([FromBody] UpdateCityCommand command)
         {
             var result = await Mediator.Send(command);
 
@@ -76,11 +76,11 @@ namespace MediApp.Controllers
             return Ok(result);
         }
 
-        [HttpDelete]
+        [HttpDelete("{cityId}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteCity([FromBody] DeleteCityCommand command)
+        public async Task<ActionResult<Result>> DeleteCity(int cityId)
         {
-            var result = await Mediator.Send(command);
+            var result = await Mediator.Send(new DeleteCityCommand {Id = cityId});
 
             if (!result.Succeeded)
             {
@@ -92,7 +92,7 @@ namespace MediApp.Controllers
 
         [HttpPut("restore")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> RestoreCity([FromBody] RestoreCityCommand command)
+        public async Task<ActionResult<Result>> RestoreCity([FromBody] RestoreCityCommand command)
         {
             var result = await Mediator.Send(command);
 

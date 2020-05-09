@@ -50,7 +50,7 @@ namespace MediApp.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AddCounty([FromBody] AddCountyCommand command)
+        public async Task<ActionResult<Result>> AddCounty([FromBody] AddCountyCommand command)
         {
             var result = await Mediator.Send(command);
 
@@ -64,7 +64,7 @@ namespace MediApp.Controllers
 
         [HttpPut]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdateCounty([FromBody] UpdateCountyCommand command)
+        public async Task<ActionResult<Result>> UpdateCounty([FromBody] UpdateCountyCommand command)
         {
             var result = await Mediator.Send(command);
 
@@ -76,11 +76,11 @@ namespace MediApp.Controllers
             return Ok(result);
         }
 
-        [HttpDelete]
+        [HttpDelete("{countyId}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteCounty([FromBody] DeleteCountyCommand command)
+        public async Task<ActionResult<Result>> DeleteCounty(int countyId)
         {
-            var result = await Mediator.Send(command);
+            var result = await Mediator.Send(new DeleteCountyCommand {Id = countyId});
 
             if (!result.Succeeded)
             {
@@ -92,7 +92,7 @@ namespace MediApp.Controllers
 
         [HttpPut("restore")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> RestoreCounty([FromBody] RestoreCountyCommand command)
+        public async Task<ActionResult<Result>> RestoreCounty([FromBody] RestoreCountyCommand command)
         {
             var result = await Mediator.Send(command);
 

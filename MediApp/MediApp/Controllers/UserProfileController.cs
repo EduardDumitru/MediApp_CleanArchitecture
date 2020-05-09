@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Application.CommandsAndQueries;
+using Application.Common.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,17 +11,17 @@ namespace MediApp.Controllers
     {
         // GET
         [HttpPut]
-        public async Task<IActionResult> UpdateUserProfile(UpdateUserProfileCommand command)
+        public async Task<ActionResult<Result>> UpdateUserProfile([FromBody] UpdateUserProfileCommand command)
         {
 
             var response = await Mediator.Send(command);
 
             if (!response.Succeeded)
             {
-                return BadRequest(response.Errors);
+                return BadRequest(response);
             }
 
-            return Ok(response.SuccessMessage);
+            return Ok(response);
         }
 
         [HttpGet]
@@ -33,7 +34,7 @@ namespace MediApp.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<UserProfileListVm>> GetUserProfile(long id)
+        public async Task<ActionResult<UserProfileDetailVm>> GetUserProfile(long id)
         {
             var vm = await Mediator.Send(new GetUserProfileDetailQuery() {Id = id});
 

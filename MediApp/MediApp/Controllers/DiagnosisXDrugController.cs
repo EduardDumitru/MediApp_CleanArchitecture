@@ -21,14 +21,14 @@ namespace MediApp.Controllers
         [HttpGet("drugsbydiagnosesdropdown/{diagnosisId}")]
         public async Task<ActionResult<SelectItemVm>> GetDrugsByDiagnosisDropdown(int diagnosisId)
         {
-            var vm = await Mediator.Send(new GetDrugsByDiagnosisDropdownQuery() {DiagnosisId = diagnosisId});
+            var vm = await Mediator.Send(new GetDrugsByDiagnosisDropdownQuery {DiagnosisId = diagnosisId});
 
             return Ok(vm);
         }
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AddDiagnosisXDrug([FromBody] AddDiagnosisXDrugCommand command)
+        public async Task<ActionResult<Result>> AddDiagnosisXDrug([FromBody] AddDiagnosisXDrugCommand command)
         {
             var result = await Mediator.Send(command);
 
@@ -40,11 +40,11 @@ namespace MediApp.Controllers
             return Ok(result);
         }
 
-        [HttpDelete]
+        [HttpDelete("{diagnosisXDrugId}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteDiagnosisXDrug([FromBody] DeleteDiagnosisXDrugCommand command)
+        public async Task<ActionResult<Result>> DeleteDiagnosisXDrug(long diagnosisXDrugId)
         {
-            var result = await Mediator.Send(command);
+            var result = await Mediator.Send(new DeleteDiagnosisXDrugCommand {Id = diagnosisXDrugId});
 
             if (!result.Succeeded)
             {
@@ -56,7 +56,7 @@ namespace MediApp.Controllers
 
         [HttpPut("restore")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> RestoreDiagnosisXDrug([FromBody] RestoreDiagnosisXDrugCommand command)
+        public async Task<ActionResult<Result>> RestoreDiagnosisXDrug([FromBody] RestoreDiagnosisXDrugCommand command)
         {
             var result = await Mediator.Send(command);
 

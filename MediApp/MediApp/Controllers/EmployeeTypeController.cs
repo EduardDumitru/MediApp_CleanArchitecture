@@ -42,7 +42,7 @@ namespace MediApp.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AddEmployeeType([FromBody] AddEmployeeTypeCommand command)
+        public async Task<ActionResult<Result>> AddEmployeeType([FromBody] AddEmployeeTypeCommand command)
         {
             var result = await Mediator.Send(command);
 
@@ -56,7 +56,7 @@ namespace MediApp.Controllers
 
         [HttpPut]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdateEmployeeType([FromBody] UpdateEmployeeTypeCommand command)
+        public async Task<ActionResult<Result>> UpdateEmployeeType([FromBody] UpdateEmployeeTypeCommand command)
         {
             var result = await Mediator.Send(command);
 
@@ -70,9 +70,9 @@ namespace MediApp.Controllers
 
         [HttpDelete]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteEmployeeType([FromBody] DeleteEmployeeTypeCommand command)
+        public async Task<ActionResult<Result>> DeleteEmployeeType(short employeeTypeId)
         {
-            var result = await Mediator.Send(command);
+            var result = await Mediator.Send(new DeleteEmployeeTypeCommand() {Id = employeeTypeId});
 
             if (!result.Succeeded)
             {
@@ -84,7 +84,7 @@ namespace MediApp.Controllers
 
         [HttpPut("restore")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> RestoreEmployeeType([FromBody] RestoreEmployeeTypeCommand command)
+        public async Task<ActionResult<Result>> RestoreEmployeeType([FromBody] RestoreEmployeeTypeCommand command)
         {
             var result = await Mediator.Send(command);
 

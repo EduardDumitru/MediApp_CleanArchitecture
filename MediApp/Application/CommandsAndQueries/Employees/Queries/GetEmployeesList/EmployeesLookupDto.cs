@@ -16,6 +16,7 @@ namespace Application.CommandsAndQueries
         public string EmployeeTypeName { get; set; }
         public string MedicalCheckTypeName { get; set; }
         public string ClinicName { get; set; }
+        public bool? Deleted { get; set; }
 
         public void Mapping(Profile profile)
         {

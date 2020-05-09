@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Application.CommandsAndQueries;
+using Application.Common.Models;
 using Application.Common.Models.Authentication;
 using Microsoft.AspNetCore.Mvc;
 

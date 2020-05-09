@@ -17,7 +17,7 @@ export class RoleGuardService implements CanActivate {
         this.router.navigate(['login']);
         return false;
     } else if (tokenPayload.role !== expectedRole) {
-        this.router.navigate(['404notfound']);
+        this.router.navigate(['noaccesspage']);
         return false;
     }
     return true;
