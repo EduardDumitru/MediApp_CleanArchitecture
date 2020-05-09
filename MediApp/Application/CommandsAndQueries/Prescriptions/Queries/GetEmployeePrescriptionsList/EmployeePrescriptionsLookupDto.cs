@@ -14,6 +14,7 @@ namespace Application.CommandsAndQueries
         public string ClinicName { get; set; }
         public string PatientName { get; set; }
         public string DiagnosisName { get; set; }
+        public bool? Deleted { get; set; }
 
         public void Mapping(Profile profile)
         {

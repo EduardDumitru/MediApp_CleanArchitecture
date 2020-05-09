@@ -18,6 +18,7 @@ namespace Application.CommandsAndQueries
         public string EmployeeName { get; set; }
         public string PatientName { get; set; }
         public IList<PrescriptionXDrugsLookupDto> Drugs { get; set; }
+        public bool? Deleted { get; set; }
 
         public void Mapping(Profile profile)
         {

@@ -13,41 +13,53 @@ export class MedicalCheckDetails {
     deleted?: boolean;
 }
 
-export class MedicalCheckLookup {
+export class EmployeeMedicalCheckLookup {
+    id: number;
+    appointment: Date;
+    medicalCheckTypeName: string;
+    diagnosisName: string;
+    clinicName: string;
+    patientName: string;
+    patientCnp: string;
+    deleted?: boolean;
+}
+
+export class EmployeeMedicalChecksList {
+    employeeMedicalChecks: EmployeeMedicalCheckLookup[];
+}
+
+export class PatientMedicalCheckLookup {
     id: number;
     appointment: Date;
     medicalCheckTypeName: string;
     diagnosisName: string;
     clinicName: string;
     employeeName: string;
-    patientName: string;
-    patientCnp: string;
     deleted?: boolean;
 }
 
-export class MedicalChecksList {
-    medicalChecks: MedicalCheckLookup[];
+export class PatientMedicalChecksList {
+    patientMedicalChecks: PatientMedicalCheckLookup[];
 }
 
 export class AddMedicalCheckCommand {
-    name: string;
+    appointment: Date;
+    clinicId: number;
+    patientId: number;
+    employeeId: number;
+    medicalCheckTypeId: number;
 }
 
 export class UpdateMedicalCheckCommand {
     id: number;
-    name: string;
-}
-
-export class RestoreMedicalCheckCommand {
-    id: number;
+    diagnosisId?: number;
 }
 
 export abstract class MedicalCheckData {
     abstract GetMedicalCheckDetails(id: number): Observable<MedicalCheckDetails>;
-    abstract GetMedicalChecks(): Observable<MedicalChecksList>;
-    abstract GetMedicalChecksDropdown(): Observable<SelectItemsList>;
+    abstract GetEmployeeMedicalChecks(employeeId: number): Observable<EmployeeMedicalChecksList>;
+    abstract GetPatientMedicalChecks(patientId: number): Observable<PatientMedicalChecksList>;
     abstract AddMedicalCheck(addMedicalCheckCommand: AddMedicalCheckCommand): Observable<Result>;
     abstract UpdateMedicalCheck(updateMedicalCheckCommand: UpdateMedicalCheckCommand): Observable<Result>;
     abstract DeleteMedicalCheck(id: number): Observable<Result>;
-    abstract RestoreMedicalCheck(restoreMedicalCheckCommand: RestoreMedicalCheckCommand): Observable<Result>;
 }

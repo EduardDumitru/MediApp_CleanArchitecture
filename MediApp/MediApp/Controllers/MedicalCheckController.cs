@@ -40,7 +40,7 @@ namespace MediApp.Controllers
         }
 
         [HttpGet("patientmedicalchecks/{patientId}")]
-        public async Task<ActionResult<MedicalCheckDetailsVm>> GetPatientMedicalCheck(long patientId)
+        public async Task<ActionResult<PatientMedicalChecksListVm>> GetPatientMedicalCheck(long patientId)
         {
             var vm = await Mediator.Send(new GetPatientMedicalChecksListQuery() {PatientId = patientId});
 
