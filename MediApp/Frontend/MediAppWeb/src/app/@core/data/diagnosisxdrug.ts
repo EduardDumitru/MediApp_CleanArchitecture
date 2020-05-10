@@ -22,9 +22,9 @@ export class RestoreDiagnosisXDrugCommand {
     id: number;
 }
 
-export abstract class DiagnosisData {
-    abstract GetDiagnoses(): Observable<DiagnosisXDrugsList>;
-    abstract GetDrugsByDiagnosisDropdown(): Observable<SelectItemsList>;
+export abstract class DiagnosisXDrugData {
+    abstract GetDiagnosisXDrugs(): Observable<DiagnosisXDrugsList>;
+    abstract GetDrugsByDiagnosisDropdown(diagnosisId: number): Observable<SelectItemsList>;
     abstract AddDiagnosisXDrug(addDiagnosisXDrugCommand: AddDiagnosisXDrugCommand): Observable<Result>;
     abstract DeleteDiagnosisXDrug(id: number): Observable<Result>;
     abstract RestoreDiagnosisXDrug(restoreDiagnosisXDrugCommand: RestoreDiagnosisXDrugCommand): Observable<Result>;

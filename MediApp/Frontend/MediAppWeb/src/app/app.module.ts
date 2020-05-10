@@ -7,10 +7,11 @@ import { UserProfileModule } from './components/user/user.module';
 import { DashboardModule } from './components/dashboard/dashboard.module';
 import { AuthService } from './@core/auth/auth.service';
 import { AuthGuardService } from './@core/auth/auth-guard.service';
-import { JwtModuleOptions, JwtModule } from '@auth0/angular-jwt';
+import { JwtModule } from '@auth0/angular-jwt';
 import { HttpClientModule } from '@angular/common/http';
 import { ThemeModule } from './@theme/theme.module';
-import { NbSidebarModule, NbMenuModule, NbDatepickerModule, NbDialogModule, NbWindowModule, NbToastrModule, NbChatModule } from '@nebular/theme';
+import { NbSidebarModule, NbMenuModule, NbDatepickerModule,
+  NbDialogModule, NbWindowModule, NbToastrModule, NbChatModule } from '@nebular/theme';
 import { CoreModule } from './@core/core.module';
 
 @NgModule({

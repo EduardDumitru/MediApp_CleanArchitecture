@@ -5,6 +5,7 @@ import { AppComponent } from './app.component';
 import { UserProfileComponent } from './components/user/userprofile/userprofile.component';
 import { LoginComponent } from './components/user/login/login.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { NotFoundComponent } from './components/miscellaneous/notfound/notfound.component';
 
 const routes: Routes = [
   { path: '',

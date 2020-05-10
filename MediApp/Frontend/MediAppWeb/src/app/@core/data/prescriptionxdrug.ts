@@ -32,7 +32,7 @@ export class UpdatePrescriptionXDrugCommand {
     interval: Time;
 }
 
-export abstract class DiagnosisData {
+export abstract class PrescriptionXDrugData {
     abstract GetPrescriptionXDrugs(): Observable<PrescriptionXDrugsList>;
     abstract AddPrescriptionXDrug(addPrescriptionXDrugCommand: AddPrescriptionXDrugCommand): Observable<Result>;
     abstract DeletePrescriptionXDrug(id: number): Observable<Result>;
