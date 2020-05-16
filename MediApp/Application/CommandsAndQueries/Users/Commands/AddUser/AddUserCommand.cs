@@ -19,7 +19,7 @@ namespace Application.CommandsAndQueries
         public string Address { get; set; }
         public string StreetName { get; set; }
         public string StreetNo { get; set; }
-        public string CNP { get; set; }
+        public string Cnp { get; set; }
         public string PhoneNumber { get; set; }
         public short CountryId { get; set; }
         public int CountyId { get; set; }

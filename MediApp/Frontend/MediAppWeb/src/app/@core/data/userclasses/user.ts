@@ -11,7 +11,7 @@ export class AddUserCommand {
     address: string;
     streetName: string;
     streetNo: string;
-    cNP: string;
+    cnp: string;
     phoneNumber: string;
     countryId: number;
     countyId: number;

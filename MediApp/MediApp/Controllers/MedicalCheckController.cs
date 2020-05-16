@@ -19,7 +19,7 @@ namespace MediApp.Controllers
 
             if (vm == null)
             {
-                return BadRequest("No valid medical check was found");
+                return BadRequest(Result.Failure(new List<string> {"No valid medical check was found"}));
             }
 
             return Ok(vm);
@@ -33,7 +33,7 @@ namespace MediApp.Controllers
 
             if (vm == null)
             {
-                return BadRequest("No valid medical check was found");
+                return BadRequest(Result.Failure(new List<string> {"No valid medical check was found"}));
             }
 
             return Ok(vm);
@@ -46,7 +46,7 @@ namespace MediApp.Controllers
 
             if (vm == null)
             {
-                return BadRequest("No valid medical check was found");
+                return BadRequest(Result.Failure(new List<string> {"No valid medical check was found"}));
             }
 
             return Ok(vm);

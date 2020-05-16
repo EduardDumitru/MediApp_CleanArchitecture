@@ -36,15 +36,16 @@ export class LoginComponent implements OnInit {
             loginUser.email = this.loginForm.value.email;
             loginUser.password = this.loginForm.value.password;
             this.userData.LoginUser(loginUser).subscribe((res: AuthSuccessResponse) => {
+                this.isLoading = false;
                 this.authService.setToken(res.token)
-                this.router.navigate(['/']);
+                this.authService.initAuthListener();
             }, error => {
                 this.isLoading = false;
-                this.uiService.showSnackbar(error.message, null, 3000);
+                this.uiService.showErrorSnackbar(error, null, 3000);
             })
         } else {
             this.isLoading = false;
-            this.uiService.showSnackbar('Login form is not valid', null, 3000);
+            this.uiService.showErrorSnackbar('Login form is not valid', null, 3000);
         }
     }
 }

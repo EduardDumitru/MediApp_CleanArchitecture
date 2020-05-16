@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Application.CommandsAndQueries;
 using Application.CommandsAndQueries.Genders.Commands.RestoreGender;
 using Application.Common.Models;
@@ -17,7 +18,7 @@ namespace MediApp.Controllers
 
             if (vm == null)
             {
-                return BadRequest("No valid gender was found");
+                return BadRequest(Result.Failure(new List<string> {"No valid gender was found"}));
             }
 
             return Ok(vm);

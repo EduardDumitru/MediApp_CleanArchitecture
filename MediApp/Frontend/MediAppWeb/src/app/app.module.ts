@@ -15,6 +15,7 @@ import { SidebarComponent } from './navigation/sidebar/sidebar.component';
 import { SharedModule } from './shared/shared.module';
 import { UIService } from './shared/ui.service';
 import { AuthModule } from './auth/auth.module';
+import { RoleGuardService } from './auth/role-guard.service';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,7 @@ import { AuthModule } from './auth/auth.module';
     MiscellaneousModule,
     SharedModule
   ],
-  providers: [AuthService, AuthGuardService, UIService],
+  providers: [AuthService, AuthGuardService, RoleGuardService, UIService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

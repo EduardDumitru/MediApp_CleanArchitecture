@@ -4,16 +4,16 @@ import { AuthService } from './auth.service';
 
 @Injectable()
 export class RoleGuardService implements CanActivate {
-  constructor(public auth: AuthService, public router: Router) {}
+  constructor(public authService: AuthService, public router: Router) {}
 
   canActivate(route: ActivatedRouteSnapshot): boolean {
     // this will be passed from the route config
     // on the data property
     const expectedRole = route.data.expectedRole;
-    const token = this.auth.getToken();
+    const token = this.authService.getToken();
     // decode the token to get its payload
-    const tokenPayload = this.auth.decodeToken(token);
-    if (!this.auth.isAuthenticated()) {
+    const tokenPayload = this.authService.decodeToken(token);
+    if (!this.authService.isAuth()) {
         this.router.navigate(['login']);
         return false;
     } else if (tokenPayload.role !== expectedRole) {

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NgForm, FormGroup, FormControl, Validators } from '@angular/forms';
+import { NgForm, FormGroup, FormControl, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 import { UIService } from 'src/app/shared/ui.service';
 import { UserService } from 'src/app/@core/services/user.service';
 import { AddUserCommand, UserData } from 'src/app/@core/data/userclasses/user';
@@ -9,6 +9,7 @@ import { GenderData } from 'src/app/@core/data/gender';
 import { CountryData } from 'src/app/@core/data/country';
 import { CityData } from 'src/app/@core/data/city';
 import { SelectItemsList } from 'src/app/@core/data/common/selectitem';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-register',
@@ -20,7 +21,7 @@ export class RegisterComponent implements OnInit {
   registerForm: FormGroup;
   constructor(private userData: UserData, private uiService: UIService, private router: Router,
               private countryData: CountryData, private countyData: CountyData, private cityData: CityData,
-              private genderData: GenderData) { }
+              private genderData: GenderData, private authService: AuthService) { }
 
   countrySelectList: SelectItemsList = new SelectItemsList();
   countySelectList: SelectItemsList = new SelectItemsList();
@@ -30,6 +31,8 @@ export class RegisterComponent implements OnInit {
 
   ngOnInit(): void {
       this.initForm();
+      this.getCountriesSelect();
+      this.getGendersSelect();
   }
 
   initForm() {
@@ -42,8 +45,8 @@ export class RegisterComponent implements OnInit {
         address: new FormControl(''),
         streetName: new FormControl(''),
         streetNo: new FormControl('', [Validators.required]),
-        cNP: new FormControl('', [Validators.required, Validators.pattern('\b[1-8]\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])(0[1-9]|[1-4]\d|5[0-2]|99)\d{4}\b')]),
-        phoneNumber: new FormControl('', [Validators.required, Validators.pattern('^(07[0-8]{1}[0-9]{1}|02[0-9]{2}|03[0-9]{2}){1}?([0-9]{3}(\s|\.|\-|)){2}$')]),
+        cnp: new FormControl('', [Validators.required, this.CnpValidator()]),
+        phoneNumber: new FormControl('', [Validators.required, Validators.pattern('^(07[0-8]{1}[0-9]{1}|02[0-9]{2}|03[0-9]{2}){1}?([0-9]{3}){2}$')]),
         countryId: new FormControl('', [Validators.required]),
         countyId: new FormControl('', [Validators.required]),
         cityId: new FormControl('', [Validators.required]),
@@ -51,12 +54,46 @@ export class RegisterComponent implements OnInit {
     })
   }
 
+  CnpValidator(): ValidatorFn {
+    return (control: AbstractControl): {[key: string]: any} | null => {
+      const invalid = this.validateCNP(control.value);
+      return !invalid ? {invalidError: {value: control.value}} : null;
+    };
+  }
+
+  private validateCNP( pCnp: string ) {
+    let i = 0;
+    let year = 0;
+    let hashResult = 0;
+    const cnp = [];
+    const hashTable=[2,7,9,1,4,6,3,5,8,2,7,9];
+    if( pCnp.length !== 13 ) { return false; }
+    for( i=0 ; i<13 ; i++ ) {
+        cnp[i] = parseInt( pCnp.charAt(i) , 10 );
+        if( isNaN( cnp[i] ) ) { return false; }
+        if( i < 12 ) { hashResult = hashResult + ( cnp[i] * hashTable[i] ); }
+    }
+    hashResult = hashResult % 11;
+    if( hashResult === 10 ) { hashResult = 1; }
+    year = (cnp[1]*10)+cnp[2];
+    switch( cnp[0] ) {
+        case 1  : case 2 : { year += 1900; } break;
+        case 3  : case 4 : { year += 1800; } break;
+        case 5  : case 6 : { year += 2000; } break;
+        case 7  : case 8 : case 9 : { year += 2000;
+          if( year > ( new Date().getFullYear() - 14 ) ) { year -= 100; } } break;
+        default : { return false; }
+    }
+    if( year < 1800 || year > 2099 ) { return false; }
+    return ( cnp[12] === hashResult );
+  }
+
   getGendersSelect() {
     this.genderData.GetGendersDropdown().subscribe((genders: SelectItemsList) => {
       this.genderSelectList = genders;
     },
     error => {
-        this.uiService.showSnackbar(error.message, null, 3000);
+        this.uiService.showErrorSnackbar(error.message, null, 3000);
     })
   }
 
@@ -65,42 +102,55 @@ export class RegisterComponent implements OnInit {
       this.countrySelectList = countries;
     },
     error => {
-        this.uiService.showSnackbar(error.message, null, 3000);
+        this.uiService.showErrorSnackbar(error.message, null, 3000);
     })
   }
 
-  getCountiesSelect(event: any) {
-    console.log(event);
+  getCountiesSelect(countryId: string) {
+    this.countyData.GetCountiesByCountryDropdown(+countryId).subscribe((counties: SelectItemsList) => {
+      this.countySelectList = counties;
+    },
+    error => {
+        this.uiService.showErrorSnackbar(error.message, null, 3000);
+    })
   }
 
-  getCitiesSelect(event: any) {
-    console.log(event);
+  getCitiesSelect(countyId: string) {
+    this.cityData.GetCitiesByCountyDropdown(+countyId).subscribe((cities: SelectItemsList) => {
+      this.citySelectList = cities;
+    },
+    error => {
+        this.uiService.showErrorSnackbar(error.message, null, 3000);
+    })
   }
 
-  onSubmit(form: NgForm) {
+  onSubmit() {
     this.isLoading = true;
     const addUserCommand: AddUserCommand = {
-        email: form.value.email,
-        password: form.value.password,
-        firstName: form.value.firstName,
-        middleName: form.value.middleName,
-        lastName: form.value.lastName,
-        address: form.value.address,
-        streetName: form.value.streetName,
-        cNP: form.value.cnp,
-        phoneNumber: form.value.phoneNumber,
-        countryId: form.value.countryId,
-        countyId: form.value.countyId,
-        cityId: form.value.cityId,
-        genderId: form.value.genderId
+        email: this.registerForm.value.email,
+        password: this.registerForm.value.password,
+        firstName: this.registerForm.value.firstName,
+        middleName: this.registerForm.value.middleName,
+        lastName: this.registerForm.value.lastName,
+        address: this.registerForm.value.address,
+        streetName: this.registerForm.value.streetName,
+        streetNo: this.registerForm.value.streetNo,
+        cnp: this.registerForm.value.cnp,
+        phoneNumber: this.registerForm.value.phoneNumber,
+        countryId: +this.registerForm.value.countryId,
+        countyId: +this.registerForm.value.countyId,
+        cityId: +this.registerForm.value.cityId,
+        genderId: +this.registerForm.value.genderId
     } as AddUserCommand;
-    this.userData.AddUser(addUserCommand).subscribe(x => {
+    console.log(addUserCommand);
+    this.userData.AddUser(addUserCommand).subscribe(res => {
         this.isLoading = false;
-        this.uiService.showSnackbar('You successfully registered! Welcome!', null, 3000);
-        this.router.navigate(['']);
+        this.authService.setToken(res.token)
+        this.uiService.showSuccessSnackbar('You successfully registered! Welcome!', null, 3000);
+        this.authService.initAuthListener();
     }, error => {
         this.isLoading = false;
-        this.uiService.showSnackbar(error.message, null, 3000);
+        this.uiService.showErrorSnackbar(error.message, null, 3000);
     })
   }
 }

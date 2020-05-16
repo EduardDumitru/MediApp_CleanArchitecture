@@ -7,7 +7,11 @@ export class UIService {
 
     constructor(private matSnackbar: MatSnackBar){}
 
-    showSnackbar(message: string, action: string, duration: number) {
-        this.matSnackbar.open(message, action, {duration})
+    showErrorSnackbar(message: string, action: string, duration: number) {
+        this.matSnackbar.open(message, action, {duration, panelClass: ['error-snackbar']});
+    }
+
+    showSuccessSnackbar(message: string, action: string, duration: number) {
+        this.matSnackbar.open(message, action, {duration, panelClass: ['success-snackbar']});
     }
 }

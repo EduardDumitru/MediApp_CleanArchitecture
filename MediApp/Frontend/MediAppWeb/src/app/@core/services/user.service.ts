@@ -23,18 +23,21 @@ export class UserService extends UserData {
     };
 
     AddUser(addUserCommand: AddUserCommand): Observable<AuthSuccessResponse> {
-        return this.http.post<AuthSuccessResponse>(this.baseUrl + '/adduser/', JSON.stringify(addUserCommand), this.httpOptions)
+        return this.http.post<AuthSuccessResponse>(this.baseUrl + '/adduser', JSON.stringify(addUserCommand), this.httpOptions)
             .pipe(
+                map(res => {
+                    return res;
+                }),
                 retry(1),
                 catchError(this.errorHandl)
             );
     }
 
     LoginUser(loginUserCommand: LoginUserCommand): Observable<AuthSuccessResponse> {
-        return this.http.post<AuthSuccessResponse>(this.baseUrl + '/login/', JSON.stringify(loginUserCommand), this.httpOptions)
+        return this.http.post<AuthSuccessResponse>(this.baseUrl + '/login', JSON.stringify(loginUserCommand), this.httpOptions)
             .pipe(
-                map(user => {
-                    return user;
+                map(res => {
+                    return res;
                 }),
                 retry(1),
                 catchError(this.errorHandl)
@@ -52,16 +55,28 @@ export class UserService extends UserData {
     }
 
     errorHandl(error) {
-        console.log(error);
-        let errorMessage = '';
+        let errorMessage = ''
         if (error.error instanceof ErrorEvent) {
           // Get client-side error
           errorMessage = error.error.message;
+
         } else {
           // Get server-side error
-          errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+            const obj = error.error.errors;
+            if(Object.keys(obj).length) {
+                Object.keys(obj).forEach(key => {
+                    if (obj[key] instanceof Array) {
+                        obj[key].forEach((elError: string) => {
+                            errorMessage += elError + '\n';
+                        });
+                    } else if (obj instanceof Array) {
+                        obj.forEach((elError: string) => {
+                            errorMessage += elError + '\n';
+                        });
+                    }
+                });
+            }
         }
-        console.log(errorMessage);
         return throwError(errorMessage);
      }
 

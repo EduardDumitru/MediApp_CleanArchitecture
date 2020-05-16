@@ -1,6 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
-
+@import "~@angular/material/theming";
+@import "src/assets/variables.scss";
 html, body {
     font-family: 'Roboto', sans-serif;
     height: 100%;
@@ -8,4 +9,14 @@ html, body {
 
 body {
     margin: 0;
+}
+
+.success-snackbar {
+    background: mat-color($primaryPalette);
+    white-space: pre-wrap;
+  }
+
+.error-snackbar {
+    background: mat-color($warnPalette);
+    white-space: pre-wrap;
 }

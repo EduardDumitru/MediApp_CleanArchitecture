@@ -8,7 +8,6 @@ import { PagesComponent } from './pages.component';
 const routes: Routes = [{
   path: '',
   component: PagesComponent,
-  canActivate: [AuthGuard],
   children: [
     {
       path: 'dashboard',

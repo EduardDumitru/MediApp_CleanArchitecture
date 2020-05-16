@@ -1,41 +1,4 @@
 <section>
-    <form fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="10px"#f="ngForm" (ngSubmit)="onSubmit(f)">
-        <mat-form-field>
-            <input 
-            type="email" 
-            matInput 
-            placeholder="Your email" 
-            ngModel 
-            name="email"
-            required
-            #emailInput="ngModel"/>
-            <mat-error *ngIf="emailInput.hasError('required')">Field is required</mat-error>
-            <mat-error *ngIf="!emailInput.hasError('required')">Email is invalid</mat-error>
-        </mat-form-field>
-        <mat-form-field hintLabel="Should be at least 8 characters long and contain at least one lowercase letter, uppercase letter and special characters">
-            <input 
-            type="password" 
-            matInput 
-            placeholder="Your password" 
-            ngModel 
-            name="password"
-            required
-            minlength="8"
-            #pwInput="ngModel"/>
-            <mat-hint align="end" *ngIf = "pwInput.value?.length < 8">{{pwInput.value?.length}} / 8</mat-hint>
-        </mat-form-field>
-        <mat-form-field>
-            <input matInput placeholder="Your birthdate" [matDatepicker]="picker" ngModel name="birthdate" required>
-            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-datepicker #picker></mat-datepicker>
-        </mat-form-field>
-        <mat-checkbox ngModel name="agree" required color="primary">Agree to Terms and Conditions</mat-checkbox>
-        <button *ngIf="!isLoading" mat-raised-button color="primary" [disabled]="f.invalid">Submit</button>
-        <mat-spinner *ngIf="isLoading"></mat-spinner>
-    </form>
-</section>
-
-<section>
     <form
       fxLayout="column"
       fxLayoutAlign="center center"
@@ -47,24 +10,29 @@
           type="email"
           matInput
           placeholder="Your email"
-          formControlName="email">
+          formControlName="email"
+          required>
         <mat-hint>Please enter a valid email.</mat-hint>
-        <mat-error>Invalid or missing email.</mat-error>
+        <mat-error>Invalid or missing email. Example: Test@test.com</mat-error>
       </mat-form-field>
-      <mat-form-field>
+      <mat-form-field style="padding-bottom: 10px;">
         <input
           type="password"
           matInput
           placeholder="Your password"
           formControlName="password"
-          hintLabel="Should be at least 8 characters long and contain at least one lowercase letter, uppercase letter and special characters">
-        <mat-error>Invalid or Missing password.</mat-error>
+          hintLabel="Should be at least 8 characters long and contain at least one lowercase letter, uppercase letter and special characters"
+          required>
+        <mat-hint>Please enter a valid password with 8 characters and include special, lowercase, uppercase and numbers.</mat-hint>
+        <mat-error>Please enter a valid password with 8 characters and include special, lowercase, uppercase and numbers.</mat-error>
       </mat-form-field>
       <mat-form-field>
         <input
           matInput
           placeholder="First Name"
-          formControlName="firstName">
+          formControlName="firstName"
+          required>
+        <mat-hint>Please enter a first name.</mat-hint>
         <mat-error>First name is required</mat-error>
       </mat-form-field>
       <mat-form-field>
@@ -77,7 +45,9 @@
         <input
           matInput
           placeholder="Last Name"
-          formControlName="lastName">
+          formControlName="lastName"
+          required>
+        <mat-hint>Please enter a last name.</mat-hint>
         <mat-error>Last name is required</mat-error>
       </mat-form-field>
       <mat-form-field>
@@ -96,44 +66,52 @@
         <input
           matInput
           placeholder="Street No."
-          formControlName="streetNo">
+          formControlName="streetNo"
+          required>
+        <mat-hint>Please enter a street no.</mat-hint>
         <mat-error>Street No. is Required</mat-error>
       </mat-form-field>
       <mat-form-field>
         <input
           matInput
           placeholder="CNP"
-          formControlName="cNP">
-        <mat-error>Invalid or missing CNP</mat-error>
+          formControlName="cnp"
+          required>
+        <mat-hint>Please enter a valid CNP. Example: 1991111121123</mat-hint>
+        <mat-error>Invalid or missing CNP. Example: 1991111121123</mat-error>
       </mat-form-field>
       <mat-form-field>
         <input
           matInput
           placeholder="Phone Number"
-          formControlName="phoneNumber">
-        <mat-error>Invalid or missing phone number</mat-error>
+          formControlName="phoneNumber"
+          required>
+        <mat-hint>Please enter a valid phone number. Example: 0743123123</mat-hint>
+        <mat-error>Invalid or missing phone number. Example: 0743123123</mat-error>
       </mat-form-field>
       <mat-form-field>
-        <mat-select placeholder="Choose Country" formControlName="countryId" required>
+        <mat-select placeholder="Choose Country" formControlName="countryId" (selectionChange)="getCountiesSelect($event.value)" required>
           <mat-option
             *ngFor="let country of countrySelectList.selectItems"
             [value]="country.value">
             {{ country.label }}
           </mat-option>
         </mat-select>
+        <mat-hint>Please choose a country</mat-hint>
         <mat-error>Please choose a country</mat-error>
       </mat-form-field>
-      <mat-form-field>
-        <mat-select placeholder="Choose County" formControlName="countyId" (selectionChange)="getCountiesSelect($event.value)" required>
+      <mat-form-field *ngIf="this.countySelectList.selectItems">
+        <mat-select placeholder="Choose County" formControlName="countyId" required (selectionChange)="getCitiesSelect($event.value)" required>
           <mat-option
             *ngFor="let county of countySelectList.selectItems"
             [value]="county.value">
             {{ county.label }}
           </mat-option>
         </mat-select>
+        <mat-hint>Please choose a county</mat-hint>
         <mat-error>Please choose a county</mat-error>
       </mat-form-field>
-      <mat-form-field>
+      <mat-form-field *ngIf="this.citySelectList.selectItems">
         <mat-select placeholder="Choose City" formControlName="cityId" required>
           <mat-option
             *ngFor="let city of citySelectList.selectItems"
@@ -141,6 +119,7 @@
             {{ city.label }}
           </mat-option>
         </mat-select>
+        <mat-hint>Please choose a city</mat-hint>
         <mat-error>Please choose a city</mat-error>
       </mat-form-field>
       <mat-form-field>
@@ -151,6 +130,7 @@
             {{ gender.label }}
           </mat-option>
         </mat-select>
+        <mat-hint>Please choose a gender</mat-hint>
         <mat-error>Please choose a gender</mat-error>
       </mat-form-field>
       <button *ngIf="!isLoading" type="submit" mat-raised-button color="primary" [disabled]="registerForm.invalid">Submit</button>

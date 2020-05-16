@@ -7,16 +7,23 @@ import { AuthService } from '../../auth/auth.service';
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss']
 })
-export class SidebarComponent implements OnInit {
+export class SidebarComponent implements OnInit, OnDestroy {
   @Output()
   closeSidenav = new EventEmitter<void>();
 
   isAuth = false;
+  authSubscription: Subscription;
 
   constructor(private authService: AuthService) { }
 
   ngOnInit(): void {
-    this.isAuth = this.authService.isAuthenticated();
+    this.authSubscription = this.authService.authChange.subscribe(authStatus => {
+      this.isAuth = authStatus;
+    })
+  }
+
+  ngOnDestroy(): void {
+    this.authSubscription.unsubscribe();
   }
 
   onClose() {

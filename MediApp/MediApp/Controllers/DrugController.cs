@@ -20,7 +20,7 @@ namespace MediApp.Controllers
 
             if (vm == null)
             {
-                return BadRequest("No valid drug was found");
+                return BadRequest(Result.Failure(new List<string> {"No valid drug was found"}));
             }
 
             return Ok(vm);

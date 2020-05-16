@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Application.CommandsAndQueries;
 using Application.Common.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -16,7 +17,7 @@ namespace MediApp.Controllers
 
             if (vm == null)
             {
-                return BadRequest("No valid city was found");
+                return BadRequest(Result.Failure(new List<string> {"No valid city was found"}));
             }
 
             return Ok(vm);

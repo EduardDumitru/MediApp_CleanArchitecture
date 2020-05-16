@@ -31,7 +31,7 @@ namespace Application.CommandsAndQueries
                 .EmailAddress().WithMessage("The specified email is not valid.")
                 .MustAsync(BeUniqueEmail).WithMessage("The specified email already exists.");
 
-            RuleFor(x => x.CNP)
+            RuleFor(x => x.Cnp)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("CNP is required.")
                 .Length(13).WithMessage("CNP must have 13 digits")
