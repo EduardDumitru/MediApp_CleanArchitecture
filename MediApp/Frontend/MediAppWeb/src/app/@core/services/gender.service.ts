@@ -9,7 +9,7 @@ import { Result } from '../data/common/result';
 
 @Injectable()
 export class GenderService extends GenderData {
-    baseUrl = environment.baseURL + 'gender';
+    baseUrl = environment.baseURL + 'Gender';
 
     // Http Headers
     httpOptions = {

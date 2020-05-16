@@ -11,7 +11,7 @@ import { Result } from '../data/common/result';
 
 @Injectable()
 export class MedicalCheckTypeService extends MedicalCheckTypeData {
-    baseUrl = environment.baseURL + 'medicalchecktype';
+    baseUrl = environment.baseURL + 'MdicalCheckType';
 
     // Http Headers
     httpOptions = {

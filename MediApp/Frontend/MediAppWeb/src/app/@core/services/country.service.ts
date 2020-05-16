@@ -12,7 +12,7 @@ import { Result } from '../data/common/result';
 export class CountryService extends CountryData {
 
 
-    baseUrl = environment.baseURL + 'country';
+    baseUrl = environment.baseURL + 'Country';
 
     // Http Headers
     httpOptions = {

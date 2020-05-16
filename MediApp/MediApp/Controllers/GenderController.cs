@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MediApp.Controllers
 {
-    [Authorize]
     public class GenderController: ApiController
     {
         [HttpGet("{id}")]

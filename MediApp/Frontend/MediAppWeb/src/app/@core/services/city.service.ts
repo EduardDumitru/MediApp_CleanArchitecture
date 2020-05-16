@@ -10,7 +10,7 @@ import { retry, catchError } from 'rxjs/operators';
 @Injectable()
 export class CityService extends CityData {
 
-    baseUrl = environment.baseURL + 'city';
+    baseUrl = environment.baseURL + 'City';
 
     // Http Headers
     httpOptions = {

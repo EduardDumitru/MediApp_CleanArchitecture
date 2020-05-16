@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MediApp.Controllers
 {
-    [Authorize]
     public class CountryController : ApiController
     {
         [HttpGet("{id}")]

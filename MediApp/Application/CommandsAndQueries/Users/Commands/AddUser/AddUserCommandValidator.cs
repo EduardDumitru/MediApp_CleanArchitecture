@@ -35,15 +35,15 @@ namespace Application.CommandsAndQueries
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("CNP is required.")
                 .Length(13).WithMessage("CNP must have 13 digits")
-                .Matches("^[0-9]*$")
-                .MustAsync(BeUniqueCNP).WithMessage("The specified CNP already exists")
-                .MustAsync(IsCNPValid).WithMessage("The specified CNP is not valid");
+                .Matches("^[0-9]*$").WithMessage("CNP must have only digits")
+                .MustAsync(IsCNPValid).WithMessage("The specified CNP is not valid")
+                .MustAsync(BeUniqueCNP).WithMessage("The specified CNP already exists");
 
             RuleFor(x => x.PhoneNumber)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("Phone number is required.")
                 .Length(10).WithMessage("Phone number must have 10 digits")
-                .Matches("^07[0-9]*$").WithMessage("Phone number is not valid")
+                .Matches("^(07[0-8]{1}[0-9]{1}|02[0-9]{2}|03[0-9]{2}){1}?([0-9]{3}(\\s|\\.|\\-|)){2}$").WithMessage("Phone number is not valid")
                 .MustAsync(BeUniquePhoneNumber).WithMessage("Phone number already exists");
 
             RuleFor(x => x.FirstName)

@@ -10,7 +10,7 @@ import { Result } from '../data/common/result';
 
 @Injectable()
 export class HolidayIntervalService extends HolidayIntervalData {
-    baseUrl = environment.baseURL + 'gender';
+    baseUrl = environment.baseURL + 'HolidayInterval';
 
     // Http Headers
     httpOptions = {

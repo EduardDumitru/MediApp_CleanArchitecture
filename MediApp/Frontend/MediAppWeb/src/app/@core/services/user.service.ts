@@ -5,12 +5,12 @@ import { CurrentUser } from '../data/userclasses/currentuser';
 import { AuthSuccessResponse } from '../data/common/authresponse';
 import { environment } from 'src/environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { retry, catchError } from 'rxjs/operators';
-import { AuthService } from '../auth/auth.service';
+import { retry, catchError, map } from 'rxjs/operators';
+import { AuthService } from '../../auth/auth.service';
 
 @Injectable()
 export class UserService extends UserData {
-    baseUrl = environment.baseURL + 'user';
+    baseUrl = environment.baseURL + 'User';
     constructor(private http: HttpClient, private authService: AuthService) {
         super();
     }
@@ -33,6 +33,9 @@ export class UserService extends UserData {
     LoginUser(loginUserCommand: LoginUserCommand): Observable<AuthSuccessResponse> {
         return this.http.post<AuthSuccessResponse>(this.baseUrl + '/login/', JSON.stringify(loginUserCommand), this.httpOptions)
             .pipe(
+                map(user => {
+                    return user;
+                }),
                 retry(1),
                 catchError(this.errorHandl)
             );
@@ -49,6 +52,7 @@ export class UserService extends UserData {
     }
 
     errorHandl(error) {
+        console.log(error);
         let errorMessage = '';
         if (error.error instanceof ErrorEvent) {
           // Get client-side error

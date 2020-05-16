@@ -1,25 +1,30 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { UserProfileModule } from './components/user/user.module';
-import { DashboardModule } from './components/dashboard/dashboard.module';
-import { AuthService } from './@core/auth/auth.service';
-import { AuthGuardService } from './@core/auth/auth-guard.service';
+import { UserModule } from './pages/user/user.module';
+import { AuthService } from './auth/auth.service';
+import { AuthGuardService } from './auth/auth-guard.service';
 import { JwtModule } from '@auth0/angular-jwt';
 import { HttpClientModule } from '@angular/common/http';
-import { ThemeModule } from './@theme/theme.module';
-import { NbSidebarModule, NbMenuModule, NbDatepickerModule,
-  NbDialogModule, NbWindowModule, NbToastrModule, NbChatModule } from '@nebular/theme';
 import { CoreModule } from './@core/core.module';
+import { MiscellaneousModule } from './pages/miscellaneous/miscellaneous.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NavbarComponent } from './navigation/navbar/navbar.component';
+import { SidebarComponent } from './navigation/sidebar/sidebar.component';
+import { SharedModule } from './shared/shared.module';
+import { UIService } from './shared/ui.service';
+import { AuthModule } from './auth/auth.module';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    NavbarComponent,
+    SidebarComponent,
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     HttpClientModule,
     JwtModule.forRoot({
@@ -30,19 +35,13 @@ import { CoreModule } from './@core/core.module';
         whitelistedDomains: ['localhost:4200/login', 'localhost:4200/register']
       }
     }),
-    UserProfileModule,
-    DashboardModule,
-    ThemeModule.forRoot(),
-
-    NbSidebarModule.forRoot(),
-    NbMenuModule.forRoot(),
-    NbDatepickerModule.forRoot(),
-    NbDialogModule.forRoot(),
-    NbWindowModule.forRoot(),
-    NbToastrModule.forRoot(),
-    CoreModule.forRoot()
+    UserModule,
+    AuthModule,
+    CoreModule.forRoot(),
+    MiscellaneousModule,
+    SharedModule
   ],
-  providers: [AuthService, AuthGuardService],
+  providers: [AuthService, AuthGuardService, UIService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

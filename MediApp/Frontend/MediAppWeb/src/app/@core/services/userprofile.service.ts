@@ -5,10 +5,10 @@ import { UserProfileData, UserProfileDetail, UpdateUserProfileCommand, UserProfi
 import { environment } from 'src/environments/environment';
 import { retry, catchError } from 'rxjs/operators';
 import { Result } from '../data/common/result';
-
+import { map } from 'rxjs/operators';
 @Injectable()
 export class UserProfileService extends UserProfileData {
-    baseUrl = environment.baseURL + 'userprofile';
+    baseUrl = environment.baseURL + 'UserProfile';
 
     // Http Headers
     httpOptions = {
@@ -24,23 +24,23 @@ export class UserProfileService extends UserProfileData {
     getUserProfiles(): Observable<UserProfilesList> {
         return this.http.get<UserProfilesList>(this.baseUrl)
             .pipe(
-                retry(1),
-                catchError(this.errorHandl)
+                map((response: any) => response.json()),
+                catchError(this.handleError)
             );
     }
     getUserProfile(id: number): Observable<UserProfileDetail> {
         return this.http.get<UserProfileDetail>(this.baseUrl + '/' + id)
             .pipe(
-                retry(1),
-                catchError(this.errorHandl)
+                map((response: any) => response.json()),
+                catchError(this.handleError)
             );
     }
     updateUserProfile(userProfile: UpdateUserProfileCommand): Observable<Result> {
         return this.http.put<Result>(this.baseUrl, JSON.stringify(userProfile), this.httpOptions)
-        .pipe(
-            retry(1),
-            catchError(this.errorHandl)
-        );
+            .pipe(
+                map((response: any) => response.json()),
+                catchError(this.handleError)
+            );
     }
 
     errorHandl(error) {
@@ -55,4 +55,28 @@ export class UserProfileService extends UserProfileData {
         console.log(errorMessage);
         return throwError(errorMessage);
      }
+
+     protected handleError(error: any) {
+        const applicationError = error.headers.get('Application-Error');
+
+        // either applicationError in header or model error in body
+        if (applicationError) {
+          return throwError(applicationError);
+        }
+
+        let modelStateErrors = '';
+        const serverError = error.json();
+
+        if (!serverError.type) {
+          for (const key in serverError) {
+            if (serverError[key]) {
+              modelStateErrors += serverError[key] + '\n';
+            }
+          }
+        }
+
+        modelStateErrors = modelStateErrors = '' ? null : modelStateErrors;
+
+        return throwError(modelStateErrors || 'Server error');
+      }
 }

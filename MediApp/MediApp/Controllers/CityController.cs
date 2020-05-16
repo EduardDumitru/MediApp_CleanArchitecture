@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MediApp.Controllers
 {
-    [Authorize]
     public class CityController : ApiController
     {
         [HttpGet("{id}")]

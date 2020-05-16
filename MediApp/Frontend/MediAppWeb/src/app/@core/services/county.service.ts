@@ -9,7 +9,7 @@ import { Result } from '../data/common/result';
 
 @Injectable()
 export class CountyService extends CountyData {
-    baseUrl = environment.baseURL + 'county';
+    baseUrl = environment.baseURL + 'County';
 
     // Http Headers
     httpOptions = {

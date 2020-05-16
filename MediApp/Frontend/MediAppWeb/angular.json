@@ -30,7 +30,8 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [
+            ]
           },
           "configurations": {
             "production": {
@@ -90,7 +91,8 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [
+            ]
           }
         },
         "lint": {
@@ -119,6 +121,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "MediApp"
+    }
+  },
+  "defaultProject": "MediApp",
+  "cli": {
+    "analytics": "7ed6a741-b2da-44c8-b49f-f40d1c991793"
+  }
 }

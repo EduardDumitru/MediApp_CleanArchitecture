@@ -1,27 +1,21 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule, CanActivate } from '@angular/router';
-import { AuthGuardService as AuthGuard, AuthGuardService } from './@core/auth/auth-guard.service';
-import { AppComponent } from './app.component';
-import { UserProfileComponent } from './components/user/userprofile/userprofile.component';
-import { LoginComponent } from './components/user/login/login.component';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { NotFoundComponent } from './components/miscellaneous/notfound/notfound.component';
+import { Routes, RouterModule } from '@angular/router';
+import { AuthGuardService as AuthGuard } from './auth/auth-guard.service';
+import { UserProfileComponent } from './pages/user/userprofile/userprofile.component';
+import { LoginComponent } from './auth/login/login.component';
+import { RegisterComponent } from './auth/register/register.component';
 
 const routes: Routes = [
-  { path: '',
-  component: DashboardComponent,
-  canActivate: [AuthGuard] },
-  {
-    path: 'profile',
-    component: UserProfileComponent,
-    canActivate: [AuthGuard]
-  },
   {
     path: 'login',
     component: LoginComponent
   },
-  { path: '**',
-    component: NotFoundComponent }
+  {
+    path: 'register',
+    component: RegisterComponent
+  },
+  { path: '',
+  loadChildren: () => import('./pages/pages.module').then(m => m.PagesModule)}
 ];
 
 @NgModule({

@@ -10,7 +10,7 @@ import { Result } from '../data/common/result';
 
 @Injectable()
 export class EmployeeTypeService extends EmployeeTypeData {
-    baseUrl = environment.baseURL + 'employeetype';
+    baseUrl = environment.baseURL + 'EmployeeType';
 
     // Http Headers
     httpOptions = {

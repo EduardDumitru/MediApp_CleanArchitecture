@@ -9,7 +9,7 @@ import { Result } from '../data/common/result';
 
 @Injectable()
 export class DiagnosisXDrugService extends DiagnosisXDrugData {
-    baseUrl = environment.baseURL + 'diagnosisxdrug';
+    baseUrl = environment.baseURL + 'DiagnosisXDrug';
 
     // Http Headers
     httpOptions = {
