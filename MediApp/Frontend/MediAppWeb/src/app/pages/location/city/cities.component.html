@@ -31,7 +31,7 @@
         <mat-header-cell *matHeaderCellDef mat-sort-header>Deleted</mat-header-cell>
         <mat-cell *matCellDef="let element">
             {{element.Deleted}}
-            <mat-checkbox [checked]="element.isPublish" disabled></mat-checkbox>
+            <mat-checkbox [checked]="element.Deleted" disabled></mat-checkbox>
         </mat-cell>
     </ng-container>
 
