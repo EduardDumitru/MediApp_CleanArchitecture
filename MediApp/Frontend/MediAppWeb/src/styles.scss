@@ -11,6 +11,10 @@ body {
     margin: 0;
 }
 
+mat-cell > mat-checkbox {
+    padding-left: 15px;
+}
+
 .success-snackbar {
     background: mat-color($primaryPalette);
     white-space: pre-wrap;

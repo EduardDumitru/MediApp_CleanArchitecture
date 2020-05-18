@@ -9,7 +9,7 @@
         Login
       </span>
     </a>
-    <a  mat-list-item routerLink="/cities" (click)="onClose()" *ngIf="isAuth">
+    <a  mat-list-item routerLink="/location/cities" (click)="onClose()" *ngIf="isAdmin">
       <mat-icon>fitness_center</mat-icon>
       <span class="nav-caption">
         Cities

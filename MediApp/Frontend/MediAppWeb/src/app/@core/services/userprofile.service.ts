@@ -6,77 +6,44 @@ import { environment } from 'src/environments/environment';
 import { retry, catchError } from 'rxjs/operators';
 import { Result } from '../data/common/result';
 import { map } from 'rxjs/operators';
+import { ErrorService } from 'src/app/shared/error.service';
+import { AuthService } from 'src/app/auth/auth.service';
 @Injectable()
 export class UserProfileService extends UserProfileData {
     baseUrl = environment.baseURL + 'UserProfile';
 
     // Http Headers
-    httpOptions = {
+        httpOptions = {
         headers: new HttpHeaders({
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${this.authService.getToken()}`
         })
     };
 
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient, private errService: ErrorService, private authService: AuthService) {
         super();
     }
 
+
     getUserProfiles(): Observable<UserProfilesList> {
-        return this.http.get<UserProfilesList>(this.baseUrl)
+        return this.http.get<UserProfilesList>(this.baseUrl, this.httpOptions)
             .pipe(
-                map((response: any) => response.json()),
-                catchError(this.handleError)
+                map((response: any) => response),
+                catchError(this.errService.errorHandl)
             );
     }
     getUserProfile(id: number): Observable<UserProfileDetail> {
-        return this.http.get<UserProfileDetail>(this.baseUrl + '/' + id)
+        return this.http.get<UserProfileDetail>(this.baseUrl + '/' + id, this.httpOptions)
             .pipe(
-                map((response: any) => response.json()),
-                catchError(this.handleError)
+                map((response: any) => response),
+                catchError(this.errService.errorHandl)
             );
     }
     updateUserProfile(userProfile: UpdateUserProfileCommand): Observable<Result> {
         return this.http.put<Result>(this.baseUrl, JSON.stringify(userProfile), this.httpOptions)
             .pipe(
-                map((response: any) => response.json()),
-                catchError(this.handleError)
+                map((response: any) => response),
+                catchError(this.errService.errorHandl)
             );
     }
-
-    errorHandl(error) {
-        let errorMessage = '';
-        if (error.error instanceof ErrorEvent) {
-          // Get client-side error
-          errorMessage = error.error.message;
-        } else {
-          // Get server-side error
-          errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
-        }
-        console.log(errorMessage);
-        return throwError(errorMessage);
-     }
-
-     protected handleError(error: any) {
-        const applicationError = error.headers.get('Application-Error');
-
-        // either applicationError in header or model error in body
-        if (applicationError) {
-          return throwError(applicationError);
-        }
-
-        let modelStateErrors = '';
-        const serverError = error.json();
-
-        if (!serverError.type) {
-          for (const key in serverError) {
-            if (serverError[key]) {
-              modelStateErrors += serverError[key] + '\n';
-            }
-          }
-        }
-
-        modelStateErrors = modelStateErrors = '' ? null : modelStateErrors;
-
-        return throwError(modelStateErrors || 'Server error');
-      }
 }

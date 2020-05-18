@@ -7,11 +7,12 @@ import { environment } from 'src/environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { retry, catchError, map } from 'rxjs/operators';
 import { AuthService } from '../../auth/auth.service';
+import { ErrorService } from 'src/app/shared/error.service';
 
 @Injectable()
 export class UserService extends UserData {
     baseUrl = environment.baseURL + 'User';
-    constructor(private http: HttpClient, private authService: AuthService) {
+    constructor(private http: HttpClient, private authService: AuthService, private errService: ErrorService) {
         super();
     }
 
@@ -29,7 +30,7 @@ export class UserService extends UserData {
                     return res;
                 }),
                 retry(1),
-                catchError(this.errorHandl)
+                catchError(this.errService.errorHandl)
             );
     }
 
@@ -40,12 +41,12 @@ export class UserService extends UserData {
                     return res;
                 }),
                 retry(1),
-                catchError(this.errorHandl)
+                catchError(this.errService.errorHandl)
             );
     }
 
     GetCurrentUser(): Observable<CurrentUser> {
-        const token = this.authService.decodeToken(this.authService.getToken());
+        const token = this.authService.getDecodedToken();
         const user = new CurrentUser();
         user.email = token.email;
         user.firstName = token.firstName;
@@ -53,31 +54,5 @@ export class UserService extends UserData {
         user.id = token.id;
         return observableOf(user);
     }
-
-    errorHandl(error) {
-        let errorMessage = ''
-        if (error.error instanceof ErrorEvent) {
-          // Get client-side error
-          errorMessage = error.error.message;
-
-        } else {
-          // Get server-side error
-            const obj = error.error.errors;
-            if(Object.keys(obj).length) {
-                Object.keys(obj).forEach(key => {
-                    if (obj[key] instanceof Array) {
-                        obj[key].forEach((elError: string) => {
-                            errorMessage += elError + '\n';
-                        });
-                    } else if (obj instanceof Array) {
-                        obj.forEach((elError: string) => {
-                            errorMessage += elError + '\n';
-                        });
-                    }
-                });
-            }
-        }
-        return throwError(errorMessage);
-     }
 
 }

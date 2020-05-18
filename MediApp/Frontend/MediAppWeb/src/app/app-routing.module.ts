@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { AuthGuardService as AuthGuard } from './auth/auth-guard.service';
 import { LoginComponent } from './auth/login/login.component';
 import { RegisterComponent } from './auth/register/register.component';
+import { NotFoundComponent } from './notfound/notfound.component';
 
 const routes: Routes = [
   {
@@ -13,7 +14,11 @@ const routes: Routes = [
     path: 'register',
     component: RegisterComponent
   },
-  { path: '', loadChildren: './pages/pages.module#PagesModule', canLoad: [AuthGuard] }
+  { path: '', loadChildren: './pages/pages.module#PagesModule', canLoad: [AuthGuard] },
+  {
+    path: '**',
+    component: NotFoundComponent,
+  },
 ];
 
 @NgModule({

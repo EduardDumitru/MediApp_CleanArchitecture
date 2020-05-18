@@ -9,7 +9,7 @@ namespace Application.CommandsAndQueries
 {
     public class CitiesLookupDto : IMapFrom<City>
     {
-        public short Id { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
         public string CountyName { get; set; }
         public string CountryName { get; set; }

@@ -8,7 +8,6 @@ import { AuthGuardService } from './auth/auth-guard.service';
 import { JwtModule } from '@auth0/angular-jwt';
 import { HttpClientModule } from '@angular/common/http';
 import { CoreModule } from './@core/core.module';
-import { MiscellaneousModule } from './pages/miscellaneous/miscellaneous.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NavbarComponent } from './navigation/navbar/navbar.component';
 import { SidebarComponent } from './navigation/sidebar/sidebar.component';
@@ -16,12 +15,15 @@ import { SharedModule } from './shared/shared.module';
 import { UIService } from './shared/ui.service';
 import { AuthModule } from './auth/auth.module';
 import { RoleGuardService } from './auth/role-guard.service';
+import { ErrorService } from './shared/error.service';
+import { NotFoundComponent } from './notfound/notfound.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavbarComponent,
     SidebarComponent,
+    NotFoundComponent
   ],
   imports: [
     BrowserModule,
@@ -39,10 +41,9 @@ import { RoleGuardService } from './auth/role-guard.service';
     UserModule,
     AuthModule,
     CoreModule.forRoot(),
-    MiscellaneousModule,
     SharedModule
   ],
-  providers: [AuthService, AuthGuardService, RoleGuardService, UIService],
+  providers: [AuthService, AuthGuardService, RoleGuardService, UIService, ErrorService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

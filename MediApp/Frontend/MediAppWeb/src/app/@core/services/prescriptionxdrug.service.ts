@@ -4,63 +4,59 @@ import { PrescriptionXDrugData, PrescriptionXDrugsList,
     AddPrescriptionXDrugCommand, UpdatePrescriptionXDrugCommand } from '../data/prescriptionxdrug';
 import { environment } from 'src/environments/environment';
 import { Observable, throwError } from 'rxjs';
-import { retry, catchError } from 'rxjs/operators';
+import { retry, catchError, map } from 'rxjs/operators';
 import { Result } from '../data/common/result';
+import { ErrorService } from 'src/app/shared/error.service';
+import { AuthService } from 'src/app/auth/auth.service';
 
 @Injectable()
 export class PrescriptionXDrugService extends PrescriptionXDrugData {
     baseUrl = environment.baseURL + 'PrescriptionXDrug';
 
     // Http Headers
-    httpOptions = {
+        httpOptions = {
         headers: new HttpHeaders({
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${this.authService.getToken()}`
         })
     };
 
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient, private errService: ErrorService, private authService: AuthService) {
         super();
     }
 
 
+
     GetPrescriptionXDrugs(): Observable<PrescriptionXDrugsList> {
-        return this.http.get<PrescriptionXDrugsList>(this.baseUrl)
+        return this.http.get<PrescriptionXDrugsList>(this.baseUrl, this.httpOptions)
             .pipe(
+                map((response: any) => response),
                 retry(1),
-                catchError(this.errorHandl)
+                catchError(this.errService.errorHandl)
             );
     }
     AddPrescriptionXDrug(addPrescriptionXDrugCommand: AddPrescriptionXDrugCommand): Observable<Result> {
         return this.http.post<Result>(this.baseUrl, JSON.stringify(addPrescriptionXDrugCommand), this.httpOptions)
             .pipe(
+                map((response: any) => response),
                 retry(1),
-                catchError(this.errorHandl)
+                catchError(this.errService.errorHandl)
             );
     }
     DeletePrescriptionXDrug(id: number): Observable<Result> {
         return this.http.delete<Result>(this.baseUrl + '/' + id, this.httpOptions)
         .pipe(
+            map((response: any) => response),
             retry(1),
-            catchError(this.errorHandl)
+            catchError(this.errService.errorHandl)
         );
     }
     UpdatePrescriptionXDrug(updatePrescriptionXDrugCommand: UpdatePrescriptionXDrugCommand): Observable<Result> {
         return this.http.put<Result>(this.baseUrl, JSON.stringify(updatePrescriptionXDrugCommand), this.httpOptions)
         .pipe(
+            map((response: any) => response),
             retry(1),
-            catchError(this.errorHandl)
+            catchError(this.errService.errorHandl)
         );
-    }
-    errorHandl(error) {
-        let errorMessage = '';
-        if (error.error instanceof ErrorEvent) {
-          // Get client-side error
-          errorMessage = error.error.message;
-        } else {
-          // Get server-side error
-          errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
-        }
-        console.log(errorMessage);
-        return throwError(errorMessage);
     }
 }

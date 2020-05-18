@@ -12,7 +12,13 @@ export class SidebarComponent implements OnInit, OnDestroy {
   closeSidenav = new EventEmitter<void>();
 
   isAuth = false;
+  isAdmin = false;
+  isDoctor = false;
+  isNurse = false;
   authSubscription: Subscription;
+  adminSubscription: Subscription;
+  doctorSubscription: Subscription;
+  nurseSubscription: Subscription;
 
   constructor(private authService: AuthService) { }
 
@@ -20,10 +26,22 @@ export class SidebarComponent implements OnInit, OnDestroy {
     this.authSubscription = this.authService.authChange.subscribe(authStatus => {
       this.isAuth = authStatus;
     })
+    this.adminSubscription = this.authService.isAdmin.subscribe(isAdmin => {
+      this.isAdmin = isAdmin;
+    })
+    this.doctorSubscription = this.authService.isDoctor.subscribe(isDoctor => {
+      this.isDoctor = isDoctor;
+    })
+    this.nurseSubscription = this.authService.isNurse.subscribe(isNurse => {
+      this.isNurse = isNurse;
+    })
   }
 
   ngOnDestroy(): void {
     this.authSubscription.unsubscribe();
+    this.adminSubscription.unsubscribe();
+    this.doctorSubscription.unsubscribe();
+    this.nurseSubscription.unsubscribe();
   }
 
   onClose() {

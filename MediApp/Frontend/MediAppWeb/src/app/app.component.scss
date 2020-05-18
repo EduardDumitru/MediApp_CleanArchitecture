@@ -5,3 +5,7 @@ mat-sidenav-container, mat-sidenav-content, mat-sidenav {
 mat-sidenav {
     width: 250px;
 }
+
+mat-cell > mat-checkbox {
+    padding-left: 30px;
+}

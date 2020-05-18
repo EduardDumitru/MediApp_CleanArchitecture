@@ -3,71 +3,68 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { DiagnosisXDrugData, AddDiagnosisXDrugCommand, RestoreDiagnosisXDrugCommand, DiagnosisXDrugsList } from '../data/diagnosisxdrug';
 import { environment } from 'src/environments/environment';
 import { Observable, throwError } from 'rxjs';
-import { retry, catchError } from 'rxjs/operators';
+import { retry, catchError, map } from 'rxjs/operators';
 import { SelectItemsList } from '../data/common/selectitem';
 import { Result } from '../data/common/result';
+import { ErrorService } from 'src/app/shared/error.service';
+import { AuthService } from 'src/app/auth/auth.service';
 
 @Injectable()
 export class DiagnosisXDrugService extends DiagnosisXDrugData {
     baseUrl = environment.baseURL + 'DiagnosisXDrug';
 
     // Http Headers
-    httpOptions = {
+        httpOptions = {
         headers: new HttpHeaders({
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${this.authService.getToken()}`
         })
     };
 
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient, private errService: ErrorService, private authService: AuthService) {
         super();
     }
 
 
+
     GetDiagnosisXDrugs(): Observable<DiagnosisXDrugsList> {
-        return this.http.get<DiagnosisXDrugsList>(this.baseUrl)
+        return this.http.get<DiagnosisXDrugsList>(this.baseUrl, this.httpOptions)
             .pipe(
+                map((response: any) => response),
                 retry(1),
-                catchError(this.errorHandl)
+                catchError(this.errService.errorHandl)
             );
     }
     GetDrugsByDiagnosisDropdown(diagnosisId: number): Observable<SelectItemsList> {
-        return this.http.get<SelectItemsList>(this.baseUrl + '/drugsbydiagnosesdropdown/' + diagnosisId)
+        return this.http.get<SelectItemsList>(this.baseUrl + '/drugsbydiagnosesdropdown/' + diagnosisId, this.httpOptions)
             .pipe(
+                map((response: any) => response),
                 retry(1),
-                catchError(this.errorHandl)
+                catchError(this.errService.errorHandl)
             );
     }
     AddDiagnosisXDrug(addDiagnosisXDrugCommand: AddDiagnosisXDrugCommand): Observable<Result> {
         return this.http.post<Result>(this.baseUrl, JSON.stringify(addDiagnosisXDrugCommand), this.httpOptions)
             .pipe(
+                map((response: any) => response),
                 retry(1),
-                catchError(this.errorHandl)
+                catchError(this.errService.errorHandl)
             );
     }
     DeleteDiagnosisXDrug(id: number): Observable<Result> {
         return this.http.delete<Result>(this.baseUrl + '/' + id, this.httpOptions)
         .pipe(
+            map((response: any) => response),
             retry(1),
-            catchError(this.errorHandl)
+            catchError(this.errService.errorHandl)
         );
     }
     RestoreDiagnosisXDrug(restoreDiagnosisXDrugCommand: RestoreDiagnosisXDrugCommand): Observable<Result> {
         return this.http.put<Result>(this.baseUrl + '/restore', JSON.stringify(restoreDiagnosisXDrugCommand), this.httpOptions)
         .pipe(
+            map((response: any) => response),
             retry(1),
-            catchError(this.errorHandl)
+            catchError(this.errService.errorHandl)
         );
-    }
-    errorHandl(error) {
-        let errorMessage = '';
-        if (error.error instanceof ErrorEvent) {
-          // Get client-side error
-          errorMessage = error.error.message;
-        } else {
-          // Get server-side error
-          errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
-        }
-        console.log(errorMessage);
-        return throwError(errorMessage);
     }
 }

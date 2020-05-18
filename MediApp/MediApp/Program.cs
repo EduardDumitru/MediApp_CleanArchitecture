@@ -42,7 +42,7 @@ namespace MediApp
                 }
             }
 
-            host.Run();
+            await host.RunAsync();
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>

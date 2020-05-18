@@ -39,6 +39,8 @@ export class LoginComponent implements OnInit {
                 this.isLoading = false;
                 this.authService.setToken(res.token)
                 this.authService.initAuthListener();
+                this.router.navigate(['']);
+
             }, error => {
                 this.isLoading = false;
                 this.uiService.showErrorSnackbar(error, null, 3000);
