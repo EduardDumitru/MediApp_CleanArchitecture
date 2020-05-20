@@ -13,7 +13,13 @@ const routes: Routes = [
         data: {expectedRoles: ['Admin']}
     },
     {
-        path: 'cities/{id}',
+        path: 'cities/:id',
+        component: CityComponent,
+        canActivate: [RoleGuard],
+        data: {expectedRoles: ['Admin']}
+    },
+    {
+        path: 'cities/add',
         component: CityComponent,
         canActivate: [RoleGuard],
         data: {expectedRoles: ['Admin']}

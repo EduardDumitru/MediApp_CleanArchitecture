@@ -1,0 +1,37 @@
+<section>
+    <div fxLayout="row" >
+        <button *ngIf="!isLoading" type="button" mat-raised-button color="accent" 
+        fxFlex="200px" fxFlex.xs="100%" (click)="goBack()">Back</button>
+    </div>
+    <form
+      fxLayout="column"
+      fxLayoutAlign="center center"
+      fxLayoutGap="10px"
+      [formGroup]="cityForm"
+      (ngSubmit)="onSubmit()">
+      <mat-form-field>
+        <input
+          matInput
+          placeholder="Name"
+          formControlName="name"
+          required>
+        <mat-hint>Please enter a name.</mat-hint>
+        <mat-error>Name is required</mat-error>
+      </mat-form-field>
+      <mat-form-field *ngIf="this.countySelectList.selectItems">
+        <mat-select placeholder="Choose County" formControlName="countyId" required>
+          <mat-option
+            *ngFor="let county of countySelectList.selectItems"
+            [value]="county.value">
+            {{ county.label }}
+          </mat-option>
+        </mat-select>
+        <mat-hint>Please choose a county</mat-hint>
+        <mat-error>Please choose a county</mat-error>
+      </mat-form-field>
+      <button *ngIf="!isLoading" type="submit" mat-raised-button color="primary" [disabled]="cityForm.invalid">Submit</button>
+      <button *ngIf="!isLoading && !isDeleted && cityId" type="button" mat-raised-button color="accent" (click)="deleteCity()">Delete</button>
+      <button *ngIf="!isLoading && isDeleted && cityId" type="button" mat-raised-button color="accent" (click)="restoreCity()">Restore</button>
+      <mat-spinner *ngIf="isLoading"></mat-spinner>
+    </form>
+  </section>

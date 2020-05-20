@@ -142,12 +142,12 @@ export class RegisterComponent implements OnInit {
         cityId: +this.registerForm.value.cityId,
         genderId: +this.registerForm.value.genderId
     } as AddUserCommand;
-    console.log(addUserCommand);
     this.userData.AddUser(addUserCommand).subscribe(res => {
         this.isLoading = false;
         this.authService.setToken(res.token)
         this.uiService.showSuccessSnackbar('You successfully registered! Welcome!', null, 3000);
         this.authService.initAuthListener();
+        this.router.navigate(['']);
     }, error => {
         this.isLoading = false;
         this.uiService.showErrorSnackbar(error.message, null, 3000);

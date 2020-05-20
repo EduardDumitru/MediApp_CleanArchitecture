@@ -27,7 +27,7 @@ namespace Application.CommandsAndQueries
 
         public async Task<CityDetailsVm> Handle(GetCityDetailsQuery request, CancellationToken cancellationToken)
         {
-            var entity = await _context.Counties.FindAsync(request.Id);
+            var entity = await _context.Cities.FindAsync(request.Id);
 
             return entity == null ? null : _mapper.Map<CityDetailsVm>(entity);
         }

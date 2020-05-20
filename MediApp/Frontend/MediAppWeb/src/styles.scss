@@ -24,3 +24,8 @@ mat-cell > mat-checkbox {
     background: mat-color($warnPalette);
     white-space: pre-wrap;
 }
+
+mat-row:hover {
+    background-color: lightgray;
+    cursor: pointer; 
+}

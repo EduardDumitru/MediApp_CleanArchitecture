@@ -1,9 +1,13 @@
 
 
 <div fxLayoutAlign="center center">
-    <mat-form-field fxFlex="40%">
+    <mat-form-field fxFlex="40%" fxFlex.xs="100%">
         <input matInput type="text" (keyup)="doFilter($event.target.value)" placeholder="Filter"/>
     </mat-form-field>
+</div>
+<div fxLayoutAlign="end" fxLayout="row" >
+<button *ngIf="!isLoading" type="submit" mat-raised-button color="primary" 
+fxFlex="200px" fxFlex.xs="100%" routerLink="/location/cities/add">Add City</button>
 </div>
 <mat-table [dataSource]="dataSource" matSort>
 
@@ -30,13 +34,12 @@
     <ng-container matColumnDef="deleted">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Deleted</mat-header-cell>
         <mat-cell *matCellDef="let element">
-            {{element.deleted}}
             <mat-checkbox [checked]="element.deleted" disabled></mat-checkbox>
         </mat-cell>
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns" routerLink="/location/cities/{{row.id}}"></mat-row>
     <mat-spinner *ngIf="isLoading"></mat-spinner>
 </mat-table>
 
