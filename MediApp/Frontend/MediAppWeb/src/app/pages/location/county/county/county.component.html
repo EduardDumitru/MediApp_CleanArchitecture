@@ -1,0 +1,72 @@
+
+<section fxLayout fxLayoutAlign="center" class="county-card">
+    <form [formGroup]="countyForm" (ngSubmit)="onSubmit()">
+      <mat-card fxFlex.xs="100%" fxFlex="600px">
+        <mat-card-title fxLayoutAlign="center" *ngIf="!countyId">Add County</mat-card-title>
+        <mat-card-title fxLayoutAlign="center" *ngIf="countyId">Update County</mat-card-title>
+        <mat-card-content fxLayout="column" fxLayoutAlign="center">
+          <mat-form-field>
+            <input matInput placeholder="Name" formControlName="name" required />
+            <mat-hint>Please enter a name.</mat-hint>
+            <mat-error>Name is required</mat-error>
+          </mat-form-field>
+          <mat-form-field *ngIf="this.countrySelectList.selectItems">
+            <mat-select
+              placeholder="Choose Country"
+              formControlName="countryId"
+              required
+            >
+              <mat-option
+                *ngFor="let country of countrySelectList.selectItems"
+                [value]="country.value"
+              >
+                {{ country.label }}
+              </mat-option>
+            </mat-select>
+            <mat-hint>Please choose a country</mat-hint>
+            <mat-error>Please choose a country</mat-error>
+          </mat-form-field>
+          <mat-spinner *ngIf="isLoading"></mat-spinner>
+        </mat-card-content>
+        <mat-card-actions fxLayoutAlign="center" *ngIf="!isLoading">
+          <button
+          *ngIf="!isLoading"
+          type="button"
+          mat-raised-button
+          color="accent"
+          (click)="goBack()"
+        >
+          Back
+        </button>
+          <button
+            *ngIf="!isDeleted"
+            type="submit"
+            mat-raised-button
+            color="primary"
+            [disabled]="countyForm.invalid"
+          >
+            Submit
+          </button>
+          <button
+            *ngIf="!isDeleted && countyId"
+            type="button"
+            mat-raised-button
+            color="warn"
+            (click)="deleteCounty()"
+          >
+            Delete
+          </button>
+          <button
+            *ngIf="isDeleted && countyId"
+            type="button"
+            mat-raised-button
+            color="primary"
+            (click)="restoreCounty()"
+          >
+            Restore
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </form>
+  </section>
+  

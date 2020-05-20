@@ -16,17 +16,17 @@ export class CountiesLookup {
 }
 
 export class CountiesList {
-    Counties: CountiesLookup[];
+    counties: CountiesLookup[];
 }
 
 export class AddCountyCommand {
     name: string;
-    countyId: number;
+    countryId: number;
 }
 
 export class UpdateCountyCommand {
     id: number;
-    countyId: number;
+    countryId: number;
     name: string;
 }
 

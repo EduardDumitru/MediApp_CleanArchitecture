@@ -4,6 +4,10 @@ import { CitiesComponent } from './city/cities.component';
 import { NotFoundComponent } from '../../notfound/notfound.component';
 import { CityComponent } from './city/city.component';
 import { RoleGuardService as RoleGuard } from '../../auth/role-guard.service';
+import { CountriesComponent } from './country/countries/countries.component';
+import { CountryComponent } from './country/country/country.component';
+import { CountiesComponent } from './county/counties/counties.component';
+import { CountyComponent } from './county/county/county.component';
 
 const routes: Routes = [
     {
@@ -26,16 +30,40 @@ const routes: Routes = [
     },
     {
         path: 'countries',
+        component: CountriesComponent,
+        canActivate: [RoleGuard],
+        data: {expectedRoles: ['Admin']}
     },
     {
-        path: 'countries/{id}'
+        path: 'countries/:id',
+        component: CountryComponent,
+        canActivate: [RoleGuard],
+        data: {expectedRoles: ['Admin']}
+    },
+    {
+        path: 'countries/add',
+        component: CountryComponent,
+        canActivate: [RoleGuard],
+        data: {expectedRoles: ['Admin']}
     },
     {
         path: 'counties',
+        component: CountiesComponent,
+        canActivate: [RoleGuard],
+        data: {expectedRoles: ['Admin']}
     },
     {
-        path: 'counties/{id}'
-    }
+        path: 'counties/:id',
+        component: CountyComponent,
+        canActivate: [RoleGuard],
+        data: {expectedRoles: ['Admin']}
+    },
+    {
+        path: 'counties/add',
+        component: CountyComponent,
+        canActivate: [RoleGuard],
+        data: {expectedRoles: ['Admin']}
+    },
 ];
 
 export const LOCATIONROUTES = RouterModule.forChild(routes);

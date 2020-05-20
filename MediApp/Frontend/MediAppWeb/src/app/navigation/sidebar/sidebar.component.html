@@ -15,6 +15,18 @@
         Cities
       </span>
     </a>
+    <a  mat-list-item routerLink="/location/countries" (click)="onClose()" *ngIf="isAdmin">
+      <mat-icon>fitness_center</mat-icon>
+      <span class="nav-caption">
+        Countries
+      </span>
+    </a>
+    <a  mat-list-item routerLink="/location/counties" (click)="onClose()" *ngIf="isAdmin">
+      <mat-icon>fitness_center</mat-icon>
+      <span class="nav-caption">
+        Counties
+      </span>
+    </a>
     <mat-list-item *ngIf="isAuth">
       <button mat-icon-button (click)="onLogout()">
         <mat-icon>eject</mat-icon>

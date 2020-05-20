@@ -1,35 +1,34 @@
-import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+import { CountryLookup, CountryData, CountriesList } from 'src/app/@core/data/country';
 import { MatTableDataSource } from '@angular/material/table';
-import { Subscription } from 'rxjs';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
-import { CityData, CitiesLookup, CitiesList } from 'src/app/@core/data/city';
 import { UIService } from 'src/app/shared/ui.service';
 import { Router } from '@angular/router';
 
 @Component({
-    selector: 'app-cities',
-    templateUrl: 'cities.component.html',
-    styleUrls: ['./cities.component.scss']
+  selector: 'app-countries',
+  templateUrl: './countries.component.html',
+  styleUrls: ['./countries.component.scss']
 })
+export class CountriesComponent implements OnInit, AfterViewInit {
 
-export class CitiesComponent implements OnInit, AfterViewInit {
   isLoading = true;
-  displayedColumns = ['id', 'name', 'countryName', 'countyName', 'deleted'];
-  dataSource = new MatTableDataSource<CitiesLookup>();
+  displayedColumns = ['id', 'name', 'deleted'];
+  dataSource = new MatTableDataSource<CountryLookup>();
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private cityData: CityData, private uiService: UIService, private router: Router) { }
+  constructor(private countryData: CountryData, private uiService: UIService, private router: Router) { }
 
   ngOnInit(): void {
-    this.getCities();
+    this.getCountries();
   }
 
-  getCities() {
-      this.cityData.GetCities().subscribe((citiesList: CitiesList) => {
+  getCountries() {
+      this.countryData.GetCountries().subscribe((countriesList: CountriesList) => {
           this.isLoading = false;
-          this.dataSource.data = citiesList.cities;
+          this.dataSource.data = countriesList.countries;
       }, error => {
         this.isLoading = false;
         this.uiService.showErrorSnackbar(error, null, 3000);

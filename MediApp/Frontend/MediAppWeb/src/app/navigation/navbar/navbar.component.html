@@ -12,6 +12,8 @@
         <li *ngIf="!isAuth"><a routerLink="/register">Signup</a></li>
         <li *ngIf="!isAuth"><a routerLink="/login">Login</a></li>
         <li *ngIf="isAdmin"><a routerLink="/location/cities">Cities</a></li>
+        <li *ngIf="isAdmin"><a routerLink="/location/countries">Countries</a></li>
+        <li *ngIf="isAdmin"><a routerLink="/location/counties">Counties</a></li>
         <li *ngIf="isAuth"><a style="cursor:pointer" (click)="onLogout()">Logout</a></li>
       </ul>
     </div>

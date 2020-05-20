@@ -39,7 +39,6 @@ export class CityComponent implements OnInit {
             name: new FormControl('', [Validators.required]),
             countyId: new FormControl('', [Validators.required])
         })
-        console.log(this.cityId);
         if (this.cityId) {
             this.getCity();
         }
