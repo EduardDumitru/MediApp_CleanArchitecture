@@ -29,7 +29,7 @@
         <mat-hint>Please choose a county</mat-hint>
         <mat-error>Please choose a county</mat-error>
       </mat-form-field>
-      <button *ngIf="!isLoading" type="submit" mat-raised-button color="primary" [disabled]="cityForm.invalid">Submit</button>
+      <button *ngIf="!isLoading && !isDeleted" type="submit" mat-raised-button color="primary" [disabled]="cityForm.invalid">Submit</button>
       <button *ngIf="!isLoading && !isDeleted && cityId" type="button" mat-raised-button color="accent" (click)="deleteCity()">Delete</button>
       <button *ngIf="!isLoading && isDeleted && cityId" type="button" mat-raised-button color="accent" (click)="restoreCity()">Restore</button>
       <mat-spinner *ngIf="isLoading"></mat-spinner>

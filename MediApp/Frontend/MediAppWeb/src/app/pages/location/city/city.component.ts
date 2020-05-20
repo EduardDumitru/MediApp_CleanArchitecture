@@ -49,6 +49,9 @@ export class CityComponent implements OnInit {
         this.cityData.GetCityDetails(this.cityId).subscribe((city: CityDetails) => {
             this.cityForm.setValue({name: city.name, countyId: city.countyId.toString()});
             this.isDeleted = city.deleted;
+            if (this.isDeleted) {
+                this.cityForm.disable();
+            }
             this.isLoading = false;
         },
             error => {
