@@ -11,7 +11,8 @@ import { Location } from '@angular/common';
 
 @Component({
     selector: 'app-city',
-    templateUrl: 'city.component.html'
+    templateUrl: 'city.component.html',
+    styleUrls: ['./city.component.scss']
 })
 
 export class CityComponent implements OnInit {
