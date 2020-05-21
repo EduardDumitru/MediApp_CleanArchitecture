@@ -12,7 +12,8 @@ export class RoleGuardService implements CanActivate, CanLoad {
     const expectedRoles = route.data.expectedRoles;
     // decode the token to get its payload
     const tokenPayload = this.authService.getDecodedToken();
-    const roles = [...tokenPayload.role];
+    const roles = [];
+    roles.push(tokenPayload.role);
     if (!this.authService.isAuth()) {
         this.router.navigate(['login']);
         return false;
@@ -29,14 +30,21 @@ export class RoleGuardService implements CanActivate, CanLoad {
     const expectedRoles = route.data.expectedRoles;
     // decode the token to get its payload
     const tokenPayload = this.authService.getDecodedToken();
-    const roles = [...tokenPayload.role];
+    const roles = [];
+    roles.push(tokenPayload.role);
     if (!this.authService.isAuth()) {
         this.router.navigate(['login']);
         return false;
-    } else if (roles.filter(role => expectedRoles.filter(eRole => eRole === role).length > 0).length === 0) {
+    } else if (this.checkIfUserHasExpectedRole(roles, expectedRoles)) {
         this.router.navigate(['notfound']);
         return false;
     }
     return true;
   }
+
+  checkIfUserHasExpectedRole(arr1: string[], arr2: string[]) {
+    const [smallArray, bigArray] =
+      arr1.length < arr2.length ? [arr1, arr2] : [arr2, arr1];
+    return smallArray.some((c: string) => bigArray.includes(c));
+  };
 }

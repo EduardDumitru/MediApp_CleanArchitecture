@@ -1,7 +1,5 @@
 import { RouterModule, Routes } from '@angular/router';
-import { NgModule } from '@angular/core';
 import { CitiesComponent } from './city/cities.component';
-import { NotFoundComponent } from '../../notfound/notfound.component';
 import { CityComponent } from './city/city.component';
 import { RoleGuardService as RoleGuard } from '../../auth/role-guard.service';
 import { CountriesComponent } from './country/countries/countries.component';

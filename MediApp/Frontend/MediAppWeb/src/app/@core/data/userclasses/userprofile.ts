@@ -10,7 +10,7 @@ export class UserProfileDetail {
     streetNo: string;
     phoneNumber: string;
     emailAddress: string;
-    cNP: string;
+    cnp: string;
     countryId: number;
     countyId: number;
     cityId: number;
@@ -26,7 +26,7 @@ export class UserProfileLookup {
     streetNo: string;
     phoneNumber: string;
     emailAddress: string;
-    cNP: string;
+    cnp: string;
     countryName: string;
     countyName: string;
     cityName: string;
@@ -40,17 +40,20 @@ export class UserProfilesList {
 
 export class UpdateUserProfileCommand {
     id: number;
-    name: string;
+    firstName: string;
+    middleName?: string;
+    lastName: string;
     address: string;
     streetName: string;
     streetNo: string;
     phoneNumber: string;
     emailAddress: string;
-    cNP: string;
+    cnp: string;
     countryId: number;
     countyId: number;
     cityId: number;
     genderId: number;
+    deleted?: boolean
 }
 
 export abstract class UserProfileData {

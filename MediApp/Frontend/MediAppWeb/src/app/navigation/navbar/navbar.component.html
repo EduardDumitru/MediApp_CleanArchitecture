@@ -11,6 +11,7 @@
       <ul fxLayout fxLayoutGap="10px" class="navigation-items">
         <li *ngIf="!isAuth"><a routerLink="/register">Signup</a></li>
         <li *ngIf="!isAuth"><a routerLink="/login">Login</a></li>
+        <li *ngIf="isAuth"><a routerLink="/user/profile/{{currentUserId}}">Profile</a></li>
         <li *ngIf="isAdmin"><a routerLink="/location/cities">Cities</a></li>
         <li *ngIf="isAdmin"><a routerLink="/location/countries">Countries</a></li>
         <li *ngIf="isAdmin"><a routerLink="/location/counties">Counties</a></li>

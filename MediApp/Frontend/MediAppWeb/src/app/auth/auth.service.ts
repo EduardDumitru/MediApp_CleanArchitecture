@@ -11,6 +11,7 @@ export class AuthService {
   isAdmin = new BehaviorSubject<boolean>(false);
   isDoctor = new BehaviorSubject<boolean>(false);
   isNurse = new BehaviorSubject<boolean>(false);
+  currentUserId = new BehaviorSubject<number>(-1);
 
   private isUserAuthenticated = false;
 
@@ -24,21 +25,30 @@ export class AuthService {
             this.isUserAuthenticated = true;
             this.authChange.next(true);
             const token = this.getDecodedToken();
-            if (token.role.filter(role => role === 'Admin')) {
+            const roles = [];
+            if (Array.isArray(token.role)) {
+              roles.push(...token.role);
+            } else {
+              roles.push(token.role);
+            }
+
+            if (roles.includes('Admin')) {
               this.isAdmin.next(true);
             }
-            if (token.role.filter(role => role === 'Doctor')) {
+            if (roles.includes('Doctor')) {
               this.isDoctor.next(true);
             }
-            if (token.role.filter(role => role === 'Nurse')) {
+            if (roles.includes('Nurse')) {
               this.isNurse.next(true);
             }
+            this.currentUserId.next(+token.id);
         } else {
             this.isUserAuthenticated = false;
             this.authChange.next(false);
             this.isAdmin.next(false);
             this.isDoctor.next(false);
             this.isNurse.next(false);
+            this.currentUserId.next(-1);
             this.router.navigate(['/login']);
         }
     });
@@ -78,6 +88,7 @@ export class AuthService {
     this.isAdmin.next(false);
     this.isDoctor.next(false);
     this.isNurse.next(false);
+    this.currentUserId.next(-1);
     this.router.navigate(['/login']);
   }
 }

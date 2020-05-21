@@ -38,7 +38,6 @@ import { NotFoundComponent } from './notfound/notfound.component';
         whitelistedDomains: ['localhost:4200/login', 'localhost:4200/register']
       }
     }),
-    UserModule,
     AuthModule,
     CoreModule.forRoot(),
     SharedModule

@@ -15,10 +15,12 @@ export class SidebarComponent implements OnInit, OnDestroy {
   isAdmin = false;
   isDoctor = false;
   isNurse = false;
+  currentUserId = -1;
   authSubscription: Subscription;
   adminSubscription: Subscription;
   doctorSubscription: Subscription;
   nurseSubscription: Subscription;
+  currentUserIdSubscription: Subscription;
 
   constructor(private authService: AuthService) { }
 
@@ -35,6 +37,9 @@ export class SidebarComponent implements OnInit, OnDestroy {
     this.nurseSubscription = this.authService.isNurse.subscribe(isNurse => {
       this.isNurse = isNurse;
     })
+    this.currentUserIdSubscription = this.authService.currentUserId.subscribe(userId => {
+      this.currentUserId = userId;
+    })
   }
 
   ngOnDestroy(): void {
@@ -42,6 +47,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
     this.adminSubscription.unsubscribe();
     this.doctorSubscription.unsubscribe();
     this.nurseSubscription.unsubscribe();
+    this.currentUserIdSubscription.unsubscribe();
   }
 
   onClose() {
