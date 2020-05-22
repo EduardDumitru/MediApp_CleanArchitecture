@@ -33,6 +33,18 @@
         Counties
       </span>
     </a>
+    <a  mat-list-item routerLink="/location/clinics" (click)="onClose()" *ngIf="isAdmin">
+      <mat-icon>fitness_center</mat-icon>
+      <span class="nav-caption">
+        Clinics
+      </span>
+    </a>
+    <a  mat-list-item routerLink="/user/genders" (click)="onClose()" *ngIf="isAdmin">
+      <mat-icon>fitness_center</mat-icon>
+      <span class="nav-caption">
+        Genders
+      </span>
+    </a>
     <mat-list-item *ngIf="isAuth">
       <button mat-icon-button (click)="onLogout()">
         <mat-icon>eject</mat-icon>

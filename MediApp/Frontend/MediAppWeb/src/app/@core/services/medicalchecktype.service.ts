@@ -13,7 +13,7 @@ import { AuthService } from 'src/app/auth/auth.service';
 
 @Injectable()
 export class MedicalCheckTypeService extends MedicalCheckTypeData {
-    baseUrl = environment.baseURL + 'MdicalCheckType';
+    baseUrl = environment.baseURL + 'MedicalCheckType';
 
     // Http Headers
         httpOptions = {

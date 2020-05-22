@@ -10,7 +10,7 @@ namespace Application.CommandsAndQueries
 {
     public class RestoreDrugCommand : IRequest<Result>
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
     }
 
     public class RestoreDrugCommandHandler : IRequestHandler<RestoreDrugCommand, Result>

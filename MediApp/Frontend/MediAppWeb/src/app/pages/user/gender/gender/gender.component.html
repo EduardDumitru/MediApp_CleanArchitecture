@@ -1,0 +1,56 @@
+
+<section fxLayout fxLayoutAlign="center" class="gender-card">
+    <form [formGroup]="genderForm" (ngSubmit)="onSubmit()">
+      <mat-card fxFlex.xs="100%" fxFlex="600px">
+        <mat-card-title fxLayoutAlign="center" *ngIf="!genderId">Add Gender</mat-card-title>
+        <mat-card-title fxLayoutAlign="center" *ngIf="genderId">Update Gender</mat-card-title>
+        <mat-card-content fxLayout="column" fxLayoutAlign="center">
+          <mat-form-field>
+            <input matInput placeholder="Name" formControlName="name" required />
+            <mat-hint>Please enter a name.</mat-hint>
+            <mat-error>Name is required</mat-error>
+          </mat-form-field>
+          <mat-spinner *ngIf="isLoading"></mat-spinner>
+        </mat-card-content>
+        <mat-card-actions fxLayoutAlign="center" *ngIf="!isLoading">
+          <button
+          *ngIf="!isLoading"
+          type="button"
+          mat-raised-button
+          color="accent"
+          (click)="goBack()"
+        >
+          Back
+        </button>
+          <button
+            *ngIf="!isDeleted"
+            type="submit"
+            mat-raised-button
+            color="primary"
+            [disabled]="genderForm.invalid"
+          >
+            Submit
+          </button>
+          <button
+            *ngIf="!isDeleted && genderId"
+            type="button"
+            mat-raised-button
+            color="warn"
+            (click)="deleteGender()"
+          >
+            Delete
+          </button>
+          <button
+            *ngIf="isDeleted && genderId"
+            type="button"
+            mat-raised-button
+            color="primary"
+            (click)="restoreGender()"
+          >
+            Restore
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </form>
+  </section>
+  

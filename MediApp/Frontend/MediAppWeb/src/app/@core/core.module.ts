@@ -33,6 +33,8 @@ import { PrescriptionData } from './data/prescription';
 import { PrescriptionService } from './services/prescription.service';
 import { PrescriptionXDrugService } from './services/prescriptionxdrug.service';
 import { PrescriptionXDrugData } from './data/prescriptionxdrug';
+import { ClinicService } from './services/clinic.service';
+import { ClinicData } from './data/clinic';
 
 const DATA_SERVICES = [
   { provide: UserData, useClass: UserService },
@@ -40,6 +42,7 @@ const DATA_SERVICES = [
   { provide: CityData, useClass: CityService},
   { provide: CountryData, useClass: CountryService},
   { provide: CountyData, useClass: CountyService},
+  { provide: ClinicData, useClass: ClinicService},
   { provide: DiagnosisData, useClass: DiagnosisService},
   { provide: DiagnosisXDrugData, useClass: DiagnosisXDrugService},
   { provide: DrugData, useClass: DrugService},

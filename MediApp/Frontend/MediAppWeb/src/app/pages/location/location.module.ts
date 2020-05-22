@@ -8,11 +8,14 @@ import { CountryComponent } from './country/country/country.component';
 import { CountriesComponent } from './country/countries/countries.component';
 import { CountyComponent } from './county/county/county.component';
 import { CountiesComponent } from './county/counties/counties.component';
+import { ClinicComponent } from './clinic/clinic/clinic.component';
+import { ClinicsComponent } from './clinic/clinics/clinics.component';
 
 @NgModule({
     imports: [SharedModule, LOCATIONROUTES],
     exports: [],
-    declarations: [CitiesComponent, CityComponent, CountryComponent, CountriesComponent, CountyComponent, CountiesComponent],
+    declarations: [CitiesComponent, CityComponent, CountryComponent,
+        CountriesComponent, CountyComponent, CountiesComponent, ClinicComponent, ClinicsComponent],
     providers: [],
 })
 export class LocationModule { }

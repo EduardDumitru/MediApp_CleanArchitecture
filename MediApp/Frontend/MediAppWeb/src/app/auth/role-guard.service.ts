@@ -13,11 +13,15 @@ export class RoleGuardService implements CanActivate, CanLoad {
     // decode the token to get its payload
     const tokenPayload = this.authService.getDecodedToken();
     const roles = [];
-    roles.push(tokenPayload.role);
+    if (Array.isArray(tokenPayload.role)) {
+      roles.push(...tokenPayload.role);
+    } else {
+      roles.push(tokenPayload.role);
+    }
     if (!this.authService.isAuth()) {
         this.router.navigate(['login']);
         return false;
-    } else if (roles.filter(role => expectedRoles.filter(eRole => eRole === role).length > 0).length === 0) {
+    } else if (!this.checkIfUserHasExpectedRole(roles, expectedRoles)) {
         this.router.navigate(['notfound']);
         return false;
     }
@@ -31,11 +35,16 @@ export class RoleGuardService implements CanActivate, CanLoad {
     // decode the token to get its payload
     const tokenPayload = this.authService.getDecodedToken();
     const roles = [];
-    roles.push(tokenPayload.role);
+    if (Array.isArray(tokenPayload.role)) {
+      roles.push(...tokenPayload.role);
+    } else {
+      roles.push(tokenPayload.role);
+    }
+
     if (!this.authService.isAuth()) {
         this.router.navigate(['login']);
         return false;
-    } else if (this.checkIfUserHasExpectedRole(roles, expectedRoles)) {
+    } else if (!this.checkIfUserHasExpectedRole(roles, expectedRoles)) {
         this.router.navigate(['notfound']);
         return false;
     }

@@ -12,7 +12,8 @@ import { SelectItemsList } from 'src/app/@core/data/common/selectitem';
 
 @Component({
     selector: 'app-userprofile',
-    templateUrl: 'userprofile.component.html'
+    templateUrl: 'userprofile.component.html',
+    styleUrls: ['./userprofile.component.scss']
 })
 
 export class UserProfileComponent implements OnInit {

@@ -69,7 +69,7 @@ namespace MediApp.Controllers
             return Ok(result);
         }
 
-        [HttpDelete]
+        [HttpDelete("{employeeTypeId}")]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Result>> DeleteEmployeeType(short employeeTypeId)
         {

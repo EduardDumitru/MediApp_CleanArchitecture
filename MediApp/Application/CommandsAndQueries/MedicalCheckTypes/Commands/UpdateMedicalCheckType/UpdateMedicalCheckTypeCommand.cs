@@ -10,7 +10,7 @@ namespace Application.CommandsAndQueries
 {
     public class UpdateMedicalCheckTypeCommand : IRequest<Result>
     {
-        public int Id { get; set; }
+        public short Id { get; set; }
         public string Name { get; set; }
     }
 

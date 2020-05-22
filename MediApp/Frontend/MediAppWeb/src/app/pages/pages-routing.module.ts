@@ -7,7 +7,8 @@ import { NotFoundComponent } from '../notfound/notfound.component';
 const routes: Routes = [
   {
     path: '',
-    component: DashboardComponent
+    component: DashboardComponent,
+    canLoad: [AuthGuard]
   },
   {
     path: 'location',
@@ -16,6 +17,18 @@ const routes: Routes = [
   {
     path: 'user',
     loadChildren: './user/user.module#UserModule', canLoad: [AuthGuard]
+  },
+  {
+    path: 'employees',
+    loadChildren: './employee/employee.module#EmployeeModule', canLoad: [RoleGuard], data: { expectedRoles: ['Admin', 'Doctor', 'Nurse'] }
+  },
+  {
+    path: 'diagnoses',
+    loadChildren: './diagnosis/diagnosis.module#DiagnosisModule', canLoad: [RoleGuard], data: { expectedRoles: ['Admin'] }
+  },
+  {
+    path: 'treatments',
+    loadChildren: './treatment/treatment.module#TreatmentModule', canLoad: [AuthGuard]
   },
   {
     path: '**',

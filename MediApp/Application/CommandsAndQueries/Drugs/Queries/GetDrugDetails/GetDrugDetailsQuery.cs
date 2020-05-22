@@ -11,7 +11,7 @@ namespace Application.CommandsAndQueries
 {
     public class GetDrugDetailsQuery : IRequest<DrugDetailsVm>
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
     }
 
     public class GetDrugDetailsQueryHandler : IRequestHandler<GetDrugDetailsQuery, DrugDetailsVm>

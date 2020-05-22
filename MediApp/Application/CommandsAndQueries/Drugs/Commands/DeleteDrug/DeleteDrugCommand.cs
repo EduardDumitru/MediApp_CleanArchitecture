@@ -12,7 +12,7 @@ namespace Application.CommandsAndQueries
 {
     public class DeleteDrugCommand : IRequest<Result>
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
     }
 
     public class DeleteDrugCommandHandler : IRequestHandler<DeleteDrugCommand, Result>

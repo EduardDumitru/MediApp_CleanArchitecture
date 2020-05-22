@@ -6,6 +6,8 @@ import { CountriesComponent } from './country/countries/countries.component';
 import { CountryComponent } from './country/country/country.component';
 import { CountiesComponent } from './county/counties/counties.component';
 import { CountyComponent } from './county/county/county.component';
+import { ClinicsComponent } from './clinic/clinics/clinics.component';
+import { ClinicComponent } from './clinic/clinic/clinic.component';
 
 const routes: Routes = [
     {
@@ -62,6 +64,24 @@ const routes: Routes = [
         canActivate: [RoleGuard],
         data: {expectedRoles: ['Admin']}
     },
+    {
+        path: 'clinics',
+        component: ClinicsComponent,
+        canActivate: [RoleGuard],
+        data: {expectedRoles: ['Admin']}
+    },
+    {
+        path: 'clinics/:id',
+        component: ClinicComponent,
+        canActivate: [RoleGuard],
+        data: {expectedRoles: ['Admin']}
+    },
+    {
+        path: 'clinics/add',
+        component: ClinicComponent,
+        canActivate: [RoleGuard],
+        data: {expectedRoles: ['Admin']}
+    }
 ];
 
 export const LOCATIONROUTES = RouterModule.forChild(routes);

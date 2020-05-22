@@ -11,7 +11,7 @@ export class ClinicDetails {
     email: string;
     countryId: number;
     countyId: number;
-    ClinicId: number;
+    cityId: number;
     deleted?: boolean;
 }
 
@@ -20,12 +20,12 @@ export class ClinicsLookup {
     name: string;
     countryName: string;
     countyName: string;
-    ClinicName: string;
+    cityName: string;
     deleted?: boolean;
 }
 
 export class ClinicsList {
-    Clinics: ClinicsLookup[];
+    clinics: ClinicsLookup[];
 }
 
 export class AddClinicCommand {
@@ -37,7 +37,7 @@ export class AddClinicCommand {
     email: string;
     countryId: number;
     countyId: number;
-    ClinicId: number;
+    cityId: number;
 }
 
 export class UpdateClinicCommand {
@@ -50,7 +50,7 @@ export class UpdateClinicCommand {
     email: string;
     countryId: number;
     countyId: number;
-    ClinicId: number;
+    cityId: number;
 }
 
 export class RestoreClinicCommand {

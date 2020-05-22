@@ -10,7 +10,7 @@ namespace Application.CommandsAndQueries
 {
     public class UpdateDrugCommand : IRequest<Result>
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string Name { get; set; }
     }
 

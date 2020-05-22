@@ -15,6 +15,13 @@
         <li *ngIf="isAdmin"><a routerLink="/location/cities">Cities</a></li>
         <li *ngIf="isAdmin"><a routerLink="/location/countries">Countries</a></li>
         <li *ngIf="isAdmin"><a routerLink="/location/counties">Counties</a></li>
+        <li *ngIf="isAdmin"><a routerLink="/location/clinics">Clinics</a></li>
+        <li *ngIf="isAdmin"><a routerLink="/user/genders">Genders</a></li>
+        <li *ngIf="isAdmin"><a routerLink="/employees/employeetypes">Employee Types</a></li>
+        <li *ngIf="isAdmin"><a routerLink="/employees/medicalchecktypes">Medical Check Types</a></li>
+        <li *ngIf="isAdmin"><a routerLink="/diagnoses/diagnoses">Diagnoses</a></li>
+        <li *ngIf="isAdmin"><a routerLink="/diagnoses/drugs">Drugs</a></li>
+        <li *ngIf="isAdmin"><a routerLink="/diagnoses/diagnosisxdrugs">DiagnosisXDrugs</a></li>
         <li *ngIf="isAuth"><a style="cursor:pointer" (click)="onLogout()">Logout</a></li>
       </ul>
     </div>
