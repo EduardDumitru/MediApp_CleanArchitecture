@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Application.Common.Interfaces;
 using AutoMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.CommandsAndQueries
 {
@@ -26,7 +27,9 @@ namespace Application.CommandsAndQueries
         public async Task<EmployeeDetailsVm> Handle(GetEmployeeDetailsQuery request,
             CancellationToken cancellationToken)
         {
-            var entity = await _context.Employees.FindAsync(request.Id);
+            var entity = await _context.Employees
+                .Include(x => x.UserProfile)
+                .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
 
             return entity == null ? null : _mapper.Map<EmployeeDetailsVm>(entity);
         }

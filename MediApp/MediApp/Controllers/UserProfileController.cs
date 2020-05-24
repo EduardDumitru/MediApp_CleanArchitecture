@@ -46,5 +46,13 @@ namespace MediApp.Controllers
 
             return Ok(vm);
         }
+
+        [HttpGet("usersdropdown")]
+        public async Task<ActionResult<SelectItemVm>> GetUserProfilesDropdown()
+        {
+            var vm = await Mediator.Send(new GetUserProfilesDropdownQuery());
+
+            return Ok(vm);
+        }
     }
 }

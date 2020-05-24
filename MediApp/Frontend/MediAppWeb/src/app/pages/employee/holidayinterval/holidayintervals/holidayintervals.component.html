@@ -1,1 +1,44 @@
-<p>holidayintervals works!</p>
+<div fxLayoutAlign="center center">
+    <mat-form-field fxFlex="40%">
+        <input matInput type="text" (keyup)="doFilter($event.target.value)" placeholder="Filter"/>
+    </mat-form-field>
+</div>
+<div fxLayoutAlign="end" fxLayout="row" >
+    <button *ngIf="!isLoading" type="submit" mat-raised-button color="primary" 
+    fxFlex="200px" fxFlex.xs="100%" routerLink="/employees/holidayintervals/add">Add Holiday Interval</button>
+</div>
+<mat-table [dataSource]="dataSource" matSort>
+
+    <ng-container matColumnDef="id">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Id</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.id | number}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="employeeName">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Employee Name</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.employeeName}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="startDate">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Start Date</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.startDate| date: 'dd/MM/yyyy'}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="endDate">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>End Date</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.endDate | date: 'dd/MM/yyyy'}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="deleted">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Deleted</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-checkbox [checked]="element.deleted" disabled></mat-checkbox>
+        </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns" routerLink="/employees/holidayintervals/{{row.id}}"></mat-row>
+    <mat-spinner *ngIf="isLoading"></mat-spinner>
+</mat-table>
+
+<mat-paginator #paginator [pageSize]="1" [pageSizeOptions]="[1, 5, 10, 20]"></mat-paginator>

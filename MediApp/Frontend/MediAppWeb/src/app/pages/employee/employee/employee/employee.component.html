@@ -1,1 +1,131 @@
-<p>employee works!</p>
+
+<section fxLayout fxLayoutAlign="center" class="holiday-interval-card">
+    <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()">
+      <mat-card fxFlex.xs="100%" fxFlex="600px">
+        <mat-card-title fxLayoutAlign="center" *ngIf="!employeeId">Add Holiday Interval</mat-card-title>
+        <mat-card-title fxLayoutAlign="center" *ngIf="employeeId">Update Holiday Interval</mat-card-title>
+        <mat-card-content fxLayout="column" fxLayoutAlign="center">
+              <mat-form-field *ngIf="this.employeeId">
+                <input matInput placeholder="Name" formControlName="name"/>
+                <mat-hint>Please enter a name.</mat-hint>
+                <mat-error>Name is required</mat-error>
+              </mat-form-field>
+              <mat-form-field *ngIf="this.employeeId">
+                <input matInput placeholder="CNP" formControlName="cnp"/>
+                <mat-hint>Please enter a CNP.</mat-hint>
+                <mat-error>CNP is required</mat-error>
+              </mat-form-field>
+              <mat-form-field *ngIf="this.userProfileSelectList.selectItems">
+              <mat-select placeholder="Choose User" formControlName="userProfileId">
+                <mat-option
+                  *ngFor="let user of userProfileSelectList.selectItems"
+                  [value]="user.value">
+                  {{ user.label }}
+                </mat-option>
+              </mat-select>
+              <mat-hint>Please choose an user</mat-hint>
+              <mat-error>Please choose an user</mat-error>
+            </mat-form-field>
+            <mat-form-field *ngIf="this.employeeTypeSelectList.selectItems">
+                <mat-select placeholder="Choose Employee Type" formControlName="employeeTypeId" required>
+                  <mat-option
+                    *ngFor="let employeeType of employeeTypeSelectList.selectItems"
+                    [value]="employeeType.value">
+                    {{ employeeType.label }}
+                  </mat-option>
+                </mat-select>
+                <mat-hint>Please choose an employee type</mat-hint>
+                <mat-error>Please choose an employee type</mat-error>
+              </mat-form-field>
+              <mat-form-field *ngIf="this.medicalCheckTypeSelectList.selectItems">
+                <mat-select placeholder="Choose Medical Check Type" formControlName="medicalCheckTypeId">
+                  <mat-option
+                    *ngFor="let medicalCheckType of medicalCheckTypeSelectList.selectItems"
+                    [value]="medicalCheckType.value">
+                    {{ medicalCheckType.label }}
+                  </mat-option>
+                </mat-select>
+                <mat-hint>Please choose a medical check type</mat-hint>
+                <mat-error>Please choose a medical check type</mat-error>
+              </mat-form-field>
+              <mat-form-field *ngIf="this.clinicSelectList.selectItems">
+                <mat-select placeholder="Choose Clinic" formControlName="clinicId" required>
+                  <mat-option
+                    *ngFor="let clinic of clinicSelectList.selectItems"
+                    [value]="clinic.value">
+                    {{ clinic.label }}
+                  </mat-option>
+                </mat-select>
+                <mat-hint>Please choose a clinic</mat-hint>
+                <mat-error>Please choose a clinic</mat-error>
+              </mat-form-field>
+              <mat-form-field *ngIf="employeeId">
+                <input matInput placeholder="TerminationDate" [matDatepicker]="terminationDatePicker" formControlName="terminationDate" required>
+                <mat-datepicker-toggle matSuffix [for]="terminationDatePicker"></mat-datepicker-toggle>
+                <mat-datepicker #terminationDatePicker></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput type="number" min="0" max="23" formControlName="startHour" required>
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput type="number" min="0" max="59" formControlName="startMinutes" required>
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput type="number" min="0" max="23" formControlName="endHour" required>
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput type="number" min="0" max="59" formControlName="endMinutes" required>
+            </mat-form-field>
+          <mat-spinner *ngIf="isLoading"></mat-spinner>
+        </mat-card-content>
+        <mat-card-actions fxLayoutAlign="center" *ngIf="!isLoading">
+          <button
+          *ngIf="!isLoading"
+          type="button"
+          mat-raised-button
+          color="accent"
+          (click)="goBack()"
+        >
+          Back
+        </button>
+          <button
+            *ngIf="!isDeleted && employeeId"
+            type="submit"
+            mat-raised-button
+            color="primary"
+            [disabled]="employeeForm.invalid"
+          >
+            Submit
+          </button>
+          <button
+            *ngIf="!isDeleted && !employeeId"
+            type="submit"
+            mat-raised-button
+            color="primary"
+            [disabled]="employeeForm.invalid"
+          >
+            Submit
+          </button>
+          <button
+            *ngIf="!isDeleted && employeeId"
+            type="button"
+            mat-raised-button
+            color="warn"
+            (click)="deleteEmployee()"
+          >
+            Delete
+          </button>
+          <button
+            *ngIf="isDeleted && employeeId"
+            type="button"
+            mat-raised-button
+            color="primary"
+            (click)="restoreEmployee()"
+          >
+            Restore
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </form>
+  </section>
+  

@@ -1,10 +1,9 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { DiagnosisLookup, DiagnosisData } from 'src/app/@core/data/diagnosis';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { UIService } from 'src/app/shared/ui.service';
-import { DrugsList, DrugData } from 'src/app/@core/data/drug';
+import { DrugsList, DrugData, DrugLookup } from 'src/app/@core/data/drug';
 
 @Component({
   selector: 'app-drugs',
@@ -14,7 +13,7 @@ import { DrugsList, DrugData } from 'src/app/@core/data/drug';
 export class DrugsComponent implements OnInit, AfterViewInit {
   isLoading = true;
   displayedColumns = ['id', 'name', 'deleted'];
-  dataSource = new MatTableDataSource<DiagnosisLookup>();
+  dataSource = new MatTableDataSource<DrugLookup>();
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 

@@ -41,6 +41,14 @@ namespace MediApp.Controllers
             return Ok(vm);
         }
 
+        [HttpGet("employeesdropdown")]
+        public async Task<ActionResult<SelectItemVm>> GetEmployeesDropdown()
+        {
+            var vm = await Mediator.Send(new GetAllEmployeesDropdownQuery());
+
+            return Ok(vm);
+        }
+
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Result>> AddEmployee([FromBody] AddEmployeeCommand command)

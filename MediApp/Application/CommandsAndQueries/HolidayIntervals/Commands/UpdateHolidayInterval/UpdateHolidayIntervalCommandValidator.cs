@@ -27,28 +27,30 @@ namespace Application.CommandsAndQueries
             RuleFor(x => x.EndDate)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("End date is required")
-                .Must(IsSmallerThanEndDate).WithMessage("Start date must be before end date or equal")
-                .Must(NoHolidayIntervalsInThisPeriod).WithMessage("Employee has other holiday intervals in this period");
+                .MustAsync(IsSmallerThanEndDate).WithMessage("Start date must be before end date or equal")
+                .MustAsync(NoHolidayIntervalsInThisPeriod).WithMessage("Employee has other holiday intervals in this period");
             RuleFor(x => x.EmployeeId)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("Employee is required")
                 .MustAsync(ExistsEmployee).WithMessage("Employee is not valid")
-                .Must(NoMedicalChecksInThisPeriod).WithMessage("Employee has medical checks in this period");
+                .MustAsync(NoMedicalChecksInThisPeriod).WithMessage("Employee has medical checks in this period");
         }
 
-        private bool NoMedicalChecksInThisPeriod(UpdateHolidayIntervalCommand holidayIntervalCommand, long employeeId)
+        private async Task<bool> NoMedicalChecksInThisPeriod(UpdateHolidayIntervalCommand holidayIntervalCommand, 
+            long employeeId, CancellationToken cancellationToken)
         {
-            return _context.MedicalChecks.Any(x => x.EmployeeId == employeeId &&
-                x.Appointment >= holidayIntervalCommand.StartDate &&
-                x.Appointment <= holidayIntervalCommand.EndDate &&
-                !x.Deleted);
+            return !await _context.MedicalChecks.AnyAsync(x => x.EmployeeId == employeeId &&
+                x.Appointment.Date >= holidayIntervalCommand.StartDate.Date &&
+                x.Appointment.Date <= holidayIntervalCommand.EndDate.Date &&
+                !x.Deleted, cancellationToken);
         }
 
-        private bool NoHolidayIntervalsInThisPeriod(UpdateHolidayIntervalCommand holidayIntervalCommand,
-            DateTime endDate)
+        private async Task<bool> NoHolidayIntervalsInThisPeriod(UpdateHolidayIntervalCommand holidayIntervalCommand,
+            DateTime endDate, CancellationToken cancellationToken)
         {
-            return _context.HolidayIntervals.Any(x =>
-                x.StartDate >= holidayIntervalCommand.StartDate && x.EndDate <= endDate);
+            return !await _context.HolidayIntervals.AnyAsync(x =>
+                x.StartDate.Date >= holidayIntervalCommand.StartDate.Date && x.EndDate.Date.Date <= endDate
+                && !x.Deleted, cancellationToken);
         }
 
         private async Task<bool> IsHigherThanCurrentDate(DateTime startDate, CancellationToken cancellationToken)
@@ -56,10 +58,10 @@ namespace Application.CommandsAndQueries
             return await Task.FromResult(startDate.Date > _dateTime.Now.Date);
         }
 
-        private bool IsSmallerThanEndDate(UpdateHolidayIntervalCommand holidayIntervalCommand,
-            DateTime endDate)
+        private async Task<bool> IsSmallerThanEndDate(UpdateHolidayIntervalCommand holidayIntervalCommand,
+            DateTime endDate, CancellationToken cancellationToken)
         {
-            return endDate >= holidayIntervalCommand.StartDate;
+            return await Task.FromResult(endDate >= holidayIntervalCommand.StartDate);
         }
 
         private async Task<bool> ExistsEmployee(long employeeId, CancellationToken cancellationToken)

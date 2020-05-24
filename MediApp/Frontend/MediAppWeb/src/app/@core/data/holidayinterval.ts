@@ -3,7 +3,7 @@ import { SelectItemsList } from './common/selectitem';
 import { Result } from './common/result';
 
 export class HolidayIntervalDetails {
-    employeeName: string;
+    employeeId: number;
     startDate: Date;
     endDate: Date;
     deleted?: boolean;

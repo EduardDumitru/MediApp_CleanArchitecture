@@ -13,6 +13,10 @@ export class RoleGuardService implements CanActivate, CanLoad {
     // decode the token to get its payload
     const tokenPayload = this.authService.getDecodedToken();
     const roles = [];
+    if (!tokenPayload) {
+      this.authService.logout();
+      return false;
+    }
     if (Array.isArray(tokenPayload.role)) {
       roles.push(...tokenPayload.role);
     } else {
@@ -35,6 +39,10 @@ export class RoleGuardService implements CanActivate, CanLoad {
     // decode the token to get its payload
     const tokenPayload = this.authService.getDecodedToken();
     const roles = [];
+    if (!tokenPayload) {
+      this.authService.logout();
+      return false;
+    }
     if (Array.isArray(tokenPayload.role)) {
       roles.push(...tokenPayload.role);
     } else {

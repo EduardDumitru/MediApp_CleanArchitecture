@@ -8,6 +8,7 @@ import { Result } from '../data/common/result';
 import { map } from 'rxjs/operators';
 import { ErrorService } from 'src/app/shared/error.service';
 import { AuthService } from 'src/app/auth/auth.service';
+import { SelectItemsList } from '../data/common/selectitem';
 @Injectable()
 export class UserProfileService extends UserProfileData {
     baseUrl = environment.baseURL + 'UserProfile';
@@ -45,5 +46,13 @@ export class UserProfileService extends UserProfileData {
                 map((response: any) => response),
                 catchError(this.errService.errorHandl)
             );
+    }
+    getUserProfilesDropdown(): Observable<SelectItemsList> {
+        return this.http.get<SelectItemsList>(this.baseUrl + '/usersdropdown', this.httpOptions)
+        .pipe(
+            map((response: any) => response),
+            retry(1),
+            catchError(this.errService.errorHandl)
+        );
     }
 }

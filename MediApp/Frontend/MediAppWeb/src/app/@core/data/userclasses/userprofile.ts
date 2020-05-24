@@ -1,5 +1,6 @@
 import { Observable } from 'rxjs';
 import { Result } from '../common/result';
+import { SelectItemsList } from '../common/selectitem';
 
 export class UserProfileDetail {
     firstName: string;
@@ -59,5 +60,6 @@ export class UpdateUserProfileCommand {
 export abstract class UserProfileData {
     abstract getUserProfiles(): Observable<UserProfilesList>;
     abstract getUserProfile(id: number): Observable<UserProfileDetail>;
+    abstract getUserProfilesDropdown(): Observable<SelectItemsList>;
     abstract updateUserProfile(userProfile: UpdateUserProfileCommand): Observable<Result>;
 }

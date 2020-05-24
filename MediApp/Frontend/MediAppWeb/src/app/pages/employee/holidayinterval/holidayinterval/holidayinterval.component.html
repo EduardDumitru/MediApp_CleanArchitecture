@@ -1,1 +1,81 @@
-<p>holidayinterval works!</p>
+
+<section fxLayout fxLayoutAlign="center" class="holiday-interval-card">
+    <form [formGroup]="holidayIntervalForm" (ngSubmit)="onSubmit()">
+      <mat-card fxFlex.xs="100%" fxFlex="600px">
+        <mat-card-title fxLayoutAlign="center" *ngIf="!holidayIntervalId">Add Holiday Interval</mat-card-title>
+        <mat-card-title fxLayoutAlign="center" *ngIf="holidayIntervalId">Update Holiday Interval</mat-card-title>
+        <mat-card-content fxLayout="column" fxLayoutAlign="center">
+            <mat-form-field *ngIf="this.employeeSelectList.selectItems">
+                <mat-select placeholder="Choose Employee" formControlName="employeeId" required>
+                  <mat-option
+                    *ngFor="let employee of employeeSelectList.selectItems"
+                    [value]="employee.value">
+                    {{ employee.label }}
+                  </mat-option>
+                </mat-select>
+                <mat-hint>Please choose an employee</mat-hint>
+                <mat-error>Please choose an employee</mat-error>
+              </mat-form-field>
+              <mat-form-field>
+                <input matInput placeholder="Start date" [matDatepicker]="startDatePicker" formControlName="startDate" required>
+                <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+                <mat-datepicker #startDatePicker></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput placeholder="End date" [matDatepicker]="endDatePicker" formControlName="endDate" required>
+                <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+                <mat-datepicker #endDatePicker></mat-datepicker>
+            </mat-form-field>
+          <mat-spinner *ngIf="isLoading"></mat-spinner>
+        </mat-card-content>
+        <mat-card-actions fxLayoutAlign="center" *ngIf="!isLoading">
+          <button
+          *ngIf="!isLoading"
+          type="button"
+          mat-raised-button
+          color="accent"
+          (click)="goBack()"
+        >
+          Back
+        </button>
+          <button
+            *ngIf="!isDeleted && holidayIntervalId && (isCurrentUserOwner() || isAdmin)"
+            type="submit"
+            mat-raised-button
+            color="primary"
+            [disabled]="holidayIntervalForm.invalid"
+          >
+            Submit
+          </button>
+          <button
+            *ngIf="!isDeleted && !holidayIntervalId"
+            type="submit"
+            mat-raised-button
+            color="primary"
+            [disabled]="holidayIntervalForm.invalid"
+          >
+            Submit
+          </button>
+          <button
+            *ngIf="!isDeleted && holidayIntervalId && isCurrentUserOwner()"
+            type="button"
+            mat-raised-button
+            color="warn"
+            (click)="deleteHolidayInterval()"
+          >
+            Delete
+          </button>
+          <button
+            *ngIf="isDeleted && holidayIntervalId && isCurrentUserOwner()"
+            type="button"
+            mat-raised-button
+            color="primary"
+            (click)="restoreHolidayInterval()"
+          >
+            Restore
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </form>
+  </section>
+  

@@ -51,6 +51,14 @@ export class EmployeeService extends EmployeeData {
                 catchError(this.errService.errorHandl)
             );
     }
+    GetAllEmployeesDropdown(): Observable<SelectItemsList> {
+        return this.http.get<SelectItemsList>(this.baseUrl + '/employeesdropdown', this.httpOptions)
+            .pipe(
+                map((response: any) => response),
+                retry(1),
+                catchError(this.errService.errorHandl)
+            );
+    }
     AddEmployee(addEmployeeCommand: AddEmployeeCommand): Observable<Result> {
         return this.http.post<Result>(this.baseUrl, JSON.stringify(addEmployeeCommand), this.httpOptions)
             .pipe(

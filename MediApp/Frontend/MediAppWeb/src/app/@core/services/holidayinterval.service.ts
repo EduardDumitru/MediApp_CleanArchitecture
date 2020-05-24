@@ -52,6 +52,7 @@ export class HolidayIntervalService extends HolidayIntervalData {
             );
     }
     UpdateHolidayInterval(updateHolidayIntervalCommand: UpdateHolidayIntervalCommand): Observable<Result> {
+        console.log(updateHolidayIntervalCommand);
         return this.http.put<Result>(this.baseUrl, JSON.stringify(updateHolidayIntervalCommand), this.httpOptions)
         .pipe(
             map((response: any) => response),

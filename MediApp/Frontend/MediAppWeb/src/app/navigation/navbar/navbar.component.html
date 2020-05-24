@@ -12,16 +12,57 @@
         <li *ngIf="!isAuth"><a routerLink="/register">Signup</a></li>
         <li *ngIf="!isAuth"><a routerLink="/login">Login</a></li>
         <li *ngIf="isAuth"><a routerLink="/user/profile/{{currentUserId}}">Profile</a></li>
-        <li *ngIf="isAdmin"><a routerLink="/location/cities">Cities</a></li>
+        <!-- <li *ngIf="isAdmin"><a routerLink="/location/cities">Cities</a></li>
         <li *ngIf="isAdmin"><a routerLink="/location/countries">Countries</a></li>
         <li *ngIf="isAdmin"><a routerLink="/location/counties">Counties</a></li>
         <li *ngIf="isAdmin"><a routerLink="/location/clinics">Clinics</a></li>
-        <li *ngIf="isAdmin"><a routerLink="/user/genders">Genders</a></li>
-        <li *ngIf="isAdmin"><a routerLink="/employees/employeetypes">Employee Types</a></li>
-        <li *ngIf="isAdmin"><a routerLink="/employees/medicalchecktypes">Medical Check Types</a></li>
-        <li *ngIf="isAdmin"><a routerLink="/diagnoses/diagnoses">Diagnoses</a></li>
+        <li *ngIf="isAdmin"><a routerLink="/user/genders">Genders</a></li> -->
+        <!-- <li *ngIf="isAdmin"><a routerLink="/employees/employeetypes">Employee Types</a></li>
+        <li *ngIf="isAdmin"><a routerLink="/employees/medicalchecktypes">Medical Check Types</a></li> -->
+        <!-- <li *ngIf="isAdmin"><a routerLink="/diagnoses/diagnoses">Diagnoses</a></li>
         <li *ngIf="isAdmin"><a routerLink="/diagnoses/drugs">Drugs</a></li>
-        <li *ngIf="isAdmin"><a routerLink="/diagnoses/diagnosisxdrugs">DiagnosisXDrugs</a></li>
+        <li *ngIf="isAdmin"><a routerLink="/diagnoses/diagnosisxdrugs">DiagnosisXDrugs</a></li> -->
+        <li *ngIf="isAdmin"><mat-menu #userMenu="matMenu" yPosition="below">
+          <ng-template matMenuContent>
+            <button mat-menu-item routerLink="/user/genders">Genders</button>
+          </ng-template>
+        </mat-menu>
+        <a style="cursor:pointer" [matMenuTriggerFor]="userMenu">
+          User
+        </a></li>
+        <li *ngIf="isAdmin"><mat-menu #locationMenu="matMenu" yPosition="below">
+          <ng-template matMenuContent>
+            <button mat-menu-item routerLink="/location/countries">Countries</button>
+            <button mat-menu-item routerLink="/location/counties">Counties</button>
+            <button mat-menu-item routerLink="/location/cities">Cities</button>
+            <button mat-menu-item routerLink="/location/clinics">Clinics</button>
+          </ng-template>
+        </mat-menu>
+        <a style="cursor:pointer" [matMenuTriggerFor]="locationMenu">
+          Location
+        </a></li>
+        <li *ngIf="isAdmin"><mat-menu #diagnosisMenu="matMenu" yPosition="below">
+          <ng-template matMenuContent>
+            <button mat-menu-item routerLink="/diagnoses/diagnoses">Diagnoses</button>
+            <button mat-menu-item routerLink="/diagnoses/drugs">Drugs</button>
+            <button mat-menu-item routerLink="/diagnoses/diagnosisxdrugs">DiagnosisXDrugs</button>
+          </ng-template>
+        </mat-menu>
+        <a style="cursor:pointer" [matMenuTriggerFor]="diagnosisMenu">
+          Diagnosis
+        </a></li>
+        <li *ngIf="isAdmin || isDoctor || isNurse"><mat-menu #employeeMenu="matMenu" yPosition="below">
+          <ng-template matMenuContent>
+            <button *ngIf="isAdmin" mat-menu-item routerLink="/employees/employeetypes">Employee Types</button>
+            <button *ngIf="isAdmin" mat-menu-item routerLink="/employees/medicalchecktypes">Medical Check Types</button>
+            <button mat-menu-item routerLink="/employees/holidayintervals">Holiday Intervals</button>
+            <button mat-menu-item routerLink="/employees/employees">Employees</button>
+            <!-- <button mat-menu-item routerLink="/location/clinics">Clinics</button> -->
+          </ng-template>
+        </mat-menu>
+        <a style="cursor:pointer" [matMenuTriggerFor]="employeeMenu">
+          Employee
+        </a></li>
         <li *ngIf="isAuth"><a style="cursor:pointer" (click)="onLogout()">Logout</a></li>
       </ul>
     </div>

@@ -1,1 +1,119 @@
-<p>employees works!</p>
+<div fxLayoutAlign="center center">
+  <mat-form-field fxFlex="40%" fxFlex.xs="100%">
+    <input
+      matInput
+      type="text"
+      (keyup)="doFilter($event.target.value)"
+      placeholder="Filter"
+    />
+  </mat-form-field>
+</div>
+<div fxLayoutAlign="end" fxLayout="row">
+  <button
+    *ngIf="!isLoading"
+    type="submit"
+    mat-raised-button
+    color="primary"
+    fxFlex="200px"
+    fxFlex.xs="100%"
+    routerLink="/employees/employees/add"
+  >
+    Add Employee
+  </button>
+</div>
+<mat-table [dataSource]="dataSource" matSort>
+  <ng-container matColumnDef="id">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Id</mat-header-cell>
+    <mat-cell *matCellDef="let element">{{ element.id | number }}</mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="name">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
+    <mat-cell *matCellDef="let element">{{ element.name }}</mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="cnp">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>CNP</mat-header-cell>
+    <mat-cell *matCellDef="let element">{{ element.cnp }}</mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="clinicName">
+    <mat-header-cell *matHeaderCellDef mat-sort-header
+      >Clinic Name</mat-header-cell
+    >
+    <mat-cell *matCellDef="let element">{{ element.clinicName }}</mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="employeeTypeName">
+    <mat-header-cell *matHeaderCellDef mat-sort-header
+      >Employee Type Name</mat-header-cell
+    >
+    <mat-cell *matCellDef="let element">{{
+      element.employeeTypeName
+    }}</mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="medicalCheckTypeName">
+    <mat-header-cell *matHeaderCellDef mat-sort-header
+      >Medical Check Type Name</mat-header-cell
+    >
+    <mat-cell *matCellDef="let element">{{
+      element.medicalCheckTypeName
+    }}</mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="terminationDate">
+    <mat-header-cell *matHeaderCellDef mat-sort-header
+      >Termination Date</mat-header-cell
+    >
+    <mat-cell *matCellDef="let element">{{
+      element.terminationDate | date
+    }}</mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="startHour">
+    <mat-header-cell *matHeaderCellDef mat-sort-header
+      >Start Hour</mat-header-cell
+    >
+    <mat-cell *matCellDef="let element"
+      ><span *ngIf="element.startHour.hours < 10">0</span
+      >{{ element.startHour.hours }}:<span
+        *ngIf="element.startHour.minutes < 10"
+        >0</span
+      >{{ element.startHour.minutes }}</mat-cell
+    >
+  </ng-container>
+
+  <ng-container matColumnDef="endHour">
+    <mat-header-cell *matHeaderCellDef mat-sort-header
+      >End Hour</mat-header-cell
+    >
+    <mat-cell *matCellDef="let element"
+      ><span *ngIf="element.endHour.hours < 10">0</span
+      >{{ element.endHour.hours }}:<span *ngIf="element.endHour.minutes < 10"
+        >0</span
+      >{{ element.endHour.minutes }}</mat-cell
+    >
+  </ng-container>
+
+  <ng-container matColumnDef="deleted">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Deleted</mat-header-cell>
+    <mat-cell *matCellDef="let element">
+      <mat-checkbox [checked]="element.deleted" disabled></mat-checkbox>
+    </mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row
+    *matRowDef="let row; columns: displayedColumns"
+    routerLink="/employees/employees/{{ row.id }}"
+  ></mat-row>
+  <mat-spinner *ngIf="isLoading"></mat-spinner>
+</mat-table>
+
+<mat-paginator
+  #paginator
+  [pageSize]="10"
+  [pageSizeOptions]="[5, 10, 20]"
+  fxLayoutAlign="center center"
+></mat-paginator>
