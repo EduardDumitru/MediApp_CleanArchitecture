@@ -1,13 +1,13 @@
 import { SelectItemsList } from './common/selectitem';
 import { Observable } from 'rxjs';
 import { Result } from './common/result';
-import { Time } from '@angular/common';
+import { TimeSpan } from './common/timespan';
 
 export class PrescriptionXDrugsLookup {
     drugName: string;
     box: number;
     perInterval: number;
-    interval: Time;
+    interval: TimeSpan;
     deleted?: boolean;
 }
 
@@ -20,7 +20,7 @@ export class AddPrescriptionXDrugCommand {
     drugId: number;
     box: number;
     perInterval: number;
-    interval: Time;
+    interval: TimeSpan;
 }
 
 export class UpdatePrescriptionXDrugCommand {
@@ -29,7 +29,7 @@ export class UpdatePrescriptionXDrugCommand {
     drugId: number;
     box: number;
     perInterval: number;
-    interval: Time;
+    interval: TimeSpan;
 }
 
 export abstract class PrescriptionXDrugData {

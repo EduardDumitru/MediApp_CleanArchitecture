@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,37 +30,52 @@ namespace Application.CommandsAndQueries
             RuleFor(x => x.StartHour)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("Start Hour is required")
-                .MustAsync(BeHigherOrEqualThanSevenAM).WithMessage("Start Hour must be higher or equal than 07:00 AM")
+                .MustAsync(BeValidTimeSpan).WithMessage("Start Hour is not valid")
                 .MustAsync(BeFromHalfToHalfHours)
                 .WithMessage("Start Hour must be from half to half hours. Example: 09:00 or 09:30");
             RuleFor(x => x.EndHour)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("End Hour is required")
-                .MustAsync(BeLowerOrEqualThanEightPM).WithMessage("End Hour must be lower or equal than 20:00 PM")
+                .MustAsync(BeValidTimeSpan).WithMessage("End Hour is not valid")
                 .MustAsync(BeFromHalfToHalfHours)
                 .WithMessage("End Hour must be from half to half hours. Example: 09:00 or 09:30")
-                .Must(BeHigherThanStartHourByAtLeastFourHours)
+                .MustAsync(BeHigherThanStartHourByAtLeastFourHours)
                 .WithMessage("End Hour must be higher than Start Hour by at least four hours");
         }
 
-        private async Task<bool> BeFromHalfToHalfHours(TimeSpan hours, CancellationToken cancellationToken)
+        private async Task<bool> BeValidTimeSpan(string time, CancellationToken cancellationToken)
         {
-            return await Task.FromResult(hours.Minutes == 0 || hours.Minutes == 30);
+            var result = await Task.FromResult(TimeSpan.TryParseExact(time, "h\\:mm\\:ss", CultureInfo.CurrentCulture,
+                TimeSpanStyles.None,
+                out _));
+            return result;
         }
 
-        private bool BeHigherThanStartHourByAtLeastFourHours(UpdateEmployeeCommand addEmployeeCommand, TimeSpan endHour)
+        private async Task<bool> BeFromHalfToHalfHours(string hours, CancellationToken cancellationToken)
         {
-            return endHour >= addEmployeeCommand.StartHour + new TimeSpan(4, 0, 0);
+            if (TimeSpan.TryParseExact(hours, "h\\:mm\\:ss", CultureInfo.CurrentCulture,
+                TimeSpanStyles.None,
+                out var result))
+            {
+                return await Task.FromResult(result.Minutes == 0 || result.Minutes == 30);
+            }
+
+            return await Task.FromResult(false);
         }
 
-        private async Task<bool> BeHigherOrEqualThanSevenAM(TimeSpan startHour, CancellationToken cancellationToken)
+        private async Task<bool> BeHigherThanStartHourByAtLeastFourHours(UpdateEmployeeCommand addEmployeeCommand, string endHour,
+            CancellationToken cancellationToken)
         {
-            return await Task.FromResult(startHour.Hours >= 7);
-        }
+            if (TimeSpan.TryParseExact(endHour, "h\\:mm\\:ss", CultureInfo.CurrentCulture,
+                    TimeSpanStyles.None,
+                    out var endHours) && TimeSpan.TryParseExact(addEmployeeCommand.StartHour, "h\\:mm\\:ss", CultureInfo.CurrentCulture,
+                    TimeSpanStyles.None,
+                    out var startHours))
+            {
+                return await Task.FromResult(endHours >= startHours + new TimeSpan(4, 0, 0));
+            }
 
-        private async Task<bool> BeLowerOrEqualThanEightPM(TimeSpan endHour, CancellationToken cancellationToken)
-        {
-            return await Task.FromResult(endHour.Hours <= 20);
+            return await Task.FromResult(false);
         }
 
         private async Task<bool> ExistsClinic(int clinicId, CancellationToken cancellationToken)

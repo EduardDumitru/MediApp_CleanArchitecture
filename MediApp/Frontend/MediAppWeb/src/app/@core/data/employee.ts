@@ -1,11 +1,12 @@
 import { Observable } from 'rxjs';
 import { SelectItemsList } from './common/selectitem';
 import { Result } from './common/result';
-import { Time } from '@angular/common';
+import { TimeSpan } from './common/timespan';
+
 
 export class EmployeeDetails {
-    startHour: Time;
-    endHour: Time;
+    startHour: TimeSpan;
+    endHour: TimeSpan;
     terminationDate?: Date;
     name: string;
     cnp: string;
@@ -17,8 +18,8 @@ export class EmployeeDetails {
 
 export class EmployeeLookup {
     id: number;
-    startHour: Time;
-    endHour: Time;
+    startHour: TimeSpan;
+    endHour: TimeSpan;
     terminationDate?: Date;
     name: string;
     cnp: string;
@@ -33,8 +34,8 @@ export class EmployeesList {
 }
 
 export class AddEmployeeCommand {
-    startHour: Time;
-    endHour: Time;
+    startHour: string;
+    endHour: string;
     userProfileId: number;
     employeeTypeId: number;
     medicalCheckTypeId?: number;
@@ -43,8 +44,8 @@ export class AddEmployeeCommand {
 
 export class UpdateEmployeeCommand {
     id: number;
-    startHour: Time;
-    endHour: Time;
+    startHour: string;
+    endHour: string;
     terminationDate?: Date;
     employeeTypeId: number;
     medicalCheckTypeId?: number;

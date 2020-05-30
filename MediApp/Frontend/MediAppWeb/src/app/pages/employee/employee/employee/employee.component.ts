@@ -4,12 +4,13 @@ import { EmployeeData, EmployeeDetails, UpdateEmployeeCommand, AddEmployeeComman
 import { UIService } from 'src/app/shared/ui.service';
 import { ActivatedRoute } from '@angular/router';
 import { Result } from 'src/app/@core/data/common/result';
-import { Location, Time } from '@angular/common';
+import { Location } from '@angular/common';
 import { SelectItemsList, SelectItem } from 'src/app/@core/data/common/selectitem';
 import { EmployeeTypeData } from 'src/app/@core/data/employeetype';
 import { MedicalCheckTypeData } from 'src/app/@core/data/medicalchecktype';
 import { ClinicData } from 'src/app/@core/data/clinic';
 import { UserProfileData } from 'src/app/@core/data/userclasses/userprofile';
+import { TimeSpan } from 'src/app/@core/data/common/timespan';
 
 @Component({
   selector: 'app-employee',
@@ -25,6 +26,8 @@ export class EmployeeComponent implements OnInit {
   clinicSelectList: SelectItemsList = new SelectItemsList();
   employeeTypeSelectList: SelectItemsList = new SelectItemsList();
   medicalCheckTypeSelectList: SelectItemsList = new SelectItemsList();
+  minutesSelectList: SelectItemsList = new TimeSpan(0, 0).minutesSelectList;
+  hoursSelectList: SelectItemsList = new TimeSpan(0, 0).hoursSelectList;
   constructor(private employeeData: EmployeeData, private uiService: UIService,
     private route: ActivatedRoute, private _location: Location,
     private employeeTypeData: EmployeeTypeData, private medicalCheckTypeData: MedicalCheckTypeData,
@@ -36,7 +39,6 @@ export class EmployeeComponent implements OnInit {
       }
       this.initForm();
       this.getEmployeeTypeSelect();
-      this.getMedicalCheckTypeSelect();
       this.getClinicSelect();
   }
 
@@ -44,7 +46,7 @@ export class EmployeeComponent implements OnInit {
       this.employeeForm = new FormGroup({
           name: new FormControl({value: '', disabled: true}),
           cnp: new FormControl({value: '', disabled: true}),
-          userProfileId: new FormControl('', [Validators.required]),
+          userProfileId: new FormControl(''),
           employeeTypeId: new FormControl('', [Validators.required]),
           medicalCheckTypeId: new FormControl(''),
           clinicId: new FormControl('', [Validators.required]),
@@ -52,11 +54,12 @@ export class EmployeeComponent implements OnInit {
           startMinutes: new FormControl('', [Validators.required]),
           endHour: new FormControl('', [Validators.required]),
           endMinutes: new FormControl('', [Validators.required]),
-          terminationDate: new FormControl(new Date())
+          terminationDate: new FormControl(null)
       })
       if (this.employeeId) {
           this.getEmployee();
       } else {
+        this.employeeForm.get('userProfileId').setValidators(Validators.required);
         this.getUserProfileSelect();
       }
   }
@@ -64,27 +67,29 @@ export class EmployeeComponent implements OnInit {
   getEmployee() {
       this.isLoading = true;
       this.employeeData.GetEmployeeDetails(this.employeeId).subscribe((employee: EmployeeDetails) => {
-        console.log(employee);
           this.employeeForm.patchValue({
             name: employee.name,
             cnp: employee.cnp,
             employeeTypeId: employee.employeeTypeId.toString(),
             medicalCheckTypeId: employee.medicalCheckTypeId.toString(),
             clinicId: employee.clinicId.toString(),
-            startHour: employee.startHour.hours,
-            startMinutes: employee.startHour.minutes,
-            endHour: employee.endHour.hours,
-            endMinutes: employee.startHour.minutes,
-            terminationDate: new Date(employee.terminationDate)
+            startHour: employee.startHour.hours.toString(),
+            startMinutes: employee.startHour.minutes.toString(),
+            endHour: employee.endHour.hours.toString(),
+            endMinutes: employee.startHour.minutes.toString(),
+            terminationDate: employee.terminationDate ? new Date(employee.terminationDate) : null
           });
           this.isDeleted = employee.deleted;
           if (this.isDeleted) {
               this.employeeForm.disable();
           }
+          if (employee.medicalCheckTypeId) {
+            this.getMedicalCheckTypeSelect();
+          }
           this.isLoading = false;
       },
           error => {
-              this.uiService.showErrorSnackbar(error.message, null, 3000);
+              this.uiService.showErrorSnackbar(error, null, 3000);
               this.isLoading = false;
           });
   }
@@ -101,18 +106,14 @@ export class EmployeeComponent implements OnInit {
   updateEmployee() {
       const updateEmployeeCommand: UpdateEmployeeCommand = {
           id: this.employeeId,
-          startHour: this.employeeForm.value.startHour,
-          endHour: this.employeeForm.value.endHour,
           employeeTypeId: +this.employeeForm.value.employeeTypeId,
           medicalCheckTypeId: +this.employeeForm.value.medicalCheckTypeId,
           clinicId: +this.employeeForm.value.clinicId,
-          terminationDate: new Date(this.employeeForm.value.terminationDate)
+          terminationDate: this.employeeForm.value.terminationDate ? new Date(this.employeeForm.value.terminationDate) : null
       } as UpdateEmployeeCommand;
 
-      updateEmployeeCommand.startHour.hours = +this.employeeForm.value.startHour;
-      updateEmployeeCommand.startHour.minutes = +this.employeeForm.value.startMinutes;
-      updateEmployeeCommand.endHour.hours = +this.employeeForm.value.endHour;
-      updateEmployeeCommand.endHour.minutes = +this.employeeForm.value.endMinutes;
+      updateEmployeeCommand.startHour = new TimeSpan(+this.employeeForm.value.startHour, +this.employeeForm.value.startMinutes).toString();
+      updateEmployeeCommand.endHour =  new TimeSpan(+this.employeeForm.value.endHour, +this.employeeForm.value.endMinutes).toString();
 
       this.employeeData.UpdateEmployee(updateEmployeeCommand).subscribe((res: Result) => {
           this.uiService.showSuccessSnackbar(res.successMessage, null, 3000);
@@ -120,7 +121,7 @@ export class EmployeeComponent implements OnInit {
           this.isLoading = false;
       }, error => {
           this.isLoading = false;
-          this.uiService.showErrorSnackbar(error.message, null, 3000);
+          this.uiService.showErrorSnackbar(error, null, 3000);
       });
   }
 
@@ -132,18 +133,17 @@ export class EmployeeComponent implements OnInit {
           clinicId: +this.employeeForm.value.clinicId
       } as AddEmployeeCommand;
 
-      addEmployeeCommand.startHour.hours = +this.employeeForm.value.startHour;
-      addEmployeeCommand.startHour.minutes = +this.employeeForm.value.startMinutes;
-      addEmployeeCommand.endHour.hours = +this.employeeForm.value.endHour;
-      addEmployeeCommand.endHour.minutes = +this.employeeForm.value.endMinutes;
+      addEmployeeCommand.startHour = new TimeSpan(+this.employeeForm.value.startHour, +this.employeeForm.value.startMinutes).toString();
+      addEmployeeCommand.endHour = new TimeSpan(+this.employeeForm.value.endHour, +this.employeeForm.value.endMinutes).toString();
 
+      console.log(addEmployeeCommand);
       this.employeeData.AddEmployee(addEmployeeCommand).subscribe((res: Result) => {
           this.uiService.showSuccessSnackbar(res.successMessage, null, 3000);
           this._location.back();
           this.isLoading = false;
       }, error => {
           this.isLoading = false;
-          this.uiService.showErrorSnackbar(error.message, null, 3000);
+          this.uiService.showErrorSnackbar(error, null, 3000);
       });
   }
 
@@ -155,7 +155,7 @@ export class EmployeeComponent implements OnInit {
           this.isLoading = false;
       }, error => {
           this.isLoading = false;
-          this.uiService.showErrorSnackbar(error.message, null, 3000);
+          this.uiService.showErrorSnackbar(error, null, 3000);
       })
   }
 
@@ -171,7 +171,7 @@ export class EmployeeComponent implements OnInit {
           this.isLoading = false;
       }, error => {
           this.isLoading = false;
-          this.uiService.showErrorSnackbar(error.message, null, 3000);
+          this.uiService.showErrorSnackbar(error, null, 3000);
       })
   }
 
@@ -180,7 +180,7 @@ export class EmployeeComponent implements OnInit {
       this.userProfileSelectList = userProfiles;
     },
     error => {
-        this.uiService.showErrorSnackbar(error.message, null, 3000);
+        this.uiService.showErrorSnackbar(error, null, 3000);
     });
   }
 
@@ -189,7 +189,7 @@ export class EmployeeComponent implements OnInit {
       this.employeeTypeSelectList = empTypes;
     },
     error => {
-        this.uiService.showErrorSnackbar(error.message, null, 3000);
+        this.uiService.showErrorSnackbar(error, null, 3000);
     });
   }
 
@@ -198,7 +198,7 @@ export class EmployeeComponent implements OnInit {
       this.medicalCheckTypeSelectList = medCheckTypes;
     },
     error => {
-        this.uiService.showErrorSnackbar(error.message, null, 3000);
+        this.uiService.showErrorSnackbar(error, null, 3000);
     });
   }
 
@@ -207,11 +207,20 @@ export class EmployeeComponent implements OnInit {
       this.clinicSelectList = clinics;
     },
     error => {
-        this.uiService.showErrorSnackbar(error.message, null, 3000);
+        this.uiService.showErrorSnackbar(error, null, 3000);
     });
   }
 
   goBack() {
       this._location.back();
     }
+
+  employeeTypeChange(employeeTypeId: string) {
+      this.medicalCheckTypeSelectList = new SelectItemsList();
+      this.employeeForm.patchValue({medicalCheckTypeId: ''});
+      if (employeeTypeId=== '2') {
+        this.employeeForm.get('medicalCheckTypeId').setValidators(Validators.required);
+        this.getMedicalCheckTypeSelect();
+      }
+  }
 }

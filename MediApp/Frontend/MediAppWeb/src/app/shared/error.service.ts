@@ -28,6 +28,7 @@ export class ErrorService {
                 });
             }
         }
+        console.log(errorMessage);
         return throwError(errorMessage);
      }
 }

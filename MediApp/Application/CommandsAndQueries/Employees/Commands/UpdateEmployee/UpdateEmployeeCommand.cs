@@ -12,8 +12,8 @@ namespace Application.CommandsAndQueries
     public class UpdateEmployeeCommand : IRequest<Result>
     {
         public long Id { get; set; }
-        public TimeSpan StartHour { get; set; }
-        public TimeSpan EndHour { get; set; }
+        public string StartHour { get; set; }
+        public string EndHour { get; set; }
         public DateTime? TerminationDate { get; set; }
         public short EmployeeTypeId { get; set; }
         public short? MedicalCheckTypeId { get; set; }
@@ -39,8 +39,8 @@ namespace Application.CommandsAndQueries
                 return Result.Failure(new List<string> {"No valid employee found"});
             }
 
-            entity.StartHour = request.StartHour;
-            entity.EndHour = request.EndHour;
+            entity.StartHour = TimeSpan.Parse(request.StartHour);
+            entity.EndHour = TimeSpan.Parse(request.EndHour);
             entity.TerminationDate = request.TerminationDate;
             entity.EmployeeTypeId = request.EmployeeTypeId;
             entity.MedicalCheckTypeId = request.MedicalCheckTypeId;

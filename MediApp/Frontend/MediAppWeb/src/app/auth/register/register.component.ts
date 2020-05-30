@@ -93,7 +93,7 @@ export class RegisterComponent implements OnInit {
       this.genderSelectList = genders;
     },
     error => {
-        this.uiService.showErrorSnackbar(error.message, null, 3000);
+        this.uiService.showErrorSnackbar(error, null, 3000);
     })
   }
 
@@ -102,7 +102,7 @@ export class RegisterComponent implements OnInit {
       this.countrySelectList = countries;
     },
     error => {
-        this.uiService.showErrorSnackbar(error.message, null, 3000);
+        this.uiService.showErrorSnackbar(error, null, 3000);
     })
   }
 
@@ -111,7 +111,7 @@ export class RegisterComponent implements OnInit {
       this.countySelectList = counties;
     },
     error => {
-        this.uiService.showErrorSnackbar(error.message, null, 3000);
+        this.uiService.showErrorSnackbar(error, null, 3000);
     })
   }
 
@@ -120,7 +120,7 @@ export class RegisterComponent implements OnInit {
       this.citySelectList = cities;
     },
     error => {
-        this.uiService.showErrorSnackbar(error.message, null, 3000);
+        this.uiService.showErrorSnackbar(error, null, 3000);
     })
   }
 
@@ -150,7 +150,7 @@ export class RegisterComponent implements OnInit {
         this.router.navigate(['']);
     }, error => {
         this.isLoading = false;
-        this.uiService.showErrorSnackbar(error.message, null, 3000);
+        this.uiService.showErrorSnackbar(error, null, 3000);
     })
   }
 }

@@ -51,7 +51,7 @@ export class CountyComponent implements OnInit {
           this.isLoading = false;
       },
           error => {
-              this.uiService.showErrorSnackbar(error.message, null, 3000);
+              this.uiService.showErrorSnackbar(error, null, 3000);
               this.isLoading = false;
           });
   }
@@ -61,7 +61,7 @@ export class CountyComponent implements OnInit {
           this.countrySelectList = countries;
       },
           error => {
-              this.uiService.showErrorSnackbar(error.message, null, 3000);
+              this.uiService.showErrorSnackbar(error, null, 3000);
           })
   }
 
@@ -87,7 +87,7 @@ export class CountyComponent implements OnInit {
           this.isLoading = false;
       }, error => {
           this.isLoading = false;
-          this.uiService.showErrorSnackbar(error.message, null, 3000);
+          this.uiService.showErrorSnackbar(error, null, 3000);
       });
   }
 
@@ -103,7 +103,7 @@ export class CountyComponent implements OnInit {
           this.isLoading = false;
       }, error => {
           this.isLoading = false;
-          this.uiService.showErrorSnackbar(error.message, null, 3000);
+          this.uiService.showErrorSnackbar(error, null, 3000);
       });
   }
 
@@ -115,7 +115,7 @@ export class CountyComponent implements OnInit {
           this.isLoading = false;
       }, error => {
           this.isLoading = false;
-          this.uiService.showErrorSnackbar(error.message, null, 3000);
+          this.uiService.showErrorSnackbar(error, null, 3000);
       })
   }
 
@@ -131,7 +131,7 @@ export class CountyComponent implements OnInit {
           this.isLoading = false;
       }, error => {
           this.isLoading = false;
-          this.uiService.showErrorSnackbar(error.message, null, 3000);
+          this.uiService.showErrorSnackbar(error, null, 3000);
       })
   }
 

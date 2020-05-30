@@ -1,8 +1,8 @@
 import { Observable } from 'rxjs';
 import { SelectItemsList } from './common/selectitem';
 import { Result } from './common/result';
-import { Time } from '@angular/common';
 import { PrescriptionXDrugsLookup } from './prescriptionxdrug';
+import { TimeSpan } from './common/timespan';
 
 export class PrescriptionDetails {
     noOfDays: number;
@@ -64,7 +64,7 @@ export class AddPrescriptionXDrug {
     drugId: number;
     box: number;
     perInterval: number;
-    interval: Time;
+    interval: TimeSpan;
 }
 
 export class UpdatePrescriptionCommand {
@@ -79,7 +79,7 @@ export class UpdatePrescriptionXDrug {
     drugId: number;
     box: number;
     perInterval: number;
-    interval: Time;
+    interval: TimeSpan;
 }
 
 export abstract class PrescriptionData {

@@ -57,8 +57,6 @@ namespace MediApp
             services.AddControllers()
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<IApplicationDbContext>());
 
-            services.AddAutoMapper(System.Reflection.Assembly.GetExecutingAssembly());
-
             services.InstallServicesInAssembly(Configuration);
         }
 

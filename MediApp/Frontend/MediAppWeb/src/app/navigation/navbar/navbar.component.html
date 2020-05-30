@@ -56,12 +56,20 @@
             <button *ngIf="isAdmin" mat-menu-item routerLink="/employees/employeetypes">Employee Types</button>
             <button *ngIf="isAdmin" mat-menu-item routerLink="/employees/medicalchecktypes">Medical Check Types</button>
             <button mat-menu-item routerLink="/employees/holidayintervals">Holiday Intervals</button>
-            <button mat-menu-item routerLink="/employees/employees">Employees</button>
-            <!-- <button mat-menu-item routerLink="/location/clinics">Clinics</button> -->
+            <button *ngIf="isAdmin" mat-menu-item routerLink="/employees/employees">Employees</button>
           </ng-template>
         </mat-menu>
         <a style="cursor:pointer" [matMenuTriggerFor]="employeeMenu">
           Employee
+        </a></li>
+        <li><mat-menu #employeeMenu="matMenu" yPosition="below">
+          <ng-template matMenuContent>
+            <button *ngIf="isDoctor" mat-menu-item routerLink="/treatments/employeeprescriptions/{{currentUserId}}">Doctor Prescriptions</button>
+            <button mat-menu-item routerLink="/treatments/patientprescriptions/{{currentUserId}}">My Prescriptions</button>
+          </ng-template>
+        </mat-menu>
+        <a style="cursor:pointer" [matMenuTriggerFor]="employeeMenu">
+          Treatment
         </a></li>
         <li *ngIf="isAuth"><a style="cursor:pointer" (click)="onLogout()">Logout</a></li>
       </ul>

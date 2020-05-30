@@ -53,7 +53,7 @@ export class DiagnosisxDrugsComponent implements OnInit, AfterViewInit {
         this.getDiagnosisXDrugs();
     }, error => {
         this.isLoading = false;
-        this.uiService.showErrorSnackbar(error.message, null, 3000);
+        this.uiService.showErrorSnackbar(error, null, 3000);
     })
 }
 
@@ -69,7 +69,7 @@ restoreDiagnosisXDrug(id) {
         this.getDiagnosisXDrugs();
     }, error => {
         this.isLoading = false;
-        this.uiService.showErrorSnackbar(error.message, null, 3000);
+        this.uiService.showErrorSnackbar(error, null, 3000);
     })
 }
 }
