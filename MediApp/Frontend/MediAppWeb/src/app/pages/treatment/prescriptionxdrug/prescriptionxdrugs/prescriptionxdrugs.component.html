@@ -1,1 +1,66 @@
-<p>prescriptionxdrugs works!</p>
+<div fxLayoutAlign="center center">
+    <mat-form-field fxFlex="40%" fxFlex.xs="100%">
+        <input matInput type="text" (keyup)="doFilter($event.target.value)" placeholder="Filter"/>
+    </mat-form-field>
+</div>
+<div fxLayoutAlign="end" fxLayout="row" >
+<button *ngIf="!isLoading && !isPrescriptionDeleted" type="submit" mat-raised-button color="primary" 
+fxFlex="200px" fxFlex.xs="100%" (click)="openDialogToAdd()">Add PrescriptionXDrug</button>
+</div>
+<mat-table [dataSource]="dataSource" matSort>
+
+    <ng-container matColumnDef="id">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Id</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.id | number}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="drugName">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Drug Name</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.drugName}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="box">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Box</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.box}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="perInterval">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Per Interval</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.perInterval}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="interval">
+        <mat-header-cell *matHeaderCellDef mat-sort-header
+          >Interval</mat-header-cell
+        >
+        <mat-cell *matCellDef="let element"
+          ><span *ngIf="element.interval.hours < 10">0</span
+          >{{ element.interval.hours }}:<span *ngIf="element.interval.minutes < 10"
+            >0</span
+          >{{ element.interval.minutes }}</mat-cell
+        >
+      </ng-container>
+
+    <ng-container matColumnDef="deleted">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Deleted</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-checkbox [checked]="element.deleted" disabled></mat-checkbox>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+        <mat-header-cell *matHeaderCellDef>Actions </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <button mat-icon-button matTooltip="Click to Delete" class="iconbutton" color="warn" *ngIf="!element.deleted && !isPrescriptionDeleted">
+              <mat-icon aria-label="Delete" (click)="deletePrescriptionXDrug(element.id)">delete</mat-icon>
+          </button>
+        </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns" (click)="getPrescriptionXDrug(row.id, row.deleted)"></mat-row>
+    <mat-spinner *ngIf="isLoading"></mat-spinner>
+</mat-table>
+
+<mat-paginator #paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]" fxLayoutAlign="center center"></mat-paginator>
+

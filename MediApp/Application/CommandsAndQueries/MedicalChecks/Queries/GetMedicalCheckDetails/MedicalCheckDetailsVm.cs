@@ -10,10 +10,15 @@ namespace Application.CommandsAndQueries
     {
         public DateTime Appointment { get; set; }
         public string MedicalCheckTypeName { get; set; }
+        public short MedicalCheckTypeId { get; set; }
         public string DiagnosisName { get; set; }
+        public int? DiagnosisId { get; set; }
         public string ClinicName { get; set; }
+        public int ClinicId { get; set; }
         public string EmployeeName { get; set; }
+        public long EmployeeId { get; set; }
         public string PatientName { get; set; }
+        public long PatientId { get; set; }
         public string PatientCnp { get; set; }
         public IList<PrescriptionDetailsVm> Prescriptions { get; set; }
 

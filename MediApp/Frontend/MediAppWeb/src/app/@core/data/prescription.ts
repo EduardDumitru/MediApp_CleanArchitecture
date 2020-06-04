@@ -13,7 +13,6 @@ export class PrescriptionDetails {
     clinicName: string;
     employeeName: string;
     patientName: string;
-    drugs: PrescriptionXDrugsLookup[];
     deleted?: boolean;
 }
 
@@ -56,7 +55,6 @@ export class AddPrescriptionCommand {
     clinicId: number;
     patientId: number;
     employeeId: number;
-    prescriptionXDrugs: AddPrescriptionXDrug[];
 }
 
 export class AddPrescriptionXDrug {
@@ -71,7 +69,6 @@ export class UpdatePrescriptionCommand {
     id: number;
     noOfDays: number;
     description: string;
-    prescriptionXDrugs: UpdatePrescriptionXDrug[];
 }
 
 export class UpdatePrescriptionXDrug {

@@ -5,10 +5,15 @@ import { Result } from './common/result';
 export class MedicalCheckDetails {
     appointment: Date;
     medicalCheckTypeName: string;
+    medicalCheckTypeId: number;
     diagnosisName: string;
+    diagnosisId: number;
     clinicName: string;
+    clinicId: number;
     employeeName: string;
+    employeeId: number;
     patientName: string;
+    patientId: number;
     patientCnp: string;
     deleted?: boolean;
 }

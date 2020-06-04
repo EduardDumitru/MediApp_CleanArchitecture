@@ -7,6 +7,7 @@ namespace Application.CommandsAndQueries
 {
     public class PrescriptionXDrugsLookupDto : IMapFrom<PrescriptionXDrug>
     {
+        public long Id { get; set; }
         public string DrugName { get; set; }
         public short Box { get; set; }
         public float PerInterval { get; set; }

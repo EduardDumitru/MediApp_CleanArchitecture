@@ -6,6 +6,7 @@ export class ErrorService {
     constructor() { }
 
     errorHandl(error) {
+        console.log(error);
         let errorMessage = ''
         if (error.error instanceof ErrorEvent) {
           // Get client-side error

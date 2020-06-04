@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { DiagnosisXDrugsLookup, DiagnosisXDrugData, DiagnosisXDrugsList } from 'src/app/@core/data/diagnosisxdrug';
+import { DiagnosisXDrugsLookup, DiagnosisXDrugData, DiagnosisXDrugsList, RestoreDiagnosisXDrugCommand } from 'src/app/@core/data/diagnosisxdrug';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { UIService } from 'src/app/shared/ui.service';
@@ -59,11 +59,11 @@ export class DiagnosisxDrugsComponent implements OnInit, AfterViewInit {
 
 restoreDiagnosisXDrug(id) {
     this.isLoading = true;
-    const restoreDiagnosisCommand: RestoreDiagnosisCommand = {
+    const restoreDiagnosisXDrugCommand: RestoreDiagnosisXDrugCommand = {
         id
-    } as RestoreDiagnosisCommand;
+    } as RestoreDiagnosisXDrugCommand;
 
-    this.diagnosisXDrugData.RestoreDiagnosisXDrug(restoreDiagnosisCommand).subscribe((res: Result) => {
+    this.diagnosisXDrugData.RestoreDiagnosisXDrug(restoreDiagnosisXDrugCommand).subscribe((res: Result) => {
         this.uiService.showSuccessSnackbar(res.successMessage, null, 3000);
         this.isLoading = false;
         this.getDiagnosisXDrugs();

@@ -1,19 +1,15 @@
 
-<section fxLayout fxLayoutAlign="center" class="holiday-interval-card">
+<section fxLayout fxLayoutAlign="center" class="employee-card">
     <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()">
       <mat-card fxFlex.xs="100%" fxFlex="600px">
-        <mat-card-title fxLayoutAlign="center" *ngIf="!employeeId">Add Holiday Interval</mat-card-title>
-        <mat-card-title fxLayoutAlign="center" *ngIf="employeeId">Update Holiday Interval</mat-card-title>
+        <mat-card-title fxLayoutAlign="center" *ngIf="!employeeId">Add Employee</mat-card-title>
+        <mat-card-title fxLayoutAlign="center" *ngIf="employeeId">Update Employee</mat-card-title>
         <mat-card-content fxLayout="column" fxLayoutAlign="center">
               <mat-form-field *ngIf="this.employeeId">
                 <input matInput placeholder="Name" formControlName="name"/>
-                <mat-hint>Please enter a name.</mat-hint>
-                <mat-error>Name is required</mat-error>
               </mat-form-field>
               <mat-form-field *ngIf="this.employeeId">
                 <input matInput placeholder="CNP" formControlName="cnp"/>
-                <mat-hint>Please enter a CNP.</mat-hint>
-                <mat-error>CNP is required</mat-error>
               </mat-form-field>
               <mat-form-field *ngIf="this.userProfileSelectList.selectItems">
               <mat-select placeholder="Choose User" formControlName="userProfileId" required>

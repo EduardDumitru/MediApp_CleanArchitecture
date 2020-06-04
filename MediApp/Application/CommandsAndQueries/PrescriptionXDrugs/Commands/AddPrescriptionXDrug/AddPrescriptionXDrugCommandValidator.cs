@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,7 +33,7 @@ namespace Application.CommandsAndQueries
             RuleFor(x => x.Interval)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("Interval is required")
-                .MustAsync(ValidTimeSpan).WithMessage("Interval is not correctly configured");
+                .MustAsync(BeValidTimeSpan).WithMessage("Interval is not correctly configured");
         }
 
         private async Task<bool> ExistsPrescription(long prescriptionId, CancellationToken cancellationToken)
@@ -47,9 +48,12 @@ namespace Application.CommandsAndQueries
                 .AnyAsync(x => x.Id == drugId && !x.Deleted, cancellationToken);
         }
 
-        private async Task<bool> ValidTimeSpan(TimeSpan interval, CancellationToken cancellationToken)
+        private async Task<bool> BeValidTimeSpan(string time, CancellationToken cancellationToken)
         {
-            return await Task.FromResult(interval.Ticks > default(TimeSpan).Ticks);
+            var result = await Task.FromResult(TimeSpan.TryParseExact(time, "h\\:mm\\:ss", CultureInfo.CurrentCulture,
+                TimeSpanStyles.None,
+                out _));
+            return result;
         }
     }
 }

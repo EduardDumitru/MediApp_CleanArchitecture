@@ -9,6 +9,14 @@ namespace MediApp.Controllers
     [Authorize]
     public class PrescriptionXDrugController : ApiController
     {
+        [HttpGet("{id}")]
+        public async Task<ActionResult<PrescriptionXDrugDetailsVm>> GetPrescriptionXDrugDetails(long id)
+        {
+            var vm = await Mediator.Send(new GetPrescriptionXDrugDetailsQuery() {Id = id});
+
+            return Ok(vm);
+        }
+
         [HttpGet("drugsbyprescription/{prescriptionId}")]
         public async Task<ActionResult<PrescriptionXDrugsListVm>> GetPrescriptionXDrugs(long prescriptionId)
         {

@@ -1,1 +1,77 @@
-<p>prescriptionxdrug works!</p>
+
+<div mat-dialog-content>
+    <section fxLayout fxLayoutAlign="center" class="prescription-drug-card">
+        <form [formGroup]="prescriptionXDrugForm">
+          <mat-card fxFlex.xs="100%" fxFlex="600px">
+            <mat-card-title fxLayoutAlign="center">PrescriptionXDrug</mat-card-title>
+            <mat-card-content fxLayout="column" fxLayoutAlign="center">
+                <mat-form-field *ngIf="this.drugSelectList.selectItems">
+                  <mat-select placeholder="Choose Drug" formControlName="drugId" required>
+                    <mat-option
+                      *ngFor="let drug of drugSelectList.selectItems"
+                      [value]="drug.value">
+                      {{ drug.label }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-hint>Please choose a drug</mat-hint>
+                  <mat-error>Please choose a drug</mat-error>
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput type="number" placeholder="Box" formControlName="box" onkeyup="if(this.value<0)this.value=1" min="0" required />
+                    <mat-hint>Please enter a box number.</mat-hint>
+                    <mat-error>Box number is required</mat-error>
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput type="number" placeholder="Per Interval" formControlName="perInterval" onkeyup="if(this.value<0)this.value=1" min="0" required />
+                    <mat-hint>Please enter a how many hits to take per interval.</mat-hint>
+                    <mat-error>Per interval number is required</mat-error>
+                </mat-form-field>
+                <mat-form-field *ngIf="this.hoursSelectList.selectItems">
+                  <mat-select placeholder="Interval Hour" formControlName="intervalHours" required>
+                    <mat-option
+                      *ngFor="let intervalHours of hoursSelectList.selectItems"
+                      [value]="intervalHours.value">
+                      {{ intervalHours.label }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-hint>Please choose interval hours</mat-hint>
+                  <mat-error>Please choose interval hours</mat-error>
+                </mat-form-field>
+                <mat-form-field *ngIf="this.minutesSelectList.selectItems">
+                  <mat-select placeholder="Interval Minutes" formControlName="intervalMinutes" required>
+                    <mat-option
+                      *ngFor="let intervalMinutes of minutesSelectList.selectItems"
+                      [value]="intervalMinutes.value">
+                      {{ intervalMinutes.label }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-hint>Please choose interval minutes</mat-hint>
+                  <mat-error>Please choose interval minutes</mat-error>
+                </mat-form-field>
+              <mat-spinner *ngIf="isLoading"></mat-spinner>
+            </mat-card-content>
+            <mat-card-actions fxLayoutAlign="center" *ngIf="!isLoading">
+              <button
+              *ngIf="!isLoading"
+              type="button"
+              mat-raised-button
+              color="accent"
+              [mat-dialog-close]
+            >
+              Close
+            </button>
+              <button
+                type="submit"
+                mat-raised-button
+                color="primary"
+                [disabled]="prescriptionXDrugForm.invalid"
+                cdkFocusInitial
+                [mat-dialog-close]="prescriptionXDrugForm"
+              >
+                Submit
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        </form>
+      </section>
+</div>

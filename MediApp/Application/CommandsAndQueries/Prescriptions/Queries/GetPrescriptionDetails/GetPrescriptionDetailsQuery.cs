@@ -33,7 +33,6 @@ namespace Application.CommandsAndQueries
                 .Include(x => x.MedicalCheck).ThenInclude(x => x.MedicalCheckType)
                 .Include(x => x.MedicalCheck).ThenInclude(x => x.Clinic)
                 .Include(x => x.MedicalCheck).ThenInclude(x => x.Diagnosis)
-                .Include(x => x.PrescriptionXDrugs).ThenInclude(x => x.Drug)
                 .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
 
             return entity == null ? null : _mapper.Map<PrescriptionDetailsVm>(entity);

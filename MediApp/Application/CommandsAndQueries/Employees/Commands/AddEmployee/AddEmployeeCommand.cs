@@ -10,8 +10,8 @@ namespace Application.CommandsAndQueries
 {
     public class AddEmployeeCommand : IRequest<Result>
     {
-        public TimeSpan StartHour { get; set; }
-        public TimeSpan EndHour { get; set; }
+        public string StartHour { get; set; }
+        public string EndHour { get; set; }
         public long UserProfileId { get; set; }
         public short EmployeeTypeId { get; set; }
         public short? MedicalCheckTypeId { get; set; }
@@ -31,8 +31,8 @@ namespace Application.CommandsAndQueries
         {
             var entity = new Employee
             {
-                StartHour = request.StartHour,
-                EndHour = request.EndHour,
+                StartHour = TimeSpan.Parse(request.StartHour),
+                EndHour = TimeSpan.Parse(request.EndHour),
                 UserProfileId = request.UserProfileId,
                 EmployeeTypeId = request.EmployeeTypeId,
                 MedicalCheckTypeId = request.MedicalCheckTypeId,

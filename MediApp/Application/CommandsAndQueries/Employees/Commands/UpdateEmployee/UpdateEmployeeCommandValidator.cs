@@ -63,12 +63,12 @@ namespace Application.CommandsAndQueries
             return await Task.FromResult(false);
         }
 
-        private async Task<bool> BeHigherThanStartHourByAtLeastFourHours(UpdateEmployeeCommand addEmployeeCommand, string endHour,
+        private async Task<bool> BeHigherThanStartHourByAtLeastFourHours(UpdateEmployeeCommand updateEmployeeCommand, string endHour,
             CancellationToken cancellationToken)
         {
             if (TimeSpan.TryParseExact(endHour, "h\\:mm\\:ss", CultureInfo.CurrentCulture,
                     TimeSpanStyles.None,
-                    out var endHours) && TimeSpan.TryParseExact(addEmployeeCommand.StartHour, "h\\:mm\\:ss", CultureInfo.CurrentCulture,
+                    out var endHours) && TimeSpan.TryParseExact(updateEmployeeCommand.StartHour, "h\\:mm\\:ss", CultureInfo.CurrentCulture,
                     TimeSpanStyles.None,
                     out var startHours))
             {

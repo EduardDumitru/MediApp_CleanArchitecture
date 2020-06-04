@@ -16,7 +16,7 @@ namespace Application.CommandsAndQueries
         public long DrugId { get; set; }
         public short Box { get; set; }
         public float PerInterval { get; set; }
-        public TimeSpan Interval { get; set; }
+        public string Interval { get; set; }
     }
 
     public class UpdatePrescriptionXDrugCommandHandler : IRequestHandler<UpdatePrescriptionXDrugCommand, Result>
@@ -42,7 +42,7 @@ namespace Application.CommandsAndQueries
             entity.DrugId = request.DrugId;
             entity.Box = request.Box;
             entity.PerInterval = request.PerInterval;
-            entity.Interval = request.Interval;
+            entity.Interval = TimeSpan.Parse(request.Interval);
 
             await _context.SaveChangesAsync(cancellationToken);
 

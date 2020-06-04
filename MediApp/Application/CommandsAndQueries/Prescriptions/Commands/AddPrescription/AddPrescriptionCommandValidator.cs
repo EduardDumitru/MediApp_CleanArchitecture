@@ -27,10 +27,6 @@ namespace Application.CommandsAndQueries
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("Medical Check is required")
                 .MustAsync(ExistsMedicalCheck).WithMessage("Medical Check is not valid");
-            RuleFor(x => x.PrescriptionXDrugs)
-                .Cascade(CascadeMode.StopOnFirstFailure)
-                .NotEmpty().WithMessage("Drugs are required")
-                .MustAsync(ExistsDrugs).WithMessage("Drugs are not valid");
         }
 
         private async Task<bool> ExistsEmployee(long employeeId, CancellationToken cancellationToken)
@@ -49,13 +45,6 @@ namespace Application.CommandsAndQueries
         {
             return await _context.MedicalChecks
                 .AnyAsync(x => x.Id == medicalCheckId && !x.Deleted, cancellationToken);
-        }
-
-        private async Task<bool> ExistsDrugs(IList<AddPrescriptionXDrugDto> prescriptionXDrugs, CancellationToken cancellationToken)
-        {
-            var drugIds = prescriptionXDrugs.Select(x => x.DrugId).Distinct();
-            var nrOfDrugsValid = await _context.Drugs.Where(x => drugIds.Contains(x.Id)).LongCountAsync(cancellationToken);
-            return drugIds.LongCount() == nrOfDrugsValid;
         }
     }
 }

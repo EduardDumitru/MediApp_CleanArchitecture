@@ -32,6 +32,7 @@ namespace Application.CommandsAndQueries
             var prescriptionXDrugs = await _context.PrescriptionXDrugs
                 .Where(x => x.PrescriptionId == request.PrescriptionId)
                 .Include(x => x.Drug)
+                .OrderBy(x => x.Deleted)
                 .ProjectTo<PrescriptionXDrugsLookupDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
 

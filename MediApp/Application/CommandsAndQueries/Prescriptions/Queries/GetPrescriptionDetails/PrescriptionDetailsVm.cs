@@ -17,7 +17,6 @@ namespace Application.CommandsAndQueries
         public string ClinicName { get; set; }
         public string EmployeeName { get; set; }
         public string PatientName { get; set; }
-        public IList<PrescriptionXDrugsLookupDto> Drugs { get; set; }
         public bool? Deleted { get; set; }
 
         public void Mapping(Profile profile)
@@ -51,13 +50,11 @@ namespace Application.CommandsAndQueries
                             : string.Empty))
                 .ForMember(d => d.DiagnosisName,
                     opt => opt.MapFrom(s =>
-                        s.MedicalCheck != null 
-                            ? (s.MedicalCheck.Diagnosis != null 
-                                ? s.MedicalCheck.Diagnosis.Name 
-                                : string.Empty) 
-                            : string.Empty))
-                .ForMember(d => d.Drugs,
-                    opt => opt.MapFrom(s => s.PrescriptionXDrugs));
+                        s.MedicalCheck != null
+                            ? (s.MedicalCheck.Diagnosis != null
+                                ? s.MedicalCheck.Diagnosis.Name
+                                : string.Empty)
+                            : string.Empty));
         }
     }
 }

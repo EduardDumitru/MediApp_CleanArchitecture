@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PrescriptionXDrugData, PrescriptionXDrugsList,
-    AddPrescriptionXDrugCommand, UpdatePrescriptionXDrugCommand } from '../data/prescriptionxdrug';
+    AddPrescriptionXDrugCommand, UpdatePrescriptionXDrugCommand, PrescriptionXDrugDetails } from '../data/prescriptionxdrug';
 import { environment } from 'src/environments/environment';
 import { Observable, throwError } from 'rxjs';
 import { retry, catchError, map } from 'rxjs/operators';
@@ -27,8 +27,16 @@ export class PrescriptionXDrugService extends PrescriptionXDrugData {
 
 
 
-    GetPrescriptionXDrugs(): Observable<PrescriptionXDrugsList> {
-        return this.http.get<PrescriptionXDrugsList>(this.baseUrl, this.httpOptions)
+    GetPrescriptionXDrugs(prescriptionId: number): Observable<PrescriptionXDrugsList> {
+        return this.http.get<PrescriptionXDrugsList>(this.baseUrl + '/drugsbyprescription/' + prescriptionId, this.httpOptions)
+            .pipe(
+                map((response: any) => response),
+                retry(1),
+                catchError(this.errService.errorHandl)
+            );
+    }
+    GetPrescriptionXDrug(id: number): Observable<PrescriptionXDrugDetails> {
+        return this.http.get<PrescriptionXDrugsList>(this.baseUrl + '/' + id, this.httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),

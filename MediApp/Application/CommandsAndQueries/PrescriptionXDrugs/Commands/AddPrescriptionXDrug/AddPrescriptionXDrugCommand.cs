@@ -14,7 +14,7 @@ namespace Application.CommandsAndQueries
         public long DrugId { get; set; }
         public short Box { get; set; }
         public float PerInterval { get; set; }
-        public TimeSpan Interval { get; set; }
+        public string Interval { get; set; }
     }
 
     public class AddPrescriptionXDrugCommandHandler : IRequestHandler<AddPrescriptionXDrugCommand, Result>
@@ -34,7 +34,7 @@ namespace Application.CommandsAndQueries
                 DrugId = request.DrugId,
                 Box = request.Box,
                 PerInterval = request.PerInterval,
-                Interval = request.Interval
+                Interval = TimeSpan.Parse(request.Interval)
             };
 
             await _context.PrescriptionXDrugs.AddAsync(entity, cancellationToken);

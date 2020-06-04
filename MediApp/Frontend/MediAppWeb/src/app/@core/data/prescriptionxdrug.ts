@@ -3,7 +3,17 @@ import { Observable } from 'rxjs';
 import { Result } from './common/result';
 import { TimeSpan } from './common/timespan';
 
+export class PrescriptionXDrugDetails {
+    prescriptionId: number;
+    drugId: number;
+    box: number;
+    perInterval: number;
+    interval: TimeSpan;
+    deleted: boolean;
+}
+
 export class PrescriptionXDrugsLookup {
+    id: number;
     drugName: string;
     box: number;
     perInterval: number;
@@ -20,7 +30,7 @@ export class AddPrescriptionXDrugCommand {
     drugId: number;
     box: number;
     perInterval: number;
-    interval: TimeSpan;
+    interval: string;
 }
 
 export class UpdatePrescriptionXDrugCommand {
@@ -29,11 +39,12 @@ export class UpdatePrescriptionXDrugCommand {
     drugId: number;
     box: number;
     perInterval: number;
-    interval: TimeSpan;
+    interval: string;
 }
 
 export abstract class PrescriptionXDrugData {
-    abstract GetPrescriptionXDrugs(): Observable<PrescriptionXDrugsList>;
+    abstract GetPrescriptionXDrugs(prescriptionId: number): Observable<PrescriptionXDrugsList>;
+    abstract GetPrescriptionXDrug(id: number): Observable<PrescriptionXDrugDetails>;
     abstract AddPrescriptionXDrug(addPrescriptionXDrugCommand: AddPrescriptionXDrugCommand): Observable<Result>;
     abstract DeletePrescriptionXDrug(id: number): Observable<Result>;
     abstract UpdatePrescriptionXDrug(updatePrescriptionXDrugCommand: UpdatePrescriptionXDrugCommand): Observable<Result>;

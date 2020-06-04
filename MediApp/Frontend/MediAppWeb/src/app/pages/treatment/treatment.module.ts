@@ -4,19 +4,21 @@ import { MedicalcheckComponent } from './medicalcheck/medicalcheck/medicalcheck.
 import { MedicalchecksComponent } from './medicalcheck/medicalchecks/medicalchecks.component';
 import { PrescriptionComponent } from './prescription/prescription/prescription.component';
 import { EmployeePrescriptionsComponent } from './prescription/employeeprescriptions/employeeprescriptions.component';
-import { PrescriptionxdrugComponent } from './prescriptionxdrug/prescriptionxdrug/prescriptionxdrug.component';
-import { PrescriptionxdrugsComponent } from './prescriptionxdrug/prescriptionxdrugs/prescriptionxdrugs.component';
-import { MaterialModule } from 'src/app/material.module';
+import { PrescriptionXDrugComponent } from './prescriptionxdrug/prescriptionxdrug/prescriptionxdrug.component';
+import { PrescriptionXDrugsComponent } from './prescriptionxdrug/prescriptionxdrugs/prescriptionxdrugs.component';
 import { TREATMENTROUTES } from './treatment-routes';
+import { SharedModule } from 'src/app/shared/shared.module';
+import { PatientPrescriptionsComponent } from './prescription/patientprescriptions/patientprescriptions.component';
 
 
 
 @NgModule({
   declarations: [MedicalcheckComponent, MedicalchecksComponent,
-    PrescriptionComponent, EmployeePrescriptionsComponent, PrescriptionxdrugComponent, PrescriptionxdrugsComponent],
+    PrescriptionComponent, EmployeePrescriptionsComponent, PrescriptionXDrugComponent, PrescriptionXDrugsComponent,
+    PatientPrescriptionsComponent],
   imports: [
     CommonModule,
-    MaterialModule,
+    SharedModule,
     TREATMENTROUTES
   ]
 })

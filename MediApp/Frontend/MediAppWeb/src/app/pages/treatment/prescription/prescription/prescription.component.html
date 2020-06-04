@@ -1,1 +1,102 @@
-<p>prescription works!</p>
+<section fxLayout fxLayoutAlign="center" class="prescription-card">
+  <form [formGroup]="prescriptionForm">
+    <mat-card fxFlex.lt-md="100%" fxFlex.gt-md="900px">
+      <mat-card-title fxLayoutAlign="center">Prescription</mat-card-title>
+      <mat-card-content fxLayout="column" fxLayoutAlign="center">
+        <mat-form-field>
+          <input
+            matInput
+            placeholder="Description"
+            formControlName="description"
+            required
+          />
+          <mat-hint>Please enter a description.</mat-hint>
+          <mat-error>Description is required</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <input
+            matInput
+            type="number"
+            placeholder="No of Days"
+            formControlName="noOfDays"
+            required
+            onkeyup="if(this.value<0)this.value=1"
+            min="0"
+          />
+          <mat-hint>Please enter a number of days.</mat-hint>
+          <mat-error>Number of days is required</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <input
+            matInput
+            placeholder="Medical Check Type"
+            formControlName="medicalCheckTypeName"
+          />
+        </mat-form-field>
+        <mat-form-field>
+          <input
+            matInput
+            placeholder="Diagnosis"
+            formControlName="diagnosisName"
+            required
+          />
+        </mat-form-field>
+        <mat-form-field>
+          <input
+            matInput
+            placeholder="Clinic"
+            formControlName="clinicName"
+            required
+          />
+        </mat-form-field>
+        <mat-form-field>
+          <input
+            matInput
+            placeholder="Employee"
+            formControlName="employeeName"
+            required
+          />
+        </mat-form-field>
+        <mat-form-field>
+          <input
+            matInput
+            placeholder="Patient"
+            formControlName="patientName"
+            required
+          />
+        </mat-form-field>
+        <app-prescriptionxdrugs [prescriptionId]="prescriptionId" [isPrescriptionDeleted]="isDeleted" *ngIf="prescriptionId"></app-prescriptionxdrugs>
+        <mat-spinner *ngIf="isLoading"></mat-spinner>
+      </mat-card-content>
+      <mat-card-actions fxLayoutAlign="center" *ngIf="!isLoading">
+        <button
+        *ngIf="!isLoading"
+        type="button"
+        mat-raised-button
+        color="accent"
+        (click)="goBack()"
+      >
+        Back
+      </button>
+        <button
+          *ngIf="!isDeleted"
+          type="submit"
+          mat-raised-button
+          color="primary"
+          [disabled]="prescriptionForm.invalid"
+        >
+          Submit
+        </button>
+        <button
+          *ngIf="!isDeleted && prescriptionId"
+          type="button"
+          mat-raised-button
+          color="warn"
+          (click)="deletePrescription()"
+        >
+          Delete
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </form>
+</section>
