@@ -1,1 +1,130 @@
-<p>medicalcheck works!</p>
+
+<section fxLayout fxLayoutAlign="center" class="medical-check-card">
+    <form [formGroup]="medicalCheckForm" (ngSubmit)="onSubmit()">
+      <mat-card fxFlex.lt-md="100%" fxFlex="900px">
+        <mat-card-title fxLayoutAlign="center">Add Medical Check</mat-card-title>
+        <mat-card-content fxLayout="column" fxLayoutAlign="center">
+            <mat-form-field>
+                <input matInput placeholder="Appointmnet" [matDatepicker]="appointmnentPicker" formControlName="appointment" required>
+                <mat-datepicker-toggle matSuffix [for]="appointmnentPicker"></mat-datepicker-toggle>
+                <mat-datepicker #appointmnentPicker></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-select placeholder="Choose Country" formControlName="countryId" (selectionChange)="getCountiesSelect($event.value)" required>
+                  <mat-option
+                    *ngFor="let country of countrySelectList.selectItems"
+                    [value]="country.value">
+                    {{ country.label }}
+                  </mat-option>
+                </mat-select>
+                <mat-hint>Please choose a country</mat-hint>
+                <mat-error>Please choose a country</mat-error>
+              </mat-form-field>
+              <mat-form-field *ngIf="this.countySelectList.selectItems">
+                <mat-select placeholder="Choose County" formControlName="countyId" required (selectionChange)="getCitiesSelect($event.value)" required>
+                  <mat-option
+                    *ngFor="let county of countySelectList.selectItems"
+                    [value]="county.value">
+                    {{ county.label }}
+                  </mat-option>
+                </mat-select>
+                <mat-hint>Please choose a county</mat-hint>
+                <mat-error>Please choose a county</mat-error>
+              </mat-form-field>
+              <mat-form-field *ngIf="this.citySelectList.selectItems">
+                <mat-select placeholder="Choose City" formControlName="cityId" (selectionChange)="getClinicSelect()"  required>
+                  <mat-option
+                    *ngFor="let city of citySelectList.selectItems"
+                    [value]="city.value">
+                    {{ city.label }}
+                  </mat-option>
+                </mat-select>
+                <mat-hint>Please choose a city</mat-hint>
+                <mat-error>Please choose a city</mat-error>
+              </mat-form-field>
+              <mat-form-field *ngIf="this.clinicSelectList.selectItems">
+                <mat-select placeholder="Choose Clinic" formControlName="clinicId" (selectionChange)="getMedicalCheckTypeSelect(); getEmployeesSelect()" required>
+                  <mat-option
+                    *ngFor="let clinic of clinicSelectList.selectItems"
+                    [value]="clinic.value">
+                    {{ clinic.label }}
+                  </mat-option>
+                </mat-select>
+                <mat-hint>Please choose a clinic</mat-hint>
+                <mat-error>Please choose a clinic</mat-error>
+              </mat-form-field>
+              <mat-form-field *ngIf="this.medicalCheckTypeSelectList.selectItems">
+                <mat-select placeholder="Choose Medical Check Type" formControlName="medicalCheckTypeId" (selectionChange)="getEmployeesSelect()" required>
+                  <mat-option
+                    *ngFor="let medicalCheckType of medicalCheckTypeSelectList.selectItems"
+                    [value]="medicalCheckType.value">
+                    {{ medicalCheckType.label }}
+                  </mat-option>
+                </mat-select>
+                <mat-hint>Please choose a medical check type</mat-hint>
+                <mat-error>Please choose a medical check type</mat-error>
+              </mat-form-field>
+            <mat-form-field *ngIf="this.employeeSelectList.selectItems">
+                <mat-select placeholder="Choose Employee" formControlName="employeeId" required>
+                  <mat-option
+                    *ngFor="let employee of employeeSelectList.selectItems"
+                    [value]="employee.value">
+                    {{ employee.label }}
+                  </mat-option>
+                </mat-select>
+                <mat-hint>Please choose an employee</mat-hint>
+                <mat-error>Please choose an employee</mat-error>
+              </mat-form-field>
+          <mat-spinner *ngIf="isLoading"></mat-spinner>
+        </mat-card-content>
+        <mat-card-actions fxLayoutAlign="center" *ngIf="!isLoading">
+          <button
+          *ngIf="!isLoading"
+          type="button"
+          mat-raised-button
+          color="accent"
+          (click)="goBack()"
+        >
+          Back
+        </button>
+          <button
+            type="submit"
+            mat-raised-button
+            color="primary"
+            [disabled]="medicalCheckForm.invalid"
+          >
+            Search
+          </button>
+        </mat-card-actions>
+        <mat-table [dataSource]="dataSource" matSort>
+
+            <ng-container matColumnDef="appointment">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Appointment</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.appointment | date: 'dd/MM/yyyy, HH:mm'}}</mat-cell>
+            </ng-container>
+        
+            <ng-container matColumnDef="medicalCheckTypeName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Medical Check Type</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.medicalCheckTypeName}}</mat-cell>
+            </ng-container>
+        
+            <ng-container matColumnDef="clinicName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Clinic Name</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.clinicName}}</mat-cell>
+            </ng-container>
+        
+            <ng-container matColumnDef="employeeName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Employee Name</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.employeeName}}</mat-cell>
+            </ng-container>
+        
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+            <mat-spinner *ngIf="isLoading"></mat-spinner>
+        </mat-table>
+        
+        <mat-paginator #paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" fxLayoutAlign="center center"></mat-paginator>
+      </mat-card>
+    </form>
+  </section>
+  

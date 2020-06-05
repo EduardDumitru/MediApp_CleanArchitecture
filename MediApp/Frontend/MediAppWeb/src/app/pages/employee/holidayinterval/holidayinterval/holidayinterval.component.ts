@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Location } from '@angular/common';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { HolidayIntervalData, HolidayIntervalDetails, 
@@ -16,7 +16,7 @@ import { EmployeeData } from 'src/app/@core/data/employee';
   templateUrl: './holidayinterval.component.html',
   styleUrls: ['./holidayinterval.component.scss']
 })
-export class HolidayintervalComponent implements OnInit {
+export class HolidayintervalComponent implements OnInit, OnDestroy {
   isLoading = false;
   holidayIntervalForm: FormGroup;
   holidayIntervalId: number;
@@ -33,7 +33,7 @@ export class HolidayintervalComponent implements OnInit {
 
   ngOnInit() {
       this.currentUserIdSubscription = this.authService.currentUserId.subscribe(userId => {
-      this.currentUserId = userId;
+        this.currentUserId = userId;
       });
       this.adminSubscription = this.authService.isAdmin.subscribe(isAdmin => {
         this.isAdmin = isAdmin;
@@ -43,6 +43,11 @@ export class HolidayintervalComponent implements OnInit {
       }
       this.initForm();
       this.getEmployees();
+  }
+
+  ngOnDestroy() {
+      this.currentUserIdSubscription.unsubscribe();
+      this.adminSubscription.unsubscribe();
   }
 
   disableEmployeeId() {

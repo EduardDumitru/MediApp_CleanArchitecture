@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { MedicalCheckData, MedicalCheckDetails,
-    AddMedicalCheckCommand, UpdateMedicalCheckCommand, EmployeeMedicalChecksList, PatientMedicalChecksList } from '../data/medicalcheck';
+    AddMedicalCheckCommand, UpdateMedicalCheckCommand, EmployeeMedicalChecksList, PatientMedicalChecksList, MedicalChecksToAddQuery, MedicalChecksToAddList } from '../data/medicalcheck';
 import { environment } from 'src/environments/environment';
 import { Observable, throwError } from 'rxjs';
 import { retry, catchError, map } from 'rxjs/operators';
@@ -51,8 +51,8 @@ export class MedicalCheckService extends MedicalCheckData {
                 catchError(this.errService.errorHandl)
             );
     }
-    GetMedicalChecksDropdown(): Observable<SelectItemsList> {
-        return this.http.get<SelectItemsList>(this.baseUrl + '/medicalchecksdropdown', this.httpOptions)
+    GetMedicalChecksToAdd(medicalChecksToAdd: MedicalChecksToAddQuery): Observable<MedicalChecksToAddList> {
+        return this.http.post<MedicalChecksToAddList>(this.baseUrl + '/toadd', JSON.stringify(medicalChecksToAdd), this.httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),

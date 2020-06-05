@@ -47,6 +47,26 @@ export class PatientMedicalChecksList {
     patientMedicalChecks: PatientMedicalCheckLookup[];
 }
 
+export class MedicalChecksToAddLookup {
+    appointment: Date;
+    medicalCheckTypeName: string;
+    diagnosisName: string;
+    clinicName: string;
+    employeeName: string;
+    deleted?: boolean;
+}
+
+export class MedicalChecksToAddList {
+    medicalChecksToAdd: MedicalChecksToAddLookup[];
+}
+
+export class MedicalChecksToAddQuery {
+    appointment: Date;
+    clinicId: number;
+    medicalCheckTypeId: number;
+    employeeId: number;
+}
+
 export class AddMedicalCheckCommand {
     appointment: Date;
     clinicId: number;
@@ -64,6 +84,7 @@ export abstract class MedicalCheckData {
     abstract GetMedicalCheckDetails(id: number): Observable<MedicalCheckDetails>;
     abstract GetEmployeeMedicalChecks(employeeId: number): Observable<EmployeeMedicalChecksList>;
     abstract GetPatientMedicalChecks(patientId: number): Observable<PatientMedicalChecksList>;
+    abstract GetMedicalChecksToAdd(medicalChecksToAdd: MedicalChecksToAddQuery): Observable<MedicalChecksToAddList>;
     abstract AddMedicalCheck(addMedicalCheckCommand: AddMedicalCheckCommand): Observable<Result>;
     abstract UpdateMedicalCheck(updateMedicalCheckCommand: UpdateMedicalCheckCommand): Observable<Result>;
     abstract DeleteMedicalCheck(id: number): Observable<Result>;

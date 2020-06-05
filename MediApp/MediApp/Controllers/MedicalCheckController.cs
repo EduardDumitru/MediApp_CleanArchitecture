@@ -52,12 +52,19 @@ namespace MediApp.Controllers
             return Ok(vm);
         }
 
-        //[HttpPost("toadd")]
-        //public async Task<ActionResult<MedicalChecksToAddListVm>> GetMedicalChecksToAdd(
-        //    [FromBody] MedicalChecksToAddQuery medicalChecksToAddQuery)
-        //{
+        [HttpPost("toadd")]
+        public async Task<ActionResult<MedicalChecksToAddListVm>> GetMedicalChecksToAdd(
+            [FromBody] GetMedicalChecksToAddListQuery medicalChecksToAddListQuery)
+        {
+            var vm = await Mediator.Send(medicalChecksToAddListQuery);
 
-        //}
+            if (vm == null)
+            {
+                return BadRequest(Result.Failure(new List<string> {"No valid medical check was found"}));
+            }
+
+            return Ok(vm);
+        }
 
         [HttpPost]
         public async Task<ActionResult<Result>> AddMedicalCheck([FromBody] AddMedicalCheckCommand command)
