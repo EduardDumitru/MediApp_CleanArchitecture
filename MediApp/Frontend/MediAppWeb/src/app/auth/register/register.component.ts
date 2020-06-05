@@ -11,6 +11,7 @@ import { CityData } from 'src/app/@core/data/city';
 import { SelectItemsList } from 'src/app/@core/data/common/selectitem';
 import { AuthService } from '../auth.service';
 import { Subscription } from 'rxjs/internal/Subscription';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-register',
@@ -22,7 +23,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   registerForm: FormGroup;
   constructor(private userData: UserData, private uiService: UIService, private router: Router,
               private countryData: CountryData, private countyData: CountyData, private cityData: CityData,
-              private genderData: GenderData, private authService: AuthService) { }
+              private genderData: GenderData, private authService: AuthService, private _location: Location) { }
 
   countrySelectList: SelectItemsList = new SelectItemsList();
   countySelectList: SelectItemsList = new SelectItemsList();
@@ -161,6 +162,10 @@ export class RegisterComponent implements OnInit, OnDestroy {
         this.isLoading = false;
         this.uiService.showErrorSnackbar(error, null, 3000);
     })
+  }
+
+  goBack() {
+    this._location.back();
   }
 
   ngOnDestroy() : void {

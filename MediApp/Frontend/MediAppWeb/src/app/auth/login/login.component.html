@@ -1,10 +1,11 @@
-<section>
+<section fxLayout fxLayoutAlign="center" class="login-form">
     <form
-      fxLayout="column"
-      fxLayoutAlign="center center"
-      fxLayoutGap="10px"
       [formGroup]="loginForm"
-      (ngSubmit)="login()">
+      (ngSubmit)="login()"
+      >
+      <mat-card fxFlex.xs="100%" fxFlex="600px">
+      <mat-card-title fxLayoutAlign="center">Login</mat-card-title>
+      <mat-card-content fxLayout="column" fxLayoutAlign="center" fxLayoutGap="15px">
       <mat-form-field>
         <input
           type="email"
@@ -23,7 +24,13 @@
         <mat-hint>Please enter your password.</mat-hint>
         <mat-error>Missing password.</mat-error>
       </mat-form-field>
-      <button *ngIf="!isLoading" type="submit" mat-raised-button color="primary" [disabled]="loginForm.invalid">Submit</button>
       <mat-spinner *ngIf="isLoading"></mat-spinner>
+    </mat-card-content>
+      <mat-card-actions fxLayoutAlign="center" *ngIf="!isLoading">
+        <button *ngIf="!isLoading" type="submit" mat-raised-button color="primary" [disabled]="loginForm.invalid">
+          Submit
+        </button>
+      </mat-card-actions>
+      </mat-card>
     </form>
   </section>
