@@ -62,10 +62,12 @@
         <a style="cursor:pointer" [matMenuTriggerFor]="employeeMenu">
           Employee
         </a></li>
-        <li><mat-menu #employeeMenu="matMenu" yPosition="below">
+        <li *ngIf="isAuth"><mat-menu #employeeMenu="matMenu" yPosition="below">
           <ng-template matMenuContent>
             <button *ngIf="isDoctor" mat-menu-item routerLink="/treatments/employeeprescriptions/{{currentUserId}}">Doctor Prescriptions</button>
             <button mat-menu-item routerLink="/treatments/patientprescriptions/{{currentUserId}}">My Prescriptions</button>
+            <button *ngIf="isDoctor" mat-menu-item routerLink="/treatments/employeemedicalchecks/{{currentUserId}}">Doctor Medical Checks</button>
+            <button mat-menu-item routerLink="/treatments/patientmedicalchecks/{{currentUserId}}">My Medical Checks</button>
           </ng-template>
         </mat-menu>
         <a style="cursor:pointer" [matMenuTriggerFor]="employeeMenu">

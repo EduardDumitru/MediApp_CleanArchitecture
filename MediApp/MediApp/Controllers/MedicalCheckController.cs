@@ -52,6 +52,13 @@ namespace MediApp.Controllers
             return Ok(vm);
         }
 
+        //[HttpPost("toadd")]
+        //public async Task<ActionResult<MedicalChecksToAddListVm>> GetMedicalChecksToAdd(
+        //    [FromBody] MedicalChecksToAddQuery medicalChecksToAddQuery)
+        //{
+
+        //}
+
         [HttpPost]
         public async Task<ActionResult<Result>> AddMedicalCheck([FromBody] AddMedicalCheckCommand command)
         {
@@ -66,6 +73,7 @@ namespace MediApp.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "Admin, Doctor, Nurse")]
         public async Task<ActionResult<Result>> UpdateMedicalCheck([FromBody] UpdateMedicalCheckCommand command)
         {
             var result = await Mediator.Send(command);

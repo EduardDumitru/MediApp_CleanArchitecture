@@ -29,7 +29,6 @@ export class HolidayintervalsComponent implements OnInit, AfterViewInit {
       this.holidayIntervalData.GetHolidayIntervals().subscribe((holidayIntervalsList: HolidayIntervalsList) => {
           this.isLoading = false;
           this.dataSource.data = holidayIntervalsList.holidayIntervals;
-          console.log(this.dataSource.data);
       }, error => {
         this.isLoading = false;
         this.uiService.showErrorSnackbar(error, null, 3000);

@@ -42,7 +42,7 @@ namespace MediApp.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin, Doctor, Nurse")]
+        [Authorize(Roles = "Admin, Doctor")]
         public async Task<ActionResult<Result>> AddPrescription([FromBody] AddPrescriptionCommand command)
         {
             var result = await Mediator.Send(command);

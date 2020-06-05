@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NgForm, FormGroup, FormControl, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 import { UIService } from 'src/app/shared/ui.service';
 import { UserService } from 'src/app/@core/services/user.service';
@@ -10,13 +10,14 @@ import { CountryData } from 'src/app/@core/data/country';
 import { CityData } from 'src/app/@core/data/city';
 import { SelectItemsList } from 'src/app/@core/data/common/selectitem';
 import { AuthService } from '../auth.service';
+import { Subscription } from 'rxjs/internal/Subscription';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent implements OnInit, OnDestroy {
   isLoading = false;
   registerForm: FormGroup;
   constructor(private userData: UserData, private uiService: UIService, private router: Router,
@@ -28,11 +29,19 @@ export class RegisterComponent implements OnInit {
   citySelectList: SelectItemsList = new SelectItemsList();
   genderSelectList: SelectItemsList = new SelectItemsList();
 
+  authChangeSubscription: Subscription;
+
 
   ngOnInit(): void {
-      this.initForm();
-      this.getCountriesSelect();
-      this.getGendersSelect();
+    this.authChangeSubscription = this.authService.authChange.subscribe((authChange: boolean) => {
+      if (authChange === true) {
+          this.router.navigate(['']);
+      } else {
+        this.initForm();
+        this.getCountriesSelect();
+        this.getGendersSelect();
+      }
+    })
   }
 
   initForm() {
@@ -152,5 +161,9 @@ export class RegisterComponent implements OnInit {
         this.isLoading = false;
         this.uiService.showErrorSnackbar(error, null, 3000);
     })
+  }
+
+  ngOnDestroy() : void {
+    this.authChangeSubscription.unsubscribe();
   }
 }

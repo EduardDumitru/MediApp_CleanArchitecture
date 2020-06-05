@@ -5,7 +5,7 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './medicalcheck.component.html',
   styleUrls: ['./medicalcheck.component.scss']
 })
-export class MedicalcheckComponent implements OnInit {
+export class MedicalCheckComponent implements OnInit {
 
   constructor() { }
 

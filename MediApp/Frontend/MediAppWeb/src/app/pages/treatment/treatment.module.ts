@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MedicalcheckComponent } from './medicalcheck/medicalcheck/medicalcheck.component';
-import { MedicalchecksComponent } from './medicalcheck/medicalchecks/medicalchecks.component';
+import { MedicalCheckComponent } from './medicalcheck/medicalcheck/medicalcheck.component';
+import { EmployeeMedicalChecksComponent } from './medicalcheck/employeemedicalchecks/employeemedicalchecks.component';
 import { PrescriptionComponent } from './prescription/prescription/prescription.component';
 import { EmployeePrescriptionsComponent } from './prescription/employeeprescriptions/employeeprescriptions.component';
 import { PrescriptionXDrugComponent } from './prescriptionxdrug/prescriptionxdrug/prescriptionxdrug.component';
@@ -9,11 +9,12 @@ import { PrescriptionXDrugsComponent } from './prescriptionxdrug/prescriptionxdr
 import { TREATMENTROUTES } from './treatment-routes';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { PatientPrescriptionsComponent } from './prescription/patientprescriptions/patientprescriptions.component';
+import { PatientMedicalChecksComponent } from './medicalcheck/patientmedicalchecks/patientmedicalchecks.component';
 
 
 
 @NgModule({
-  declarations: [MedicalcheckComponent, MedicalchecksComponent,
+  declarations: [MedicalCheckComponent, EmployeeMedicalChecksComponent, PatientMedicalChecksComponent,
     PrescriptionComponent, EmployeePrescriptionsComponent, PrescriptionXDrugComponent, PrescriptionXDrugsComponent,
     PatientPrescriptionsComponent],
   imports: [

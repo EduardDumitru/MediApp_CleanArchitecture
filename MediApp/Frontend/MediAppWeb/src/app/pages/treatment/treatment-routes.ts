@@ -4,6 +4,9 @@ import { Routes, RouterModule } from '@angular/router';
 import { EmployeePrescriptionsComponent } from './prescription/employeeprescriptions/employeeprescriptions.component';
 import { PrescriptionComponent } from './prescription/prescription/prescription.component';
 import { PatientPrescriptionsComponent } from './prescription/patientprescriptions/patientprescriptions.component';
+import { EmployeeMedicalChecksComponent } from './medicalcheck/employeemedicalchecks/employeemedicalchecks.component';
+import { PatientMedicalChecksComponent } from './medicalcheck/patientmedicalchecks/patientmedicalchecks.component';
+import { MedicalCheckComponent } from './medicalcheck/medicalcheck/medicalcheck.component';
 
 const routes: Routes = [
     {
@@ -27,6 +30,22 @@ const routes: Routes = [
         component: PrescriptionComponent,
         canActivate: [RoleGuard],
         data: {expectedRoles: ['Admin', 'Doctor']}
+    },
+    {
+        path: 'employeemedicalchecks/:id',
+        component: EmployeeMedicalChecksComponent,
+        canActivate: [RoleGuard],
+        data: {expectedRoles: ['Admin', 'Doctor', 'Nurse']}
+    },
+    {
+        path: 'patientmedicalchecks/:id',
+        component: PatientMedicalChecksComponent,
+        canActivate: [AuthGuard]
+    },
+    {
+        path: 'medicalchecks/:medicalCheckId',
+        component: MedicalCheckComponent,
+        canActivate: [AuthGuard]
     },
 ];
 
