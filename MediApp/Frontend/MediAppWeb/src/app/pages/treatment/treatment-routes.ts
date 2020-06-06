@@ -7,6 +7,7 @@ import { PatientPrescriptionsComponent } from './prescription/patientprescriptio
 import { EmployeeMedicalChecksComponent } from './medicalcheck/employeemedicalchecks/employeemedicalchecks.component';
 import { PatientMedicalChecksComponent } from './medicalcheck/patientmedicalchecks/patientmedicalchecks.component';
 import { MedicalCheckComponent } from './medicalcheck/medicalcheck/medicalcheck.component';
+import { UpdateMedicalCheckComponent } from './medicalcheck/update-medical-check/update-medical-check.component';
 
 const routes: Routes = [
     {
@@ -43,10 +44,16 @@ const routes: Routes = [
         canActivate: [AuthGuard]
     },
     {
-        path: 'medicalchecks/:medicalCheckId',
+        path: 'medicalchecks/add',
         component: MedicalCheckComponent,
         canActivate: [AuthGuard]
     },
+    {
+        path: 'employeemedicalchecks/update/:id',
+        component: UpdateMedicalCheckComponent,
+        canActivate: [RoleGuard],
+        data: {expectedRoles: ['Admin', 'Doctor', 'Nurse']}
+    }
 ];
 
 export const TREATMENTROUTES = RouterModule.forChild(routes);

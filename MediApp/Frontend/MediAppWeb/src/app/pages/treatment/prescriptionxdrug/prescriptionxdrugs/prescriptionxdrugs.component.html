@@ -4,7 +4,7 @@
     </mat-form-field>
 </div>
 <div fxLayoutAlign="end" fxLayout="row" >
-<button *ngIf="!isLoading && !isPrescriptionDeleted" type="submit" mat-raised-button color="primary" 
+<button *ngIf="!isLoading && !isPrescriptionDeleted" mat-raised-button color="primary" 
 fxFlex="200px" fxFlex.xs="100%" (click)="openDialogToAdd()">Add PrescriptionXDrug</button>
 </div>
 <mat-table [dataSource]="dataSource" matSort>

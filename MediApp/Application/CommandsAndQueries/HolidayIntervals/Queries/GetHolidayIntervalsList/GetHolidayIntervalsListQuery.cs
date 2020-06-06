@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
 using AutoMapper;
@@ -27,6 +28,7 @@ namespace Application.CommandsAndQueries
         {
             var holidayIntervals = await _context.HolidayIntervals
                 .Include(x => x.Employee).ThenInclude(x => x.UserProfile)
+                .OrderByDescending(x => x.StartDate).ThenByDescending(x => x.EndDate)
                 .ProjectTo<HolidayIntervalsLookupDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
 

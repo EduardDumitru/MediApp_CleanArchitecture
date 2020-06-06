@@ -35,6 +35,7 @@ namespace Application.CommandsAndQueries
                 .Include(x => x.MedicalCheck).ThenInclude(x => x.Clinic)
                 .Include(x => x.MedicalCheck).ThenInclude(x => x.MedicalCheckType)
                 .Include(x => x.MedicalCheck).ThenInclude(x => x.Diagnosis)
+                .OrderByDescending(x => x.CreatedOn)
                 .ProjectTo<PatientPrescriptionsLookupDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
 

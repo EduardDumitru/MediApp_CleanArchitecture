@@ -1,6 +1,6 @@
 <section fxLayout fxLayoutAlign="center" class="prescription-card">
   <form [formGroup]="prescriptionForm">
-    <mat-card fxFlex.lt-md="100%" fxFlex.gt-md="900px">
+    <mat-card fxFlex.lt-md="100%" fxFlex="900px">
       <mat-card-title fxLayoutAlign="center">Prescription</mat-card-title>
       <mat-card-content fxLayout="column" fxLayoutAlign="center">
         <mat-form-field>
@@ -84,6 +84,7 @@
           mat-raised-button
           color="primary"
           [disabled]="prescriptionForm.invalid"
+          (click)="onSubmit()"
         >
           Submit
         </button>

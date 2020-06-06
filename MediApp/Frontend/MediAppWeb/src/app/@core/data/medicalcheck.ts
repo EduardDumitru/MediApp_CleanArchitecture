@@ -77,7 +77,7 @@ export class AddMedicalCheckCommand {
 
 export class UpdateMedicalCheckCommand {
     id: number;
-    diagnosisId?: number;
+    diagnosisId: number;
 }
 
 export abstract class MedicalCheckData {

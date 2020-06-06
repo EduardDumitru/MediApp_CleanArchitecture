@@ -20,6 +20,7 @@ namespace Application.CommandsAndQueries
         public string PatientName { get; set; }
         public long PatientId { get; set; }
         public string PatientCnp { get; set; }
+        public bool? Deleted { get; set; }
         public IList<PrescriptionDetailsVm> Prescriptions { get; set; }
 
         public void Mapping(Profile profile)

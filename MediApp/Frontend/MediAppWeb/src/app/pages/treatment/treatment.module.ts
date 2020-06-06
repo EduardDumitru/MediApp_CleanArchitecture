@@ -11,17 +11,21 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { PatientPrescriptionsComponent } from './prescription/patientprescriptions/patientprescriptions.component';
 import { PatientMedicalChecksComponent } from './medicalcheck/patientmedicalchecks/patientmedicalchecks.component';
 import { AddMedicalCheckPopupComponent } from './medicalcheck/medicalcheck/addmedicalcheckpopup.component';
+import { UpdateMedicalCheckComponent } from './medicalcheck/update-medical-check/update-medical-check.component';
 
 
 
 @NgModule({
   declarations: [MedicalCheckComponent, EmployeeMedicalChecksComponent, PatientMedicalChecksComponent,
-    PrescriptionComponent, EmployeePrescriptionsComponent, PrescriptionXDrugComponent, PrescriptionXDrugsComponent,
-    PatientPrescriptionsComponent, AddMedicalCheckPopupComponent],
+    PrescriptionComponent, EmployeePrescriptionsComponent, PrescriptionXDrugsComponent,
+    PatientPrescriptionsComponent, UpdateMedicalCheckComponent, AddMedicalCheckPopupComponent, PrescriptionXDrugComponent],
   imports: [
     CommonModule,
     SharedModule,
     TREATMENTROUTES
+  ],
+  entryComponents: [
+    AddMedicalCheckPopupComponent, PrescriptionXDrugComponent
   ]
 })
 export class TreatmentModule { }

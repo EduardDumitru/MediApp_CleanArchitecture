@@ -12,7 +12,7 @@ namespace Application.CommandsAndQueries
     public class UpdateMedicalCheckCommand : IRequest<Result>
     {
         public long Id { get; set; }
-        public int? DiagnosisId { get; set; }
+        public int DiagnosisId { get; set; }
     }
 
     public class UpdateMedicalCheckCommandHandler : IRequestHandler<UpdateMedicalCheckCommand, Result>

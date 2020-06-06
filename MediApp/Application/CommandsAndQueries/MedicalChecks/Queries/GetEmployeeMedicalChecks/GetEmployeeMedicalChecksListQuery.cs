@@ -35,6 +35,7 @@ namespace Application.CommandsAndQueries
                 .Include(x => x.Clinic)
                 .Include(x => x.MedicalCheckType)
                 .Include(x => x.Diagnosis)
+                .OrderByDescending(x => x.CreatedOn)
                 .ProjectTo<EmployeeMedicalChecksLookupDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
 

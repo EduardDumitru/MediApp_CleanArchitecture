@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { PrescriptionData, PrescriptionDetails, UpdatePrescriptionCommand, AddPrescriptionCommand } from 'src/app/@core/data/prescription';
 import { UIService } from 'src/app/shared/ui.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Result } from 'src/app/@core/data/common/result';
 import { Location } from '@angular/common';
 import { MedicalCheckData, MedicalCheckDetails } from 'src/app/@core/data/medicalcheck';
@@ -26,7 +26,7 @@ export class PrescriptionComponent implements OnInit {
   isAdminSubscription: Subscription;
   constructor(private prescriptionData: PrescriptionData, private uiService: UIService,
     private route: ActivatedRoute, private _location: Location, private medicalCheckData: MedicalCheckData,
-    private authService: AuthService) { }
+    private authService: AuthService, private router: Router) { }
 
   ngOnInit() {
       if (Number(this.route.snapshot.params.prescriptionId)) {
@@ -140,7 +140,7 @@ export class PrescriptionComponent implements OnInit {
 
       this.prescriptionData.AddPrescription(addPrescriptionCommand).subscribe((res: Result) => {
           this.uiService.showSuccessSnackbar(res.successMessage, null, 3000);
-          this._location.back();
+          this.router.navigate(['/treatments/employeeprescriptions/', addPrescriptionCommand.employeeId]);
           this.isLoading = false;
       }, error => {
           this.isLoading = false;

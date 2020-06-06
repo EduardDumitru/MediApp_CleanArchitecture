@@ -3,7 +3,7 @@ import { CityData } from 'src/app/@core/data/city';
 import { MedicalCheckTypeData } from 'src/app/@core/data/medicalchecktype';
 import { Validators, FormControl, FormGroup } from '@angular/forms';
 import { SelectItemsList } from 'src/app/@core/data/common/selectitem';
-import { MedicalCheckData, MedicalCheckDetails, UpdateMedicalCheckCommand, AddMedicalCheckCommand, MedicalChecksToAddLookup, MedicalChecksToAddList, MedicalChecksToAddQuery } from 'src/app/@core/data/medicalcheck';
+import { MedicalCheckData, AddMedicalCheckCommand, MedicalChecksToAddLookup, MedicalChecksToAddList, MedicalChecksToAddQuery } from 'src/app/@core/data/medicalcheck';
 import { UIService } from 'src/app/shared/ui.service';
 import { ActivatedRoute } from '@angular/router';
 import { CountryData } from 'src/app/@core/data/country';
@@ -94,7 +94,7 @@ export class MedicalCheckComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getMedicalChecks() {
     const medicalCheckToAddQuery = {
-      appointment: new Date(this.medicalCheckForm.value.appointment),
+      appointment: new Date(this.medicalCheckForm.getRawValue().appointment),
       employeeId: +this.medicalCheckForm.value.employeeId,
       clinicId: +this.medicalCheckForm.value.clinicId,
       medicalCheckTypeId: +this.medicalCheckForm.value.medicalCheckTypeId
@@ -189,11 +189,11 @@ export class MedicalCheckComponent implements OnInit, AfterViewInit, OnDestroy {
     this.medicalCheckForm.patchValue({ employeeId: '' });
     if (this.medicalCheckForm.value.clinicId !== ''
     && this.medicalCheckForm.value.medicalCheckTypeId !== ''
-    && this.medicalCheckForm.value.appointment) {
+    && this.medicalCheckForm.getRawValue().appointment !== undefined) {
       const employeeDropdownQuery = {
         clinicId: +this.medicalCheckForm.value.clinicId,
         medicalCheckTypeId: +this.medicalCheckForm.value.medicalCheckTypeId,
-        appointment: new Date(this.medicalCheckForm.value.appointment)
+        appointment: new Date(this.medicalCheckForm.getRawValue().appointment)
       } as EmployeeDropdownQuery;
       this.employeeData.GetEmployeesDropdown(employeeDropdownQuery).subscribe((employees: SelectItemsList) => {
           this.employeeSelectList = employees;

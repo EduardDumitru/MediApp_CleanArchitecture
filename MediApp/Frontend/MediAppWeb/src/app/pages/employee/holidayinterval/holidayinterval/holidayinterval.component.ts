@@ -137,8 +137,8 @@ export class HolidayintervalComponent implements OnInit, OnDestroy {
       const updateHolidayIntervalCommand: UpdateHolidayIntervalCommand = {
           id: this.holidayIntervalId,
           employeeId: this.employeeId,
-          startDate: new Date(this.holidayIntervalForm.value.startDate),
-          endDate: new Date(this.holidayIntervalForm.value.endDate)
+          startDate: new Date(this.holidayIntervalForm.getRawValue().startDate),
+          endDate: new Date(this.holidayIntervalForm.getRawValue().endDate)
       } as UpdateHolidayIntervalCommand;
 
       this.holidayIntervalData.UpdateHolidayInterval(updateHolidayIntervalCommand).subscribe((res: Result) => {
@@ -155,8 +155,8 @@ export class HolidayintervalComponent implements OnInit, OnDestroy {
   addHolidayInterval() {
       const addHolidayIntervalCommand: AddHolidayIntervalCommand = {
         employeeId: +this.holidayIntervalForm.value.employeeId,
-        startDate: new Date(this.holidayIntervalForm.value.startDate),
-        endDate: new Date(this.holidayIntervalForm.value.endDate)
+        startDate: new Date(this.holidayIntervalForm.getRawValue().startDate),
+        endDate: new Date(this.holidayIntervalForm.getRawValue().endDate)
     } as AddHolidayIntervalCommand;
 
       this.holidayIntervalData.AddHolidayInterval(addHolidayIntervalCommand).subscribe((res: Result) => {
