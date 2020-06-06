@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Common.Constants;
 using Application.Common.Interfaces;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
@@ -54,7 +55,7 @@ namespace Application.CommandsAndQueries
             var medicalCheckType = await _context.MedicalCheckTypes
                 .Where(x => x.Id == request.MedicalCheckTypeId)
                 .FirstOrDefaultAsync(cancellationToken);
-            var wantedAppointmentDate = request.Appointment;
+            var wantedAppointmentDate = request.Appointment.ToLocalTime();
             
             wantedAppointmentDate = wantedAppointmentDate.DayOfWeek switch
             {
@@ -65,9 +66,11 @@ namespace Application.CommandsAndQueries
 
             var medicalChecksToAdd = new List<MedicalChecksToAddLookupDto>();
             var thirtyMinutes = new TimeSpan(0, 0, 30, 0);
-            while (nrOfMedicalChecksAdded <= 30)
+            var exceedsTerminationDate = false;
+            while (nrOfMedicalChecksAdded < MedicalCheckConstants.NrOfMedicalChecksToBeShown && !exceedsTerminationDate)
             {
-                for (var time = employee.StartHour; time <= employee.EndHour && nrOfMedicalChecksAdded <= 30;
+                for (var time = employee.StartHour; time <= employee.EndHour && nrOfMedicalChecksAdded <=
+                    MedicalCheckConstants.NrOfMedicalChecksToBeShown;
                     time = time.Add(thirtyMinutes))
                 {
                     var appointment = new DateTime(wantedAppointmentDate.Year, 
@@ -76,6 +79,13 @@ namespace Application.CommandsAndQueries
                         time.Hours, 
                         time.Minutes, 
                         time.Seconds);
+
+                    if (employee.TerminationDate.HasValue && appointment.Date >= employee.TerminationDate.Value.Date)
+                    {
+                        exceedsTerminationDate = true;
+                        break;
+                    }
+
                     if (existingMedicalChecks.Any(x => x.Appointment == appointment))
                     {
                         continue;

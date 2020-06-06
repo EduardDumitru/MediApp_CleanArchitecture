@@ -13,21 +13,19 @@ import { AuthService } from 'src/app/auth/auth.service';
 export class GenderService extends GenderData {
     baseUrl = environment.baseURL + 'Gender';
 
-    // Http Headers
-        httpOptions = {
-        headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${this.authService.getToken()}`
-        })
-    };
-
     constructor(private http: HttpClient, private errService: ErrorService, private authService: AuthService) {
         super();
     }
 
 
     GetGenderDetails(id: number): Observable<GenderDetails> {
-        return this.http.get<GenderDetails>(this.baseUrl + '/' + id, this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.get<GenderDetails>(this.baseUrl + '/' + id, httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -35,7 +33,13 @@ export class GenderService extends GenderData {
             );
     }
     GetGenders(): Observable<GendersList> {
-        return this.http.get<GendersList>(this.baseUrl, this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.get<GendersList>(this.baseUrl, httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -43,7 +47,12 @@ export class GenderService extends GenderData {
             );
     }
     GetGendersDropdown(): Observable<SelectItemsList> {
-        return this.http.get<SelectItemsList>(this.baseUrl + '/gendersdropdown')
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json'
+            })
+        };
+        return this.http.get<SelectItemsList>(this.baseUrl + '/gendersdropdown', httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -51,7 +60,13 @@ export class GenderService extends GenderData {
             );
     }
     AddGender(addGenderCommand: AddGenderCommand): Observable<Result> {
-        return this.http.post<Result>(this.baseUrl, JSON.stringify(addGenderCommand), this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.post<Result>(this.baseUrl, JSON.stringify(addGenderCommand), httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -59,7 +74,13 @@ export class GenderService extends GenderData {
             );
     }
     UpdateGender(updateGenderCommand: UpdateGenderCommand): Observable<Result> {
-        return this.http.put<Result>(this.baseUrl, JSON.stringify(updateGenderCommand), this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.put<Result>(this.baseUrl, JSON.stringify(updateGenderCommand), httpOptions)
         .pipe(
             map((response: any) => response),
             retry(1),
@@ -67,7 +88,13 @@ export class GenderService extends GenderData {
         );
     }
     DeleteGender(id: number): Observable<Result> {
-        return this.http.delete<Result>(this.baseUrl + '/' + id, this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.delete<Result>(this.baseUrl + '/' + id, httpOptions)
         .pipe(
             map((response: any) => response),
             retry(1),
@@ -75,7 +102,13 @@ export class GenderService extends GenderData {
         );
     }
     RestoreGender(restoreGenderCommand: RestoreGenderCommand): Observable<Result> {
-        return this.http.put<Result>(this.baseUrl + '/restore', JSON.stringify(restoreGenderCommand), this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.put<Result>(this.baseUrl + '/restore', JSON.stringify(restoreGenderCommand), httpOptions)
         .pipe(
             map((response: any) => response),
             retry(1),

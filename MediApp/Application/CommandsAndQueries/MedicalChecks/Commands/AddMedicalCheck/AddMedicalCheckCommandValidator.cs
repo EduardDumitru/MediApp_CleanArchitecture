@@ -72,7 +72,7 @@ namespace Application.CommandsAndQueries
 
         private async Task<bool> ExistsMedicalCheckType(short medicalCheckTypeId, CancellationToken cancellationToken)
         {
-            return await _context.Clinics
+            return await _context.MedicalCheckTypes
                 .AnyAsync(x => x.Id == medicalCheckTypeId && !x.Deleted, cancellationToken);
         }
 
@@ -84,20 +84,22 @@ namespace Application.CommandsAndQueries
 
         private async Task<bool> BeHigherThanCurrentDate(DateTime appointmentDate, CancellationToken cancellationToken)
         {
-            return await Task.FromResult(appointmentDate >= _dateTime.Now);
+            return await Task.FromResult(appointmentDate.ToLocalTime() >= _dateTime.Now);
         }
 
         private async Task<bool> BeFromHalfToHalfHours(DateTime appointmentDate, CancellationToken cancellationToken)
         {
-            return await Task.FromResult(appointmentDate.TimeOfDay.Minutes == 30 ||
-                                         appointmentDate.TimeOfDay.Minutes == 0);
+            var date = appointmentDate.ToLocalTime();
+            return await Task.FromResult(date.TimeOfDay.Minutes == 30 ||
+                                         date.TimeOfDay.Minutes == 0);
         }
 
         private async Task<bool> NotInterfereWithOtherAppointments(DateTime appointmentDate,
             CancellationToken cancellationToken)
         {
-            return !(await _context.MedicalChecks.AnyAsync(x => x.Appointment == appointmentDate && !x.Deleted,
-                cancellationToken));
+            return !await _context.MedicalChecks.AnyAsync(x => x.Appointment == appointmentDate.ToLocalTime()
+                                                               && !x.Deleted,
+                cancellationToken);
         }
     }
 }

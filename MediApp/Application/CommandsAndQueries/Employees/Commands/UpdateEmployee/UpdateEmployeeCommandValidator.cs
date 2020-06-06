@@ -41,6 +41,19 @@ namespace Application.CommandsAndQueries
                 .WithMessage("End Hour must be from half to half hours. Example: 09:00 or 09:30")
                 .MustAsync(BeHigherThanStartHourByAtLeastFourHours)
                 .WithMessage("End Hour must be higher than Start Hour by at least four hours");
+            RuleFor(x => x.TerminationDate)
+                .Cascade(CascadeMode.StopOnFirstFailure)
+                .MustAsync(NotInterfereWithAppointments)
+                .WithMessage("Termination date is not valid. It interferes with medical checks. Delete those first.")
+                .When(x => x.TerminationDate.HasValue);
+        }
+
+        private async Task<bool> NotInterfereWithAppointments(UpdateEmployeeCommand updateEmployeeCommand, DateTime? date,
+            CancellationToken cancellationToken)
+        {
+            return await _context.MedicalChecks.AnyAsync(
+                x => updateEmployeeCommand.Id == x.Id && x.Appointment >= date.Value.ToLocalTime() && !x.Deleted, 
+                cancellationToken);
         }
 
         private async Task<bool> BeValidTimeSpan(string time, CancellationToken cancellationToken)

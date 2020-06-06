@@ -7,7 +7,7 @@ import { MedicalCheckData, MedicalCheckDetails, UpdateMedicalCheckCommand, AddMe
 import { UIService } from 'src/app/shared/ui.service';
 import { ActivatedRoute } from '@angular/router';
 import { CountryData } from 'src/app/@core/data/country';
-import { EmployeeData } from 'src/app/@core/data/employee';
+import { EmployeeData, EmployeeDropdownQuery } from 'src/app/@core/data/employee';
 import { CountyData } from 'src/app/@core/data/county';
 import { ClinicData } from 'src/app/@core/data/clinic';
 import { Result } from 'src/app/@core/data/common/result';
@@ -17,6 +17,8 @@ import { MatPaginator } from '@angular/material/paginator';
 import { Location } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
+import { MatDialog } from '@angular/material/dialog';
+import { AddMedicalCheckPopupComponent } from './addmedicalcheckpopup.component';
 
 @Component({
   selector: 'app-medicalcheck',
@@ -36,7 +38,11 @@ export class MedicalCheckComponent implements OnInit, AfterViewInit, OnDestroy {
   citySelectList: SelectItemsList = new SelectItemsList();
   clinicSelectList: SelectItemsList = new SelectItemsList();
   medicalCheckTypeSelectList: SelectItemsList = new SelectItemsList();
-
+  clinicName = '';
+  employeeName = '';
+  medicalCheckTypeName = '';
+  selectedAppointment: Date;
+  minDate: Date = new Date();
   displayedColumns = ['appointment', 'medicalCheckTypeName', 'clinicName', 'employeeName'];
   dataSource = new MatTableDataSource<MedicalChecksToAddLookup>();
   @ViewChild(MatSort) sort: MatSort;
@@ -46,12 +52,13 @@ export class MedicalCheckComponent implements OnInit, AfterViewInit, OnDestroy {
     private route: ActivatedRoute, private _location: Location, private countryData: CountryData,
     private employeeData: EmployeeData, private countyData: CountyData, private cityData: CityData,
     private medicalCheckTypeData: MedicalCheckTypeData, private clinicData: ClinicData,
-    private authService: AuthService) { }
+    private authService: AuthService, private dialog: MatDialog) { }
 
   ngOnInit() {
     this.currentUserIdSubscription = this.authService.currentUserId.subscribe(userId => {
       this.currentUserId = userId;
     });
+    this.minDate = this.getMinDate();
     this.initForm();
     this.getCountriesSelect();
   }
@@ -63,6 +70,26 @@ export class MedicalCheckComponent implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
+  }
+
+  myFilter = (d: Date | null): boolean => {
+    const day = (d || new Date()).getDay();
+    // Prevent Saturday and Sunday from being selected.
+    return day !== 0 && day !== 6;
+  }
+
+  getMinDate() {
+    const tempDate = new Date();
+    const day = (this.minDate).getDay();
+    // Prevent Saturday and Sunday from being selected.
+    if (day === 0) {
+      tempDate.setTime(tempDate.getTime() + 1000 * 60 * 60 * 24);
+      return tempDate;
+    }
+    if (day === 6) {
+      tempDate.setTime(tempDate.getTime() + 1000 * 60 * 60 * 48);
+      return tempDate;
+    }
   }
 
   getMedicalChecks() {
@@ -83,14 +110,26 @@ export class MedicalCheckComponent implements OnInit, AfterViewInit, OnDestroy {
 
   initForm() {
     this.medicalCheckForm = new FormGroup({
-      appointment: new FormControl(new Date(), [Validators.required]),
+      appointment: new FormControl({value: this.minDate, disabled: true}, [Validators.required]),
       countryId: new FormControl('', [Validators.required]),
       countyId: new FormControl('', [Validators.required]),
       cityId: new FormControl('', [Validators.required]),
       clinicId: new FormControl('', [Validators.required]),
       medicalCheckTypeId: new FormControl('', [Validators.required]),
       employeeId: new FormControl('', [Validators.required])
-    })
+    });
+  }
+
+  setClinicName(event) {
+    this.clinicName = this.clinicSelectList.selectItems.find(x => x.value === event).label;
+  }
+
+  setMedicalCheckTypeName(event) {
+    this.medicalCheckTypeName = this.medicalCheckTypeSelectList.selectItems.find(x => x.value === event).label;
+  }
+
+  setEmployeeName(event) {
+    this.employeeName = this.employeeSelectList.selectItems.find(x => x.value === event).label;
   }
 
   getCountriesSelect() {
@@ -148,9 +187,15 @@ export class MedicalCheckComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getEmployeesSelect() {
     this.medicalCheckForm.patchValue({ employeeId: '' });
-    if (this.medicalCheckForm.value.clinicId !== '' && this.medicalCheckForm.value.medicalCheckTypeId !== '') {
-      this.employeeData.GetEmployeesDropdown(+this.medicalCheckForm.value.clinicId,
-        +this.medicalCheckForm.value.medicalCheckTypeId).subscribe((employees: SelectItemsList) => {
+    if (this.medicalCheckForm.value.clinicId !== ''
+    && this.medicalCheckForm.value.medicalCheckTypeId !== ''
+    && this.medicalCheckForm.value.appointment) {
+      const employeeDropdownQuery = {
+        clinicId: +this.medicalCheckForm.value.clinicId,
+        medicalCheckTypeId: +this.medicalCheckForm.value.medicalCheckTypeId,
+        appointment: new Date(this.medicalCheckForm.value.appointment)
+      } as EmployeeDropdownQuery;
+      this.employeeData.GetEmployeesDropdown(employeeDropdownQuery).subscribe((employees: SelectItemsList) => {
           this.employeeSelectList = employees;
         },
           error => {
@@ -168,20 +213,41 @@ export class MedicalCheckComponent implements OnInit, AfterViewInit, OnDestroy {
   addMedicalCheck() {
     const addMedicalCheckCommand: AddMedicalCheckCommand = {
       employeeId: +this.medicalCheckForm.value.employeeId,
-      appointment: new Date(this.medicalCheckForm.value.appointment),
+      appointment: this.selectedAppointment,
       clinicId: +this.medicalCheckForm.value.clinicId,
       medicalCheckTypeId: +this.medicalCheckForm.value.medicalCheckTypeId,
       patientId: this.currentUserId
     } as AddMedicalCheckCommand;
-
+    console.log(addMedicalCheckCommand);
     this.medicalCheckData.AddMedicalCheck(addMedicalCheckCommand).subscribe((res: Result) => {
       this.uiService.showSuccessSnackbar(res.successMessage, null, 3000);
       this._location.back();
       this.isLoading = false;
     }, error => {
       this.isLoading = false;
+      this.selectedAppointment = null;
       this.uiService.showErrorSnackbar(error, null, 3000);
     });
+  }
+
+  addDialogOpen(appointment) {
+    this.selectedAppointment = new Date(appointment);
+    const dialogRef = this.dialog.open(AddMedicalCheckPopupComponent, {
+      data: {
+        appointment: new Date(this.selectedAppointment),
+        employeeName: this.employeeName,
+        clinicName: this.clinicName,
+        medicalCheckTypeName: this.medicalCheckTypeName
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.addMedicalCheck();
+      } else {
+        this.selectedAppointment = null;
+      }
+    })
   }
 
   goBack() {

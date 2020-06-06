@@ -30,7 +30,7 @@ namespace Application.CommandsAndQueries
         {
             var entity = new MedicalCheck
             {
-                Appointment = request.Appointment,
+                Appointment = request.Appointment.ToLocalTime(),
                 ClinicId = request.ClinicId,
                 EmployeeId = request.EmployeeId,
                 PatientId = request.PatientId,

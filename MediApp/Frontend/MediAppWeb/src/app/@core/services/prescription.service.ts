@@ -14,21 +14,19 @@ import { AuthService } from 'src/app/auth/auth.service';
 export class PrescriptionService extends PrescriptionData {
     baseUrl = environment.baseURL + 'Prescription';
 
-    // Http Headers
-        httpOptions = {
-        headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${this.authService.getToken()}`
-        })
-    };
-
     constructor(private http: HttpClient, private errService: ErrorService, private authService: AuthService) {
         super();
     }
 
 
     GetPrescriptionDetails(id: number): Observable<PrescriptionDetails> {
-        return this.http.get<PrescriptionDetails>(this.baseUrl + '/' + id, this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.get<PrescriptionDetails>(this.baseUrl + '/' + id, httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -36,7 +34,13 @@ export class PrescriptionService extends PrescriptionData {
             );
     }
     GetEmployeePrescriptions(employeeId: number): Observable<EmployeePrescriptionsList> {
-        return this.http.get<EmployeePrescriptionsList>(this.baseUrl + '/employeeprescriptions/' + employeeId, this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.get<EmployeePrescriptionsList>(this.baseUrl + '/employeeprescriptions/' + employeeId, httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -44,7 +48,13 @@ export class PrescriptionService extends PrescriptionData {
             );
     }
     GetPatientPrescriptions(patientId: number): Observable<PatientPrescriptionsList> {
-        return this.http.get<PatientPrescriptionsList>(this.baseUrl + '/patientprescriptions/' + patientId, this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.get<PatientPrescriptionsList>(this.baseUrl + '/patientprescriptions/' + patientId, httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -52,7 +62,13 @@ export class PrescriptionService extends PrescriptionData {
             );
     }
     GetPrescriptionsDropdown(): Observable<SelectItemsList> {
-        return this.http.get<SelectItemsList>(this.baseUrl + '/prescriptionsdropdown', this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.get<SelectItemsList>(this.baseUrl + '/prescriptionsdropdown', httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -60,7 +76,13 @@ export class PrescriptionService extends PrescriptionData {
             );
     }
     AddPrescription(addPrescriptionCommand: AddPrescriptionCommand): Observable<Result> {
-        return this.http.post<Result>(this.baseUrl, JSON.stringify(addPrescriptionCommand), this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.post<Result>(this.baseUrl, JSON.stringify(addPrescriptionCommand), httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -68,7 +90,13 @@ export class PrescriptionService extends PrescriptionData {
             );
     }
     UpdatePrescription(updatePrescriptionCommand: UpdatePrescriptionCommand): Observable<Result> {
-        return this.http.put<Result>(this.baseUrl, JSON.stringify(updatePrescriptionCommand), this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.put<Result>(this.baseUrl, JSON.stringify(updatePrescriptionCommand), httpOptions)
         .pipe(
             map((response: any) => response),
             retry(1),
@@ -76,7 +104,13 @@ export class PrescriptionService extends PrescriptionData {
         );
     }
     DeletePrescription(id: number): Observable<Result> {
-        return this.http.delete<Result>(this.baseUrl + '/' + id, this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.delete<Result>(this.baseUrl + '/' + id, httpOptions)
         .pipe(
             map((response: any) => response),
             retry(1),

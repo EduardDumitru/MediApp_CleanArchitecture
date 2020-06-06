@@ -17,14 +17,14 @@
                 <mat-error>Please choose an employee</mat-error>
               </mat-form-field>
               <mat-form-field>
-                <input matInput placeholder="Start date" [matDatepicker]="startDatePicker" formControlName="startDate" required>
+                <input matInput [min]="minDate" [matDatepickerFilter]="myFilter"  placeholder="Start date" [matDatepicker]="startDatePicker" formControlName="startDate" required>
                 <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
-                <mat-datepicker #startDatePicker></mat-datepicker>
+                <mat-datepicker #startDatePicker disabled="false"></mat-datepicker>
             </mat-form-field>
             <mat-form-field>
-                <input matInput placeholder="End date" [matDatepicker]="endDatePicker" formControlName="endDate" required>
+                <input matInput [min]="minDate" [matDatepickerFilter]="myFilter"  placeholder="End date" [matDatepicker]="endDatePicker" formControlName="endDate" required>
                 <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
-                <mat-datepicker #endDatePicker></mat-datepicker>
+                <mat-datepicker #endDatePicker  disabled="false"></mat-datepicker>
             </mat-form-field>
           <mat-spinner *ngIf="isLoading"></mat-spinner>
         </mat-card-content>

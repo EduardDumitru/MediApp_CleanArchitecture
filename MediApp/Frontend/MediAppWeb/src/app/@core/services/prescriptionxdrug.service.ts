@@ -13,14 +13,6 @@ import { AuthService } from 'src/app/auth/auth.service';
 export class PrescriptionXDrugService extends PrescriptionXDrugData {
     baseUrl = environment.baseURL + 'PrescriptionXDrug';
 
-    // Http Headers
-        httpOptions = {
-        headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${this.authService.getToken()}`
-        })
-    };
-
     constructor(private http: HttpClient, private errService: ErrorService, private authService: AuthService) {
         super();
     }
@@ -28,7 +20,13 @@ export class PrescriptionXDrugService extends PrescriptionXDrugData {
 
 
     GetPrescriptionXDrugs(prescriptionId: number): Observable<PrescriptionXDrugsList> {
-        return this.http.get<PrescriptionXDrugsList>(this.baseUrl + '/drugsbyprescription/' + prescriptionId, this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.get<PrescriptionXDrugsList>(this.baseUrl + '/drugsbyprescription/' + prescriptionId, httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -36,7 +34,13 @@ export class PrescriptionXDrugService extends PrescriptionXDrugData {
             );
     }
     GetPrescriptionXDrug(id: number): Observable<PrescriptionXDrugDetails> {
-        return this.http.get<PrescriptionXDrugsList>(this.baseUrl + '/' + id, this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.get<PrescriptionXDrugsList>(this.baseUrl + '/' + id, httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -44,7 +48,13 @@ export class PrescriptionXDrugService extends PrescriptionXDrugData {
             );
     }
     AddPrescriptionXDrug(addPrescriptionXDrugCommand: AddPrescriptionXDrugCommand): Observable<Result> {
-        return this.http.post<Result>(this.baseUrl, JSON.stringify(addPrescriptionXDrugCommand), this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.post<Result>(this.baseUrl, JSON.stringify(addPrescriptionXDrugCommand), httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -52,7 +62,13 @@ export class PrescriptionXDrugService extends PrescriptionXDrugData {
             );
     }
     DeletePrescriptionXDrug(id: number): Observable<Result> {
-        return this.http.delete<Result>(this.baseUrl + '/' + id, this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.delete<Result>(this.baseUrl + '/' + id, httpOptions)
         .pipe(
             map((response: any) => response),
             retry(1),
@@ -60,7 +76,13 @@ export class PrescriptionXDrugService extends PrescriptionXDrugData {
         );
     }
     UpdatePrescriptionXDrug(updatePrescriptionXDrugCommand: UpdatePrescriptionXDrugCommand): Observable<Result> {
-        return this.http.put<Result>(this.baseUrl, JSON.stringify(updatePrescriptionXDrugCommand), this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.put<Result>(this.baseUrl, JSON.stringify(updatePrescriptionXDrugCommand), httpOptions)
         .pipe(
             map((response: any) => response),
             retry(1),

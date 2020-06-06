@@ -26,12 +26,15 @@ export class HolidayintervalComponent implements OnInit, OnDestroy {
   isAdmin = false;
   currentUserIdSubscription: Subscription;
   adminSubscription: Subscription;
+  minDate: Date = new Date();
   employeeSelectList: SelectItemsList = new SelectItemsList();
   constructor(private holidayIntervalData: HolidayIntervalData, private uiService: UIService,
     private route: ActivatedRoute, private _location: Location, private authService: AuthService,
     private employeeData: EmployeeData) { }
 
   ngOnInit() {
+      this.minDate = this.getMinDate();
+      console.log(this.minDate);
       this.currentUserIdSubscription = this.authService.currentUserId.subscribe(userId => {
         this.currentUserId = userId;
       });
@@ -50,6 +53,27 @@ export class HolidayintervalComponent implements OnInit, OnDestroy {
       this.adminSubscription.unsubscribe();
   }
 
+  myFilter = (d: Date | null): boolean => {
+    const day = (d || new Date()).getDay();
+    // Prevent Saturday and Sunday from being selected.
+    return day !== 0 && day !== 6;
+  }
+
+  getMinDate() {
+    const tempDate = new Date();
+    const day = (this.minDate).getDay();
+    // Prevent Saturday and Sunday from being selected.
+    if (day === 0) {
+      tempDate.setTime(tempDate.getTime() + 1000 * 60 * 60 * 24);
+      return tempDate;
+    }
+    if (day === 6) {
+      tempDate.setTime(tempDate.getTime() + 1000 * 60 * 60 * 48);
+      return tempDate;
+    }
+  }
+
+
   disableEmployeeId() {
     this.holidayIntervalForm.get('employeeId').disable();
   }
@@ -57,8 +81,8 @@ export class HolidayintervalComponent implements OnInit, OnDestroy {
   initForm() {
       this.holidayIntervalForm = new FormGroup({
           employeeId: new FormControl('', [Validators.required]),
-          startDate: new FormControl(new Date(), [Validators.required]),
-          endDate: new FormControl(new Date(), [Validators.required])
+          startDate: new FormControl({value: this.minDate, disabled: true}, [Validators.required]),
+          endDate: new FormControl({value: this.minDate, disabled: true}, [Validators.required])
       })
       if (this.holidayIntervalId) {
           this.getHolidayInterval();

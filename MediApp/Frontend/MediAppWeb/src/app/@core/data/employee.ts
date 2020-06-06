@@ -3,6 +3,11 @@ import { SelectItemsList } from './common/selectitem';
 import { Result } from './common/result';
 import { TimeSpan } from './common/timespan';
 
+export class EmployeeDropdownQuery {
+    clinicId: number;
+    medicalCheckTypeId: number;
+    appointment: Date;
+}
 
 export class EmployeeDetails {
     startHour: TimeSpan;
@@ -59,7 +64,7 @@ export class RestoreEmployeeCommand {
 export abstract class EmployeeData {
     abstract GetEmployeeDetails(id: number): Observable<EmployeeDetails>;
     abstract GetEmployees(): Observable<EmployeesList>;
-    abstract GetEmployeesDropdown(clinicId: number, medicalCheckTypeId: number): Observable<SelectItemsList>;
+    abstract GetEmployeesDropdown(employeeDropdownQuery: EmployeeDropdownQuery): Observable<SelectItemsList>;
     abstract GetAllEmployeesDropdown(): Observable<SelectItemsList>;
     abstract AddEmployee(addEmployeeCommand: AddEmployeeCommand): Observable<Result>;
     abstract UpdateEmployee(updateEmployeeCommand: UpdateEmployeeCommand): Observable<Result>;

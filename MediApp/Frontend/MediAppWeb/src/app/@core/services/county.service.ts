@@ -13,21 +13,19 @@ import { AuthService } from 'src/app/auth/auth.service';
 export class CountyService extends CountyData {
     baseUrl = environment.baseURL + 'County';
 
-    // Http Headers
-        httpOptions = {
-        headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${this.authService.getToken()}`
-        })
-    };
-
     constructor(private http: HttpClient, private errService: ErrorService, private authService: AuthService) {
         super();
     }
 
 
     GetCountyDetails(id: number): Observable<CountyDetails> {
-        return this.http.get<CountyDetails>(this.baseUrl + '/' + id, this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.get<CountyDetails>(this.baseUrl + '/' + id, httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -35,7 +33,13 @@ export class CountyService extends CountyData {
             );
     }
     GetCounties(): Observable<CountiesList> {
-        return this.http.get<CountiesList>(this.baseUrl, this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.get<CountiesList>(this.baseUrl, httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -43,7 +47,13 @@ export class CountyService extends CountyData {
             );
     }
     GetCountiesDropdown(): Observable<SelectItemsList> {
-        return this.http.get<SelectItemsList>(this.baseUrl + '/countiesdropdown', this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.get<SelectItemsList>(this.baseUrl + '/countiesdropdown', httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -51,7 +61,12 @@ export class CountyService extends CountyData {
             );
     }
     GetCountiesByCountryDropdown(countryId: number): Observable<SelectItemsList> {
-        return this.http.get<SelectItemsList>(this.baseUrl + '/countiesdropdown/' + countryId)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json'
+            })
+        };
+        return this.http.get<SelectItemsList>(this.baseUrl + '/countiesdropdown/' + countryId, httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -59,7 +74,13 @@ export class CountyService extends CountyData {
             );
     }
     AddCounty(addCountyCommand: AddCountyCommand): Observable<Result> {
-        return this.http.post<Result>(this.baseUrl, JSON.stringify(addCountyCommand), this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.post<Result>(this.baseUrl, JSON.stringify(addCountyCommand), httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -67,7 +88,13 @@ export class CountyService extends CountyData {
             );
     }
     UpdateCounty(updateCountyCommand: UpdateCountyCommand): Observable<Result> {
-        return this.http.put<Result>(this.baseUrl, JSON.stringify(updateCountyCommand), this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.put<Result>(this.baseUrl, JSON.stringify(updateCountyCommand), httpOptions)
         .pipe(
             map((response: any) => response),
             retry(1),
@@ -75,7 +102,13 @@ export class CountyService extends CountyData {
         );
     }
     DeleteCounty(id: number): Observable<Result> {
-        return this.http.delete<Result>(this.baseUrl + '/' + id, this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.delete<Result>(this.baseUrl + '/' + id, httpOptions)
         .pipe(
             map((response: any) => response),
             retry(1),
@@ -83,7 +116,13 @@ export class CountyService extends CountyData {
         );
     }
     RestoreCounty(restoreCountyCommand: RestoreCountyCommand): Observable<Result> {
-        return this.http.put<Result>(this.baseUrl + '/restore', JSON.stringify(restoreCountyCommand), this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.put<Result>(this.baseUrl + '/restore', JSON.stringify(restoreCountyCommand), httpOptions)
         .pipe(
             map((response: any) => response),
             retry(1),

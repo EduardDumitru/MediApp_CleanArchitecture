@@ -38,8 +38,8 @@ namespace Application.CommandsAndQueries
         private bool NoMedicalChecksInThisPeriod(AddHolidayIntervalCommand holidayIntervalCommand, long employeeId)
         {
             return _context.MedicalChecks.Any(x => x.EmployeeId == employeeId &&
-                x.Appointment >= holidayIntervalCommand.StartDate &&
-                x.Appointment <= holidayIntervalCommand.EndDate &&
+                x.Appointment >= holidayIntervalCommand.StartDate.ToLocalTime() &&
+                x.Appointment <= holidayIntervalCommand.EndDate.ToLocalTime() &&
                 !x.Deleted);
         }
 
@@ -47,18 +47,19 @@ namespace Application.CommandsAndQueries
             DateTime endDate)
         {
             return _context.HolidayIntervals.Any(x =>
-                x.StartDate >= holidayIntervalCommand.StartDate && x.EndDate <= endDate);
+                x.StartDate.ToLocalTime() >= holidayIntervalCommand.StartDate.ToLocalTime() 
+                && x.EndDate.ToLocalTime() <= endDate.ToLocalTime());
         }
 
         private async Task<bool> IsHigherThanCurrentDate(DateTime startDate, CancellationToken cancellationToken)
         {
-            return await Task.FromResult(startDate.Date > _dateTime.Now.Date);
+            return await Task.FromResult(startDate.ToLocalTime().Date > _dateTime.Now.Date);
         }
 
         private bool IsSmallerThanEndDate(AddHolidayIntervalCommand holidayIntervalCommand,
             DateTime endDate)
         {
-            return endDate >= holidayIntervalCommand.StartDate;
+            return endDate.ToLocalTime() >= holidayIntervalCommand.StartDate.ToLocalTime();
         }
 
         private async Task<bool> ExistsEmployee(long employeeId, CancellationToken cancellationToken)

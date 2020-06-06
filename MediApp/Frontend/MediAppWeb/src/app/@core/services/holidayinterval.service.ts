@@ -14,21 +14,19 @@ import { AuthService } from 'src/app/auth/auth.service';
 export class HolidayIntervalService extends HolidayIntervalData {
     baseUrl = environment.baseURL + 'HolidayInterval';
 
-    // Http Headers
-        httpOptions = {
-        headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${this.authService.getToken()}`
-        })
-    };
-
     constructor(private http: HttpClient, private errService: ErrorService, private authService: AuthService) {
         super();
     }
 
 
     GetHolidayIntervalDetails(id: number): Observable<HolidayIntervalDetails> {
-        return this.http.get<HolidayIntervalDetails>(this.baseUrl + '/' + id, this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.get<HolidayIntervalDetails>(this.baseUrl + '/' + id, httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -36,7 +34,13 @@ export class HolidayIntervalService extends HolidayIntervalData {
             );
     }
     GetHolidayIntervals(): Observable<HolidayIntervalsList> {
-        return this.http.get<HolidayIntervalsList>(this.baseUrl, this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.get<HolidayIntervalsList>(this.baseUrl, httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -44,7 +48,13 @@ export class HolidayIntervalService extends HolidayIntervalData {
             );
     }
     AddHolidayInterval(addHolidayIntervalCommand: AddHolidayIntervalCommand): Observable<Result> {
-        return this.http.post<Result>(this.baseUrl, JSON.stringify(addHolidayIntervalCommand), this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.post<Result>(this.baseUrl, JSON.stringify(addHolidayIntervalCommand), httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -52,8 +62,13 @@ export class HolidayIntervalService extends HolidayIntervalData {
             );
     }
     UpdateHolidayInterval(updateHolidayIntervalCommand: UpdateHolidayIntervalCommand): Observable<Result> {
-        console.log(updateHolidayIntervalCommand);
-        return this.http.put<Result>(this.baseUrl, JSON.stringify(updateHolidayIntervalCommand), this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.put<Result>(this.baseUrl, JSON.stringify(updateHolidayIntervalCommand), httpOptions)
         .pipe(
             map((response: any) => response),
             retry(1),
@@ -61,7 +76,13 @@ export class HolidayIntervalService extends HolidayIntervalData {
         );
     }
     DeleteHolidayInterval(id: number): Observable<Result> {
-        return this.http.delete<Result>(this.baseUrl + '/' + id, this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.delete<Result>(this.baseUrl + '/' + id, httpOptions)
         .pipe(
             map((response: any) => response),
             retry(1),
@@ -69,7 +90,13 @@ export class HolidayIntervalService extends HolidayIntervalData {
         );
     }
     RestoreHolidayInterval(restoreHolidayIntervalCommand: RestoreHolidayIntervalCommand): Observable<Result> {
-        return this.http.put<Result>(this.baseUrl + '/restore', JSON.stringify(restoreHolidayIntervalCommand), this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.put<Result>(this.baseUrl + '/restore', JSON.stringify(restoreHolidayIntervalCommand), httpOptions)
         .pipe(
             map((response: any) => response),
             retry(1),

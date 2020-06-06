@@ -41,7 +41,7 @@ namespace Application.CommandsAndQueries
 
             entity.StartHour = TimeSpan.Parse(request.StartHour);
             entity.EndHour = TimeSpan.Parse(request.EndHour);
-            entity.TerminationDate = request.TerminationDate;
+            entity.TerminationDate = request.TerminationDate?.ToLocalTime();
             entity.EmployeeTypeId = request.EmployeeTypeId;
             entity.MedicalCheckTypeId = request.MedicalCheckTypeId;
             entity.ClinicId = request.ClinicId;

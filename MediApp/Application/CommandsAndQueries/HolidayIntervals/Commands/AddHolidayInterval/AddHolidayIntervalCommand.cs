@@ -30,8 +30,8 @@ namespace Application.CommandsAndQueries
             var entity = new HolidayInterval
             {
                 EmployeeId = request.EmployeeId,
-                StartDate = request.StartDate,
-                EndDate = request.EndDate
+                StartDate = request.StartDate.ToLocalTime(),
+                EndDate = request.EndDate.ToLocalTime()
             };
 
             await _context.HolidayIntervals.AddAsync(entity, cancellationToken);

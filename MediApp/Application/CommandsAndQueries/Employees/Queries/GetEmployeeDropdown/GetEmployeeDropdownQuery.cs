@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
@@ -12,6 +13,7 @@ namespace Application.CommandsAndQueries
     {
         public short MedicalCheckTypeId { get; set; }
         public int ClinicId { get; set; }
+        public DateTime Appointment { get; set; }
     }
 
     public class GetEmployeeDropdownQueryHandler : IRequestHandler<GetEmployeeDropdownQuery, SelectItemVm>
@@ -32,7 +34,10 @@ namespace Application.CommandsAndQueries
                     .Include(x => x.UserProfile)
                     .Where(x => !x.Deleted 
                                 && x.MedicalCheckTypeId == request.MedicalCheckTypeId 
-                                && x.ClinicId == request.ClinicId)
+                                && x.ClinicId == request.ClinicId
+                                && (!x.TerminationDate.HasValue || x.TerminationDate.Value.Date < request.Appointment.ToLocalTime())
+                                && !x.HolidayIntervals.Any(y => y.StartDate <= request.Appointment.ToLocalTime()
+                                                               && y.EndDate >= request.Appointment.ToLocalTime()))
                     .Select(x => new SelectItemDto {Label = x.UserProfile.GetFullName(), Value = x.Id.ToString()})
                     .ToListAsync(cancellationToken)
             };

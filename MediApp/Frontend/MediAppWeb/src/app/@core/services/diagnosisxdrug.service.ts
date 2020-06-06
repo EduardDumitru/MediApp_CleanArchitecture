@@ -13,14 +13,6 @@ import { AuthService } from 'src/app/auth/auth.service';
 export class DiagnosisXDrugService extends DiagnosisXDrugData {
     baseUrl = environment.baseURL + 'DiagnosisXDrug';
 
-    // Http Headers
-        httpOptions = {
-        headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${this.authService.getToken()}`
-        })
-    };
-
     constructor(private http: HttpClient, private errService: ErrorService, private authService: AuthService) {
         super();
     }
@@ -28,7 +20,13 @@ export class DiagnosisXDrugService extends DiagnosisXDrugData {
 
 
     GetDiagnosisXDrugs(): Observable<DiagnosisXDrugsList> {
-        return this.http.get<DiagnosisXDrugsList>(this.baseUrl, this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.get<DiagnosisXDrugsList>(this.baseUrl, httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -36,7 +34,13 @@ export class DiagnosisXDrugService extends DiagnosisXDrugData {
             );
     }
     GetDrugsByDiagnosisDropdown(diagnosisId: number): Observable<SelectItemsList> {
-        return this.http.get<SelectItemsList>(this.baseUrl + '/drugsbydiagnosesdropdown/' + diagnosisId, this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.get<SelectItemsList>(this.baseUrl + '/drugsbydiagnosesdropdown/' + diagnosisId, httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -44,7 +48,13 @@ export class DiagnosisXDrugService extends DiagnosisXDrugData {
             );
     }
     AddDiagnosisXDrug(addDiagnosisXDrugCommand: AddDiagnosisXDrugCommand): Observable<Result> {
-        return this.http.post<Result>(this.baseUrl, JSON.stringify(addDiagnosisXDrugCommand), this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.post<Result>(this.baseUrl, JSON.stringify(addDiagnosisXDrugCommand), httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -52,7 +62,13 @@ export class DiagnosisXDrugService extends DiagnosisXDrugData {
             );
     }
     DeleteDiagnosisXDrug(id: number): Observable<Result> {
-        return this.http.delete<Result>(this.baseUrl + '/' + id, this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.delete<Result>(this.baseUrl + '/' + id, httpOptions)
         .pipe(
             map((response: any) => response),
             retry(1),
@@ -60,7 +76,13 @@ export class DiagnosisXDrugService extends DiagnosisXDrugData {
         );
     }
     RestoreDiagnosisXDrug(restoreDiagnosisXDrugCommand: RestoreDiagnosisXDrugCommand): Observable<Result> {
-        return this.http.put<Result>(this.baseUrl + '/restore', JSON.stringify(restoreDiagnosisXDrugCommand), this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.put<Result>(this.baseUrl + '/restore', JSON.stringify(restoreDiagnosisXDrugCommand), httpOptions)
         .pipe(
             map((response: any) => response),
             retry(1),

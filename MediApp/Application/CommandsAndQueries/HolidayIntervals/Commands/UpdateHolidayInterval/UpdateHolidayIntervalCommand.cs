@@ -36,8 +36,8 @@ namespace Application.CommandsAndQueries
                 return Result.Failure(new List<string> {"No valid holiday interval found"});
             }
 
-            entity.StartDate = request.StartDate;
-            entity.EndDate = request.EndDate;
+            entity.StartDate = request.StartDate.ToLocalTime();
+            entity.EndDate = request.EndDate.ToLocalTime();
 
             await _context.SaveChangesAsync(cancellationToken);
 

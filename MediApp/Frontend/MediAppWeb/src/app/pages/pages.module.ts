@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { LayoutModule } from '@angular/cdk/layout';
 import { CommonModule } from '@angular/common';
-import { MaterialModule } from '../material.module';
 import { PAGESROUTES } from './pages-routing.module';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   imports: [
@@ -10,7 +10,7 @@ import { PAGESROUTES } from './pages-routing.module';
   //  PagesRoutingModule,
     LayoutModule,
     CommonModule,
-    MaterialModule
+    SharedModule
   ],
   declarations: [
   ],

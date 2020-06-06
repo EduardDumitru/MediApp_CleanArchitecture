@@ -13,21 +13,19 @@ import { AuthService } from 'src/app/auth/auth.service';
 export class DrugService extends DrugData {
     baseUrl = environment.baseURL + 'Drug';
 
-    // Http Headers
-        httpOptions = {
-        headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${this.authService.getToken()}`
-        })
-    };
-
     constructor(private http: HttpClient, private errService: ErrorService, private authService: AuthService) {
         super();
     }
 
 
     GetDrugDetails(id: number): Observable<DrugDetails> {
-        return this.http.get<DrugDetails>(this.baseUrl + '/' + id, this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.get<DrugDetails>(this.baseUrl + '/' + id, httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -35,7 +33,13 @@ export class DrugService extends DrugData {
             );
     }
     GetDrugs(): Observable<DrugsList> {
-        return this.http.get<DrugsList>(this.baseUrl, this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.get<DrugsList>(this.baseUrl, httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -43,7 +47,13 @@ export class DrugService extends DrugData {
             );
     }
     GetDrugsDropdown(): Observable<SelectItemsList> {
-        return this.http.get<SelectItemsList>(this.baseUrl + '/drugsdropdown', this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.get<SelectItemsList>(this.baseUrl + '/drugsdropdown', httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -51,7 +61,13 @@ export class DrugService extends DrugData {
             );
     }
     AddDrug(addDrugCommand: AddDrugCommand): Observable<Result> {
-        return this.http.post<Result>(this.baseUrl, JSON.stringify(addDrugCommand), this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.post<Result>(this.baseUrl, JSON.stringify(addDrugCommand), httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -59,7 +75,13 @@ export class DrugService extends DrugData {
             );
     }
     UpdateDrug(updateDrugCommand: UpdateDrugCommand): Observable<Result> {
-        return this.http.put<Result>(this.baseUrl, JSON.stringify(updateDrugCommand), this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.put<Result>(this.baseUrl, JSON.stringify(updateDrugCommand), httpOptions)
         .pipe(
             map((response: any) => response),
             retry(1),
@@ -67,7 +89,13 @@ export class DrugService extends DrugData {
         );
     }
     DeleteDrug(id: number): Observable<Result> {
-        return this.http.delete<Result>(this.baseUrl + '/' + id, this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.delete<Result>(this.baseUrl + '/' + id, httpOptions)
         .pipe(
             map((response: any) => response),
             retry(1),
@@ -75,7 +103,13 @@ export class DrugService extends DrugData {
         );
     }
     RestoreDrug(restoreDrugCommand: RestoreDrugCommand): Observable<Result> {
-        return this.http.put<Result>(this.baseUrl + '/restore', JSON.stringify(restoreDrugCommand), this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.put<Result>(this.baseUrl + '/restore', JSON.stringify(restoreDrugCommand), httpOptions)
         .pipe(
             map((response: any) => response),
             retry(1),

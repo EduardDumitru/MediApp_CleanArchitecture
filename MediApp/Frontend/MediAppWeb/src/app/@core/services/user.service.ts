@@ -24,7 +24,13 @@ export class UserService extends UserData {
     };
 
     AddUser(addUserCommand: AddUserCommand): Observable<AuthSuccessResponse> {
-        return this.http.post<AuthSuccessResponse>(this.baseUrl + '/adduser', JSON.stringify(addUserCommand), this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.post<AuthSuccessResponse>(this.baseUrl + '/adduser', JSON.stringify(addUserCommand), httpOptions)
             .pipe(
                 map(res => {
                     return res;
@@ -35,7 +41,12 @@ export class UserService extends UserData {
     }
 
     LoginUser(loginUserCommand: LoginUserCommand): Observable<AuthSuccessResponse> {
-        return this.http.post<AuthSuccessResponse>(this.baseUrl + '/login', JSON.stringify(loginUserCommand), this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json'
+            })
+        };
+        return this.http.post<AuthSuccessResponse>(this.baseUrl + '/login', JSON.stringify(loginUserCommand), httpOptions)
             .pipe(
                 map(res => {
                     return res;

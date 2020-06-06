@@ -14,20 +14,18 @@ export class CityService extends CityData {
 
     baseUrl = environment.baseURL + 'City';
 
-    // Http Headers
-    httpOptions = {
-        headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${this.authService.getToken()}`
-        })
-    };
-
     constructor(private http: HttpClient, private errService: ErrorService, private authService: AuthService) {
         super();
     }
 
     GetCityDetails(id: number): Observable<CityDetails> {
-        return this.http.get<CityDetails>(this.baseUrl + '/' + id, this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.get<CityDetails>(this.baseUrl + '/' + id, httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -35,8 +33,13 @@ export class CityService extends CityData {
             );
     }
     GetCities(): Observable<CitiesList> {
-        console.log('ajungec');
-        return this.http.get<CitiesList>(this.baseUrl, this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.get<CitiesList>(this.baseUrl, httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -44,7 +47,12 @@ export class CityService extends CityData {
             );
     }
     GetCitiesDropdown(): Observable<SelectItemsList> {
-        return this.http.get<SelectItemsList>(this.baseUrl + '/citiesdropdown')
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json'
+            })
+        };
+        return this.http.get<SelectItemsList>(this.baseUrl + '/citiesdropdown', httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -52,7 +60,13 @@ export class CityService extends CityData {
             );
     }
     GetCitiesByCountyDropdown(countyId: number): Observable<SelectItemsList> {
-        return this.http.get<SelectItemsList>(this.baseUrl + '/citiesdropdown/' + countyId, this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.get<SelectItemsList>(this.baseUrl + '/citiesdropdown/' + countyId, httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -60,7 +74,13 @@ export class CityService extends CityData {
             );
     }
     AddCity(addCityCommand: AddCityCommand): Observable<Result> {
-        return this.http.post<Result>(this.baseUrl, JSON.stringify(addCityCommand), this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.post<Result>(this.baseUrl, JSON.stringify(addCityCommand), httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -68,7 +88,13 @@ export class CityService extends CityData {
             );
     }
     UpdateCity(updateCityCommand: UpdateCityCommand): Observable<Result> {
-        return this.http.put<Result>(this.baseUrl, JSON.stringify(updateCityCommand), this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.put<Result>(this.baseUrl, JSON.stringify(updateCityCommand), httpOptions)
         .pipe(
             map((response: any) => response),
             retry(1),
@@ -76,7 +102,13 @@ export class CityService extends CityData {
         );
     }
     DeleteCity(id: number): Observable<Result> {
-        return this.http.delete<Result>(this.baseUrl + '/' + id, this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.delete<Result>(this.baseUrl + '/' + id, httpOptions)
         .pipe(
             map((response: any) => response),
             retry(1),
@@ -84,7 +116,13 @@ export class CityService extends CityData {
         );
     }
     RestoreCity(restoreCityCommand: RestoreCityCommand): Observable<Result> {
-        return this.http.put<Result>(this.baseUrl + '/restore', JSON.stringify(restoreCityCommand), this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.put<Result>(this.baseUrl + '/restore', JSON.stringify(restoreCityCommand), httpOptions)
         .pipe(
             map((response: any) => response),
             retry(1),

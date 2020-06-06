@@ -14,21 +14,19 @@ import { AuthService } from 'src/app/auth/auth.service';
 export class DiagnosisService extends DiagnosisData {
     baseUrl = environment.baseURL + 'Diagnosis';
 
-    // Http Headers
-        httpOptions = {
-        headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${this.authService.getToken()}`
-        })
-    };
-
     constructor(private http: HttpClient, private errService: ErrorService, private authService: AuthService) {
         super();
     }
 
 
     GetDiagnosisDetails(id: number): Observable<DiagnosisDetails> {
-        return this.http.get<DiagnosisDetails>(this.baseUrl + '/' + id, this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.get<DiagnosisDetails>(this.baseUrl + '/' + id, httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -36,7 +34,13 @@ export class DiagnosisService extends DiagnosisData {
             );
     }
     GetDiagnoses(): Observable<DiagnosesList> {
-        return this.http.get<DiagnosesList>(this.baseUrl, this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.get<DiagnosesList>(this.baseUrl, httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -44,7 +48,13 @@ export class DiagnosisService extends DiagnosisData {
             );
     }
     GetDiagnosesDropdown(): Observable<SelectItemsList> {
-        return this.http.get<SelectItemsList>(this.baseUrl + '/diagnosesdropdown', this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.get<SelectItemsList>(this.baseUrl + '/diagnosesdropdown', httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -52,7 +62,13 @@ export class DiagnosisService extends DiagnosisData {
             );
     }
     AddDiagnosis(addDiagnosisCommand: AddDiagnosisCommand): Observable<Result> {
-        return this.http.post<Result>(this.baseUrl, JSON.stringify(addDiagnosisCommand), this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.post<Result>(this.baseUrl, JSON.stringify(addDiagnosisCommand), httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -60,7 +76,13 @@ export class DiagnosisService extends DiagnosisData {
             );
     }
     UpdateDiagnosis(updateDiagnosisCommand: UpdateDiagnosisCommand): Observable<Result> {
-        return this.http.put<Result>(this.baseUrl, JSON.stringify(updateDiagnosisCommand), this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.put<Result>(this.baseUrl, JSON.stringify(updateDiagnosisCommand), httpOptions)
         .pipe(
             map((response: any) => response),
             retry(1),
@@ -68,7 +90,13 @@ export class DiagnosisService extends DiagnosisData {
         );
     }
     DeleteDiagnosis(id: number): Observable<Result> {
-        return this.http.delete<Result>(this.baseUrl + '/' + id, this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.delete<Result>(this.baseUrl + '/' + id, httpOptions)
         .pipe(
             map((response: any) => response),
             retry(1),
@@ -76,7 +104,13 @@ export class DiagnosisService extends DiagnosisData {
         );
     }
     RestoreDiagnosis(restoreDiagnosisCommand: RestoreDiagnosisCommand): Observable<Result> {
-        return this.http.put<Result>(this.baseUrl + '/restore', JSON.stringify(restoreDiagnosisCommand), this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.put<Result>(this.baseUrl + '/restore', JSON.stringify(restoreDiagnosisCommand), httpOptions)
         .pipe(
             map((response: any) => response),
             retry(1),

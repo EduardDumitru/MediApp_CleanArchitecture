@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { EmployeeData, EmployeeDetails, EmployeesList,
-    AddEmployeeCommand, UpdateEmployeeCommand, RestoreEmployeeCommand } from '../data/employee';
+    AddEmployeeCommand, UpdateEmployeeCommand, RestoreEmployeeCommand, EmployeeDropdownQuery } from '../data/employee';
 import { environment } from 'src/environments/environment';
 import { Observable, throwError } from 'rxjs';
 import { retry, catchError, map } from 'rxjs/operators';
@@ -14,21 +14,19 @@ import { AuthService } from 'src/app/auth/auth.service';
 export class EmployeeService extends EmployeeData {
     baseUrl = environment.baseURL + 'Employee';
 
-    // Http Headers
-        httpOptions = {
-        headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${this.authService.getToken()}`
-        })
-    };
-
     constructor(private http: HttpClient, private errService: ErrorService, private authService: AuthService) {
         super();
     }
 
 
     GetEmployeeDetails(id: number): Observable<EmployeeDetails> {
-        return this.http.get<EmployeeDetails>(this.baseUrl + '/' + id, this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.get<EmployeeDetails>(this.baseUrl + '/' + id, httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -36,15 +34,27 @@ export class EmployeeService extends EmployeeData {
             );
     }
     GetEmployees(): Observable<EmployeesList> {
-        return this.http.get<EmployeesList>(this.baseUrl, this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.get<EmployeesList>(this.baseUrl, httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
                 catchError(this.errService.errorHandl)
             );
     }
-    GetEmployeesDropdown(clinicId: number, medicalCheckTypeId: number): Observable<SelectItemsList> {
-        return this.http.get<SelectItemsList>(this.baseUrl + '/employeesdropdown/' + clinicId + '/' + medicalCheckTypeId, this.httpOptions)
+    GetEmployeesDropdown(employeeDropdownQuery: EmployeeDropdownQuery): Observable<SelectItemsList> {
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.post<SelectItemsList>(this.baseUrl + '/employeesdropdown', JSON.stringify(employeeDropdownQuery), httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -52,7 +62,13 @@ export class EmployeeService extends EmployeeData {
             );
     }
     GetAllEmployeesDropdown(): Observable<SelectItemsList> {
-        return this.http.get<SelectItemsList>(this.baseUrl + '/employeesdropdown', this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.get<SelectItemsList>(this.baseUrl + '/employeesdropdown', httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -60,7 +76,13 @@ export class EmployeeService extends EmployeeData {
             );
     }
     AddEmployee(addEmployeeCommand: AddEmployeeCommand): Observable<Result> {
-        return this.http.post<Result>(this.baseUrl, JSON.stringify(addEmployeeCommand), this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.post<Result>(this.baseUrl, JSON.stringify(addEmployeeCommand), httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -68,7 +90,13 @@ export class EmployeeService extends EmployeeData {
             );
     }
     UpdateEmployee(updateEmployeeCommand: UpdateEmployeeCommand): Observable<Result> {
-        return this.http.put<Result>(this.baseUrl, JSON.stringify(updateEmployeeCommand), this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.put<Result>(this.baseUrl, JSON.stringify(updateEmployeeCommand), httpOptions)
         .pipe(
             map((response: any) => response),
             retry(1),
@@ -76,7 +104,13 @@ export class EmployeeService extends EmployeeData {
         );
     }
     DeleteEmployee(id: number): Observable<Result> {
-        return this.http.delete<Result>(this.baseUrl + '/' + id, this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.delete<Result>(this.baseUrl + '/' + id, httpOptions)
         .pipe(
             map((response: any) => response),
             retry(1),
@@ -84,7 +118,13 @@ export class EmployeeService extends EmployeeData {
         );
     }
     RestoreEmployee(restoreEmployeeCommand: RestoreEmployeeCommand): Observable<Result> {
-        return this.http.put<Result>(this.baseUrl + '/restore', JSON.stringify(restoreEmployeeCommand), this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.put<Result>(this.baseUrl + '/restore', JSON.stringify(restoreEmployeeCommand), httpOptions)
         .pipe(
             map((response: any) => response),
             retry(1),

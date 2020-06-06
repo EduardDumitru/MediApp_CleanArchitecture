@@ -13,42 +13,58 @@ import { SelectItemsList } from '../data/common/selectitem';
 export class UserProfileService extends UserProfileData {
     baseUrl = environment.baseURL + 'UserProfile';
 
-    // Http Headers
-        httpOptions = {
-        headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${this.authService.getToken()}`
-        })
-    };
-
     constructor(private http: HttpClient, private errService: ErrorService, private authService: AuthService) {
         super();
     }
 
 
     getUserProfiles(): Observable<UserProfilesList> {
-        return this.http.get<UserProfilesList>(this.baseUrl, this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.get<UserProfilesList>(this.baseUrl, httpOptions)
             .pipe(
                 map((response: any) => response),
                 catchError(this.errService.errorHandl)
             );
     }
     getUserProfile(id: number): Observable<UserProfileDetail> {
-        return this.http.get<UserProfileDetail>(this.baseUrl + '/' + id, this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.get<UserProfileDetail>(this.baseUrl + '/' + id, httpOptions)
             .pipe(
                 map((response: any) => response),
                 catchError(this.errService.errorHandl)
             );
     }
     updateUserProfile(userProfile: UpdateUserProfileCommand): Observable<Result> {
-        return this.http.put<Result>(this.baseUrl, JSON.stringify(userProfile), this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.put<Result>(this.baseUrl, JSON.stringify(userProfile), httpOptions)
             .pipe(
                 map((response: any) => response),
                 catchError(this.errService.errorHandl)
             );
     }
     getUserProfilesDropdown(): Observable<SelectItemsList> {
-        return this.http.get<SelectItemsList>(this.baseUrl + '/usersdropdown', this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.get<SelectItemsList>(this.baseUrl + '/usersdropdown', httpOptions)
         .pipe(
             map((response: any) => response),
             retry(1),

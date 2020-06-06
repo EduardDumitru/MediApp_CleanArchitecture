@@ -13,21 +13,19 @@ import { AuthService } from 'src/app/auth/auth.service';
 export class ClinicService extends ClinicData {
     baseUrl = environment.baseURL + 'Clinic';
 
-    // Http Headers
-        httpOptions = {
-        headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${this.authService.getToken()}`
-        })
-    };
-
     constructor(private http: HttpClient, private errService: ErrorService, private authService: AuthService) {
         super();
     }
 
 
     GetClinicDetails(id: number): Observable<ClinicDetails> {
-        return this.http.get<ClinicDetails>(this.baseUrl + '/' + id, this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.get<ClinicDetails>(this.baseUrl + '/' + id, httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -35,7 +33,13 @@ export class ClinicService extends ClinicData {
             );
     }
     GetClinics(): Observable<ClinicsList> {
-        return this.http.get<ClinicsList>(this.baseUrl, this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.get<ClinicsList>(this.baseUrl, httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -43,8 +47,14 @@ export class ClinicService extends ClinicData {
             );
     }
     GetClinicsDropdown(countryId?: number, countyId?: number, cityId?: number): Observable<SelectItemsList> {
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
         return this.http.get<SelectItemsList>(this.baseUrl + '/clinicsdropdown/' +
-        countryId + '/' + countyId + '/' + cityId, this.httpOptions)
+        countryId + '/' + countyId + '/' + cityId, httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -52,7 +62,13 @@ export class ClinicService extends ClinicData {
             );
     }
     AddClinic(addClinicCommand: AddClinicCommand): Observable<Result> {
-        return this.http.post<Result>(this.baseUrl, JSON.stringify(addClinicCommand), this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.post<Result>(this.baseUrl, JSON.stringify(addClinicCommand), httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -60,7 +76,13 @@ export class ClinicService extends ClinicData {
             );
     }
     UpdateClinic(updateClinicCommand: UpdateClinicCommand): Observable<Result> {
-        return this.http.put<Result>(this.baseUrl, JSON.stringify(updateClinicCommand), this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.put<Result>(this.baseUrl, JSON.stringify(updateClinicCommand), httpOptions)
         .pipe(
             map((response: any) => response),
             retry(1),
@@ -68,7 +90,13 @@ export class ClinicService extends ClinicData {
         );
     }
     DeleteClinic(id: number): Observable<Result> {
-        return this.http.delete<Result>(this.baseUrl + '/' + id, this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.delete<Result>(this.baseUrl + '/' + id, httpOptions)
         .pipe(
             map((response: any) => response),
             retry(1),
@@ -76,7 +104,13 @@ export class ClinicService extends ClinicData {
         );
     }
     RestoreClinic(restoreClinicCommand: RestoreClinicCommand): Observable<Result> {
-        return this.http.put<Result>(this.baseUrl + '/restore', JSON.stringify(restoreClinicCommand), this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.put<Result>(this.baseUrl + '/restore', JSON.stringify(restoreClinicCommand), httpOptions)
         .pipe(
             map((response: any) => response),
             retry(1),

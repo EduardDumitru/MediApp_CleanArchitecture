@@ -5,9 +5,10 @@
         <mat-card-title fxLayoutAlign="center">Add Medical Check</mat-card-title>
         <mat-card-content fxLayout="column" fxLayoutAlign="center">
             <mat-form-field>
-                <input matInput placeholder="Appointmnet" [matDatepicker]="appointmnentPicker" formControlName="appointment" required>
+                <input matInput [min]="minDate" [matDatepickerFilter]="myFilter" 
+                (dateInput)="getEmployeesSelect()" placeholder="Appointment" [matDatepicker]="appointmnentPicker" formControlName="appointment" required>
                 <mat-datepicker-toggle matSuffix [for]="appointmnentPicker"></mat-datepicker-toggle>
-                <mat-datepicker #appointmnentPicker></mat-datepicker>
+                <mat-datepicker #appointmnentPicker disabled="false"></mat-datepicker>
             </mat-form-field>
             <mat-form-field>
                 <mat-select placeholder="Choose Country" formControlName="countryId" (selectionChange)="getCountiesSelect($event.value)" required>
@@ -43,7 +44,7 @@
                 <mat-error>Please choose a city</mat-error>
               </mat-form-field>
               <mat-form-field *ngIf="this.clinicSelectList.selectItems">
-                <mat-select placeholder="Choose Clinic" formControlName="clinicId" (selectionChange)="getMedicalCheckTypeSelect(); getEmployeesSelect()" required>
+                <mat-select placeholder="Choose Clinic" formControlName="clinicId" (selectionChange)="getMedicalCheckTypeSelect(); getEmployeesSelect(); setClinicName($event.value)" required>
                   <mat-option
                     *ngFor="let clinic of clinicSelectList.selectItems"
                     [value]="clinic.value">
@@ -54,7 +55,7 @@
                 <mat-error>Please choose a clinic</mat-error>
               </mat-form-field>
               <mat-form-field *ngIf="this.medicalCheckTypeSelectList.selectItems">
-                <mat-select placeholder="Choose Medical Check Type" formControlName="medicalCheckTypeId" (selectionChange)="getEmployeesSelect()" required>
+                <mat-select placeholder="Choose Medical Check Type" formControlName="medicalCheckTypeId" (selectionChange)="getEmployeesSelect(); setMedicalCheckTypeName($event.value)" required>
                   <mat-option
                     *ngFor="let medicalCheckType of medicalCheckTypeSelectList.selectItems"
                     [value]="medicalCheckType.value">
@@ -65,7 +66,7 @@
                 <mat-error>Please choose a medical check type</mat-error>
               </mat-form-field>
             <mat-form-field *ngIf="this.employeeSelectList.selectItems">
-                <mat-select placeholder="Choose Employee" formControlName="employeeId" required>
+                <mat-select placeholder="Choose Employee" formControlName="employeeId" required (selectionChange)="setEmployeeName($event.value)">
                   <mat-option
                     *ngFor="let employee of employeeSelectList.selectItems"
                     [value]="employee.value">
@@ -119,7 +120,7 @@
             </ng-container>
         
             <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-            <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns" (click)="addDialogOpen(row.appointment)"></mat-row>
             <mat-spinner *ngIf="isLoading"></mat-spinner>
         </mat-table>
         

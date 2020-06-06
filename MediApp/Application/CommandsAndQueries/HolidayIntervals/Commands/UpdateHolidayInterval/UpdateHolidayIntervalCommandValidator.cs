@@ -40,8 +40,8 @@ namespace Application.CommandsAndQueries
             long employeeId, CancellationToken cancellationToken)
         {
             return !await _context.MedicalChecks.AnyAsync(x => x.EmployeeId == employeeId &&
-                x.Appointment.Date >= holidayIntervalCommand.StartDate.Date &&
-                x.Appointment.Date <= holidayIntervalCommand.EndDate.Date &&
+                x.Appointment.ToLocalTime().Date >= holidayIntervalCommand.StartDate.ToLocalTime().Date &&
+                x.Appointment.ToLocalTime().Date <= holidayIntervalCommand.EndDate.ToLocalTime().Date &&
                 !x.Deleted, cancellationToken);
         }
 
@@ -49,19 +49,19 @@ namespace Application.CommandsAndQueries
             DateTime endDate, CancellationToken cancellationToken)
         {
             return !await _context.HolidayIntervals.AnyAsync(x =>
-                x.StartDate.Date >= holidayIntervalCommand.StartDate.Date && x.EndDate.Date.Date <= endDate
-                && !x.Deleted, cancellationToken);
+                x.StartDate.ToLocalTime().Date >= holidayIntervalCommand.StartDate.ToLocalTime().Date 
+                && x.EndDate.ToLocalTime().Date <= endDate && !x.Deleted, cancellationToken);
         }
 
         private async Task<bool> IsHigherThanCurrentDate(DateTime startDate, CancellationToken cancellationToken)
         {
-            return await Task.FromResult(startDate.Date > _dateTime.Now.Date);
+            return await Task.FromResult(startDate.Date.ToLocalTime() > _dateTime.Now.Date);
         }
 
         private async Task<bool> IsSmallerThanEndDate(UpdateHolidayIntervalCommand holidayIntervalCommand,
             DateTime endDate, CancellationToken cancellationToken)
         {
-            return await Task.FromResult(endDate >= holidayIntervalCommand.StartDate);
+            return await Task.FromResult(endDate.ToLocalTime() >= holidayIntervalCommand.StartDate.ToLocalTime());
         }
 
         private async Task<bool> ExistsEmployee(long employeeId, CancellationToken cancellationToken)

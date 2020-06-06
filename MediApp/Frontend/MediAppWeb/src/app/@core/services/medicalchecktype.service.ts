@@ -15,21 +15,19 @@ import { AuthService } from 'src/app/auth/auth.service';
 export class MedicalCheckTypeService extends MedicalCheckTypeData {
     baseUrl = environment.baseURL + 'MedicalCheckType';
 
-    // Http Headers
-        httpOptions = {
-        headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${this.authService.getToken()}`
-        })
-    };
-
     constructor(private http: HttpClient, private errService: ErrorService, private authService: AuthService) {
         super();
     }
 
 
     GetMedicalCheckTypeDetails(id: number): Observable<MedicalCheckTypeDetails> {
-        return this.http.get<MedicalCheckTypeDetails>(this.baseUrl + '/' + id, this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.get<MedicalCheckTypeDetails>(this.baseUrl + '/' + id, httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -37,7 +35,13 @@ export class MedicalCheckTypeService extends MedicalCheckTypeData {
             );
     }
     GetMedicalCheckTypes(): Observable<MedicalCheckTypesList> {
-        return this.http.get<MedicalCheckTypesList>(this.baseUrl, this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.get<MedicalCheckTypesList>(this.baseUrl, httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -45,7 +49,13 @@ export class MedicalCheckTypeService extends MedicalCheckTypeData {
             );
     }
     GetMedicalCheckTypesDropdown(): Observable<SelectItemsList> {
-        return this.http.get<SelectItemsList>(this.baseUrl + '/medicalchecktypesdropdown', this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.get<SelectItemsList>(this.baseUrl + '/medicalchecktypesdropdown', httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -53,7 +63,13 @@ export class MedicalCheckTypeService extends MedicalCheckTypeData {
             );
     }
     AddMedicalCheckType(addMedicalCheckTypeCommand: AddMedicalCheckTypeCommand): Observable<Result> {
-        return this.http.post<Result>(this.baseUrl, JSON.stringify(addMedicalCheckTypeCommand), this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.post<Result>(this.baseUrl, JSON.stringify(addMedicalCheckTypeCommand), httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
@@ -61,7 +77,13 @@ export class MedicalCheckTypeService extends MedicalCheckTypeData {
             );
     }
     UpdateMedicalCheckType(updateMedicalCheckTypeCommand: UpdateMedicalCheckTypeCommand): Observable<Result> {
-        return this.http.put<Result>(this.baseUrl, JSON.stringify(updateMedicalCheckTypeCommand), this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.put<Result>(this.baseUrl, JSON.stringify(updateMedicalCheckTypeCommand), httpOptions)
         .pipe(
             map((response: any) => response),
             retry(1),
@@ -69,7 +91,13 @@ export class MedicalCheckTypeService extends MedicalCheckTypeData {
         );
     }
     DeleteMedicalCheckType(id: number): Observable<Result> {
-        return this.http.delete<Result>(this.baseUrl + '/' + id, this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.delete<Result>(this.baseUrl + '/' + id, httpOptions)
         .pipe(
             map((response: any) => response),
             retry(1),
@@ -77,7 +105,13 @@ export class MedicalCheckTypeService extends MedicalCheckTypeData {
         );
     }
     RestoreMedicalCheckType(restoreMedicalCheckTypeCommand: RestoreMedicalCheckTypeCommand): Observable<Result> {
-        return this.http.put<Result>(this.baseUrl + '/restore', JSON.stringify(restoreMedicalCheckTypeCommand), this.httpOptions)
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.put<Result>(this.baseUrl + '/restore', JSON.stringify(restoreMedicalCheckTypeCommand), httpOptions)
         .pipe(
             map((response: any) => response),
             retry(1),
