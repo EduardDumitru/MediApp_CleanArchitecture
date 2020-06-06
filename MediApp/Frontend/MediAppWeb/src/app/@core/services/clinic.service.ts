@@ -42,8 +42,9 @@ export class ClinicService extends ClinicData {
                 catchError(this.errService.errorHandl)
             );
     }
-    GetClinicsDropdown(): Observable<SelectItemsList> {
-        return this.http.get<SelectItemsList>(this.baseUrl + '/clinicsdropdown', this.httpOptions)
+    GetClinicsDropdown(countryId?: number, countyId?: number, cityId?: number): Observable<SelectItemsList> {
+        return this.http.get<SelectItemsList>(this.baseUrl + '/clinicsdropdown/' +
+        countryId + '/' + countyId + '/' + cityId, this.httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),

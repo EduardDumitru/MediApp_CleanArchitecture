@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { MedicalCheckData, MedicalCheckDetails,
-    AddMedicalCheckCommand, UpdateMedicalCheckCommand, EmployeeMedicalChecksList, PatientMedicalChecksList, MedicalChecksToAddQuery, MedicalChecksToAddList } from '../data/medicalcheck';
+    AddMedicalCheckCommand, UpdateMedicalCheckCommand, EmployeeMedicalChecksList,
+    PatientMedicalChecksList, MedicalChecksToAddQuery, MedicalChecksToAddList } from '../data/medicalcheck';
 import { environment } from 'src/environments/environment';
 import { Observable, throwError } from 'rxjs';
 import { retry, catchError, map } from 'rxjs/operators';
