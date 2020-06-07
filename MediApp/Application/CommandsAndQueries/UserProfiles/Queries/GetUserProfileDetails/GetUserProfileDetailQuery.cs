@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Principal;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,22 +19,28 @@ namespace Application.CommandsAndQueries
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
-        private readonly ICurrentUserService _currentUserService;
+        private readonly IIdentityService _identityService;
 
-        public GetUserProfileDetailQueryHandler(IApplicationDbContext context, IMapper mapper, ICurrentUserService currentUserService)
+        public GetUserProfileDetailQueryHandler(IApplicationDbContext context, IMapper mapper, IIdentityService identityService)
         {
             _context = context;
             _mapper = mapper;
-            _currentUserService = currentUserService;
+            _identityService = identityService;
         }
 
         public async Task<UserProfileDetailVm> Handle(GetUserProfileDetailQuery request, CancellationToken cancellationToken)
         {
-            //Sa nu uiti sa faci verificarea daca e sau nu persoana respectiva conectat
             var entity = await _context.UserProfiles
                 .FindAsync(request.Id);
 
-            return entity == null ? null : _mapper.Map<UserProfileDetailVm>(entity);
+            var entityVm = entity == null ? null : _mapper.Map<UserProfileDetailVm>(entity);
+
+            if (entityVm != null)
+            {
+                entityVm.RoleIds = await _identityService.GetUserRoleIds(entity.UserId, cancellationToken);
+            }
+
+            return entityVm;
         }
     }
 }

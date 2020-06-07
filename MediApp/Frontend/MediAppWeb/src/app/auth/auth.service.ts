@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 @Injectable()
 export class AuthService {
 
+  UserRoleName = 'User';
   authChange = new BehaviorSubject<boolean>(false);
   isAdmin = new BehaviorSubject<boolean>(false);
   isDoctor = new BehaviorSubject<boolean>(false);

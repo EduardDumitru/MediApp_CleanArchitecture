@@ -16,6 +16,7 @@ export class UserProfileDetail {
     countyId: number;
     cityId: number;
     genderId: number;
+    roleIds: string[];
     deleted?: boolean;
 }
 
@@ -54,6 +55,7 @@ export class UpdateUserProfileCommand {
     countyId: number;
     cityId: number;
     genderId: number;
+    roleIds: number[];
     deleted?: boolean
 }
 

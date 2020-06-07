@@ -16,7 +16,7 @@ namespace Application.CommandsAndQueries
         public string StreetNo { get; set; }
         public string PhoneNumber { get; set; }
         public string EmailAddress { get; set; }
-        public string CNP { get; set; }
+        public string Cnp { get; set; }
         public string CountryName { get; set; }
         public string CountyName { get; set; }
         public string CityName { get; set; }

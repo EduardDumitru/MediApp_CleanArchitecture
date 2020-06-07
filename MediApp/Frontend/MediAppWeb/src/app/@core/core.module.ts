@@ -35,6 +35,8 @@ import { PrescriptionXDrugService } from './services/prescriptionxdrug.service';
 import { PrescriptionXDrugData } from './data/prescriptionxdrug';
 import { ClinicService } from './services/clinic.service';
 import { ClinicData } from './data/clinic';
+import { RoleData } from './data/role';
+import { RoleService } from './services/role.service';
 
 const DATA_SERVICES = [
   { provide: UserData, useClass: UserService },
@@ -53,7 +55,8 @@ const DATA_SERVICES = [
   { provide: MedicalCheckData, useClass: MedicalCheckService},
   { provide: MedicalCheckTypeData, useClass: MedicalCheckTypeService},
   { provide: PrescriptionData, useClass: PrescriptionService},
-  { provide: PrescriptionXDrugData, useClass: PrescriptionXDrugService}
+  { provide: PrescriptionXDrugData, useClass: PrescriptionXDrugService},
+  { provide: RoleData, useClass: RoleService }
 ];
 
 export const NB_CORE_PROVIDERS = [

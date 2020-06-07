@@ -26,15 +26,17 @@ namespace Application.CommandsAndQueries
         public int CountyId { get; set; }
         public int CityId { get; set; }
         public short GenderId { get; set; }
+        public List<long> RoleIds { get; set; }
     }
 
     public class UpdateUserProfileCommandHandler : IRequestHandler<UpdateUserProfileCommand, Result>
     {
         private readonly IApplicationDbContext _context;
-
-        public UpdateUserProfileCommandHandler(IApplicationDbContext context)
+        private readonly IIdentityService _identityService;
+        public UpdateUserProfileCommandHandler(IApplicationDbContext context, IIdentityService identityService)
         {
             _context = context;
+            _identityService = identityService;
         }
 
         public async Task<Result> Handle(UpdateUserProfileCommand request, CancellationToken cancellationToken)
@@ -58,7 +60,7 @@ namespace Application.CommandsAndQueries
             entity.CountyId = request.CountyId;
             entity.CityId = request.CityId;
             entity.GenderId = request.GenderId;
-
+            await _identityService.AddUserToRoles(entity.UserId, request.RoleIds, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
 
             return Result.Success("Profile update was successful");

@@ -12,19 +12,10 @@
         <li *ngIf="!isAuth"><a routerLink="/register">Signup</a></li>
         <li *ngIf="!isAuth"><a routerLink="/login">Login</a></li>
         <li *ngIf="isAuth"><a routerLink="/user/profile/{{currentUserId}}">Profile</a></li>
-        <!-- <li *ngIf="isAdmin"><a routerLink="/location/cities">Cities</a></li>
-        <li *ngIf="isAdmin"><a routerLink="/location/countries">Countries</a></li>
-        <li *ngIf="isAdmin"><a routerLink="/location/counties">Counties</a></li>
-        <li *ngIf="isAdmin"><a routerLink="/location/clinics">Clinics</a></li>
-        <li *ngIf="isAdmin"><a routerLink="/user/genders">Genders</a></li> -->
-        <!-- <li *ngIf="isAdmin"><a routerLink="/employees/employeetypes">Employee Types</a></li>
-        <li *ngIf="isAdmin"><a routerLink="/employees/medicalchecktypes">Medical Check Types</a></li> -->
-        <!-- <li *ngIf="isAdmin"><a routerLink="/diagnoses/diagnoses">Diagnoses</a></li>
-        <li *ngIf="isAdmin"><a routerLink="/diagnoses/drugs">Drugs</a></li>
-        <li *ngIf="isAdmin"><a routerLink="/diagnoses/diagnosisxdrugs">DiagnosisXDrugs</a></li> -->
         <li *ngIf="isAdmin"><mat-menu #userMenu="matMenu" yPosition="below">
           <ng-template matMenuContent>
             <button mat-menu-item routerLink="/user/genders">Genders</button>
+            <button mat-menu-item routerLink="/user/profiles">Profiles</button>
           </ng-template>
         </mat-menu>
         <a style="cursor:pointer" [matMenuTriggerFor]="userMenu">

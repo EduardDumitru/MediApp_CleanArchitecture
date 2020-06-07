@@ -16,13 +16,6 @@ export class UserService extends UserData {
         super();
     }
 
-    // Http Headers
-    httpOptions = {
-        headers: new HttpHeaders({
-      'Content-Type': 'application/json'
-        })
-    };
-
     AddUser(addUserCommand: AddUserCommand): Observable<AuthSuccessResponse> {
         const httpOptions = {
             headers: new HttpHeaders({

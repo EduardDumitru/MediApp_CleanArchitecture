@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Application.CommandsAndQueries;
 using Application.Common.Constants;
@@ -13,6 +14,7 @@ using Domain.Entities;
 using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
@@ -22,17 +24,14 @@ namespace Infrastructure.Identity
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ApplicationDbContext _context;
         private readonly JwtSettings _jwtSettings;
 
         public IdentityService(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager,
-            IHttpContextAccessor httpContextAccessor,
             ApplicationDbContext context, JwtSettings jwtSettings)
         {
             _userManager = userManager;
             _roleManager = roleManager;
-            _httpContextAccessor = httpContextAccessor;
             _context = context;
             _jwtSettings = jwtSettings;
         }
@@ -295,6 +294,57 @@ namespace Infrastructure.Identity
         private async Task<UserProfile> GetUserProfileByUserId(long userId)
         {
             return await _context.UserProfiles.SingleOrDefaultAsync(x => x.UserId == userId && !x.Deleted);
+        }
+
+        public async Task<SelectItemVm> GetRolesDropdown(CancellationToken cancellationToken)
+        {
+            var vm = new SelectItemVm
+            {
+                SelectItems = await _roleManager.Roles
+                    .Select(x => new SelectItemDto {Label = x.Name, Value = x.Id.ToString()})
+                    .ToListAsync(cancellationToken)
+            };
+
+            return vm;
+        }
+
+        public async Task AddUserToRoles(long userId, List<long> roleIds, CancellationToken cancellationToken)
+        {
+            var user = await _userManager.Users
+                .FirstOrDefaultAsync(x => x.Id == userId && x.IsActive.Value, cancellationToken);
+            var roles = await _roleManager.Roles.ToListAsync(cancellationToken);
+            var existingRoleNames = await _userManager.GetRolesAsync(user);
+            var existingRoleIds = new List<long>();
+            foreach (var existingRoleName in existingRoleNames)
+            {
+                var role = await _roleManager.FindByNameAsync(existingRoleName);
+                if (role == null) continue;
+
+                existingRoleIds.Add(role.Id);
+            }
+
+            var rolesToAdd = (from roleId in roleIds 
+                let role = roles.FirstOrDefault(x => x.Id == roleId) 
+                where existingRoleIds.All(id => id != roleId) && role != null 
+                select role.Name).ToList();
+
+            await _userManager.AddToRolesAsync(user, rolesToAdd);
+        }
+
+        public async Task<List<string>> GetUserRoleIds(long userId, CancellationToken cancellationToken)
+        {
+            var user = await _userManager.Users
+                .FirstOrDefaultAsync(x => x.Id == userId && x.IsActive.Value, cancellationToken);
+            var existingRoles = await _userManager.GetRolesAsync(user);
+            var roleIds = new List<string>();
+            foreach (var existingRole in existingRoles)
+            {
+                var role = await _roleManager.FindByNameAsync(existingRole);
+                if (role == null) continue;
+                roleIds.Add(role.Id.ToString());
+            }
+
+            return roleIds;
         }
     }
 }

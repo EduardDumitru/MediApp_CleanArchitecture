@@ -118,10 +118,22 @@
           <mat-hint>Please choose a gender</mat-hint>
           <mat-error>Please choose a gender</mat-error>
         </mat-form-field>
+        <mat-form-field *ngIf="isAdmin">
+          <mat-select placeholder="Choose Roles" formControlName="roleIds" required multiple>
+            <mat-option
+              *ngFor="let role of roleSelectList.selectItems"
+              [value]="role.value"
+              [disabled]="role.label === userRoleName">
+              {{ role.label }}
+            </mat-option>
+          </mat-select>
+          <mat-hint>Please choose roles</mat-hint>
+          <mat-error>Please choose roles</mat-error>
+        </mat-form-field>
         <mat-spinner *ngIf="isLoading"></mat-spinner>
       </mat-card-content>
       <mat-card-actions fxLayoutAlign="center" *ngIf="!isLoading">
-        <!-- <button
+        <button
         *ngIf="!isLoading"
         type="button"
         mat-raised-button
@@ -129,7 +141,7 @@
         (click)="goBack()"
       >
         Back
-      </button> -->
+      </button>
         <button
           *ngIf="!isDeleted"
           type="submit"
@@ -139,24 +151,6 @@
         >
           Submit
         </button>
-        <!-- <button
-          *ngIf="!isDeleted && userProfileId"
-          type="button"
-          mat-raised-button
-          color="warn"
-          (click)="deleteUser()"
-        >
-          Delete
-        </button>
-        <button
-          *ngIf="isDeleted && userProfileId"
-          type="button"
-          mat-raised-button
-          color="primary"
-          (click)="restoreUser()"
-        >
-          Restore
-        </button> -->
       </mat-card-actions>
     </mat-card>
   </form>

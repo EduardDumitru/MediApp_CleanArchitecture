@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { UserProfileData, UpdateUserProfileCommand, UserProfileDetail } from 'src/app/@core/data/userclasses/userprofile';
 import { FormGroup, FormControl, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 import { UIService } from 'src/app/shared/ui.service';
@@ -7,8 +7,11 @@ import { CountryData } from 'src/app/@core/data/country';
 import { CountyData } from 'src/app/@core/data/county';
 import { CityData } from 'src/app/@core/data/city';
 import { GenderData } from 'src/app/@core/data/gender';
-import { AuthService } from 'src/app/auth/auth.service';
 import { SelectItemsList } from 'src/app/@core/data/common/selectitem';
+import { Location } from '@angular/common';
+import { RoleData } from 'src/app/@core/data/role';
+import { Subscription } from 'rxjs';
+import { AuthService } from 'src/app/auth/auth.service';
 
 @Component({
     selector: 'app-userprofile',
@@ -16,27 +19,43 @@ import { SelectItemsList } from 'src/app/@core/data/common/selectitem';
     styleUrls: ['./userprofile.component.scss']
 })
 
-export class UserProfileComponent implements OnInit {
+export class UserProfileComponent implements OnInit, OnDestroy, AfterViewInit {
     isLoading = false;
     userProfileForm: FormGroup;
     userProfileId: number;
     isDeleted = false;
-    constructor(private userProfileData: UserProfileData, private uiService: UIService, private router: Router,
-                private countryData: CountryData, private countyData: CountyData, private cityData: CityData,
-                private genderData: GenderData, private route: ActivatedRoute) { }
-
+    userRoleName = '';
     countrySelectList: SelectItemsList = new SelectItemsList();
     countySelectList: SelectItemsList = new SelectItemsList();
     citySelectList: SelectItemsList = new SelectItemsList();
     genderSelectList: SelectItemsList = new SelectItemsList();
+    roleSelectList: SelectItemsList = new SelectItemsList();
+    adminSubscription: Subscription;
+    isAdmin = false;
+    constructor(private userProfileData: UserProfileData, private uiService: UIService, private router: Router,
+                private countryData: CountryData, private countyData: CountyData, private cityData: CityData,
+                private genderData: GenderData, private route: ActivatedRoute, private _location: Location,
+                private roleData: RoleData, private authService: AuthService) { }
 
     ngOnInit(): void {
         if (Number(this.route.snapshot.params.id)) {
             this.userProfileId = +this.route.snapshot.params.id;
         }
+        this.adminSubscription = this.authService.isAdmin.subscribe((isAdmin: boolean) => {
+          this.isAdmin = isAdmin;
+        });
+        this.userRoleName = this.authService.UserRoleName;
         this.initForm();
         this.getGendersSelect();
         this.getCountriesSelect();
+    }
+
+    ngAfterViewInit(): void {
+      this.getRolesSelect();
+    }
+
+    ngOnDestroy(): void {
+      this.adminSubscription.unsubscribe();
     }
 
     initForm() {
@@ -53,7 +72,8 @@ export class UserProfileComponent implements OnInit {
           countryId: new FormControl('', [Validators.required]),
           countyId: new FormControl('', [Validators.required]),
           cityId: new FormControl('', [Validators.required]),
-          genderId: new FormControl('', [Validators.required])
+          genderId: new FormControl('', [Validators.required]),
+          roleIds: new FormControl([], [Validators.required])
       });
       this.getUserProfile();
     }
@@ -74,7 +94,8 @@ export class UserProfileComponent implements OnInit {
                 countryId: userProfile.countryId.toString(),
                 countyId: userProfile.countyId.toString(),
                 cityId: userProfile.cityId.toString(),
-                genderId: userProfile.genderId.toString()
+                genderId: userProfile.genderId.toString(),
+                roleIds: userProfile.roleIds
             });
             this.getCountiesSelect(userProfile.countryId.toString());
             this.getCitiesSelect(userProfile.countyId.toString());
@@ -122,6 +143,15 @@ export class UserProfileComponent implements OnInit {
       }
       if( year < 1800 || year > 2099 ) { return false; }
       return ( cnp[12] === hashResult );
+    }
+
+    getRolesSelect() {
+      this.roleData.GetRolesDropdown().subscribe((roles: SelectItemsList) => {
+        this.roleSelectList = roles;
+      },
+      error => {
+          this.uiService.showErrorSnackbar(error, null, 3000);
+      })
     }
 
     getGendersSelect() {
@@ -182,8 +212,14 @@ export class UserProfileComponent implements OnInit {
           countryId: +this.userProfileForm.value.countryId,
           countyId: +this.userProfileForm.value.countyId,
           cityId: +this.userProfileForm.value.cityId,
-          genderId: +this.userProfileForm.value.genderId
+          genderId: +this.userProfileForm.value.genderId,
+          roleIds: []
       } as UpdateUserProfileCommand;
+      console.log(this.userProfileForm.value.roleIds);
+      this.userProfileForm.value.roleIds.forEach((element: string) => {
+        console.log(element);
+        updateUserProfileCommand.roleIds.push(+element);
+      });
       this.userProfileData.updateUserProfile(updateUserProfileCommand).subscribe(res => {
           this.isLoading = false;
           this.uiService.showSuccessSnackbar(res.successMessage, null, 3000);
@@ -191,5 +227,9 @@ export class UserProfileComponent implements OnInit {
           this.isLoading = false;
           this.uiService.showErrorSnackbar(error, null, 3000);
       })
+    }
+
+    goBack() {
+      this._location.back();
     }
 }
