@@ -4,6 +4,17 @@
       <mat-card fxFlex.lt-md="100%" fxFlex="900px">
         <mat-card-title fxLayoutAlign="center">Add Medical Check</mat-card-title>
         <mat-card-content fxLayout="column" fxLayoutAlign="center">
+          <mat-form-field *ngIf="this.userSelectList.selectItems">
+            <mat-select placeholder="Choose Patient" formControlName="patientId" required>
+              <mat-option
+                *ngFor="let patient of userSelectList.selectItems"
+                [value]="patient.value">
+                {{ patient.label }}
+              </mat-option>
+            </mat-select>
+            <mat-hint>Please choose a patient</mat-hint>
+            <mat-error>Please choose a patient</mat-error>
+           </mat-form-field>
             <mat-form-field>
                 <input matInput [min]="minDate" [matDatepickerFilter]="myFilter" 
                 (dateInput)="getEmployeesSelect()" placeholder="Appointment" [matDatepicker]="appointmnentPicker" formControlName="appointment" required>

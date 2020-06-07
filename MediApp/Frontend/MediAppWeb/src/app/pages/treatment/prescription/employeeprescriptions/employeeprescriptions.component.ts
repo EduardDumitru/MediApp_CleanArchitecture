@@ -18,6 +18,7 @@ export class EmployeePrescriptionsComponent implements OnInit, AfterViewInit, On
   displayedColumns = ['id', 'noOfDays', 'description', 'medicalCheckId', 'medicalCheckTypeName', 'diagnosisName', 'clinicName', 'patientName', 'deleted'];
   employeeId = -1;
   currentUserId = -1;
+  isAdmin = false;
   currentUserIdSubscription: Subscription;
   adminSubscription: Subscription;
   dataSource = new MatTableDataSource<EmployeePrescriptionLookup>();
@@ -33,11 +34,9 @@ export class EmployeePrescriptionsComponent implements OnInit, AfterViewInit, On
     }
     this.currentUserIdSubscription = this.authService.currentUserId.subscribe(userId => {
       this.currentUserId = userId;
-      this.adminSubscription = this.authService.isAdmin.subscribe(isAdmin => {
-        if (isAdmin || this.employeeId === this.currentUserId) {
-          this.getPrescriptions();
-        }
-      })
+    })
+    this.adminSubscription = this.authService.isAdmin.subscribe(isAdmin => {
+      this.isAdmin = isAdmin;
     })
   }
 
@@ -53,6 +52,9 @@ export class EmployeePrescriptionsComponent implements OnInit, AfterViewInit, On
   }
 
   ngAfterViewInit(): void {
+    if (this.isAdmin || this.employeeId === this.currentUserId) {
+      this.getPrescriptions();
+    }
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
   }

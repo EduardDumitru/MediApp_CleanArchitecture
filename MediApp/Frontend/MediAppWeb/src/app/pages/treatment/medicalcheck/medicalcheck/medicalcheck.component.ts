@@ -19,6 +19,7 @@ import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AddMedicalCheckPopupComponent } from './addmedicalcheckpopup.component';
+import { UserProfileData } from 'src/app/@core/data/userclasses/userprofile';
 
 @Component({
   selector: 'app-medicalcheck',
@@ -32,12 +33,19 @@ export class MedicalCheckComponent implements OnInit, AfterViewInit, OnDestroy {
   isDeleted = false;
   currentUserIdSubscription: Subscription;
   currentUserId = -1;
+  isDoctorSubscription: Subscription;
+  isDoctor = false;
+  isNurseSubscription: Subscription;
+  isNurse = false;
+  isAdminSubscription: Subscription;
+  isAdmin = false;
   employeeSelectList: SelectItemsList = new SelectItemsList();
   countrySelectList: SelectItemsList = new SelectItemsList();
   countySelectList: SelectItemsList = new SelectItemsList();
   citySelectList: SelectItemsList = new SelectItemsList();
   clinicSelectList: SelectItemsList = new SelectItemsList();
   medicalCheckTypeSelectList: SelectItemsList = new SelectItemsList();
+  userSelectList: SelectItemsList = new SelectItemsList();
   clinicName = '';
   employeeName = '';
   medicalCheckTypeName = '';
@@ -52,22 +60,41 @@ export class MedicalCheckComponent implements OnInit, AfterViewInit, OnDestroy {
     private route: ActivatedRoute, private _location: Location, private countryData: CountryData,
     private employeeData: EmployeeData, private countyData: CountyData, private cityData: CityData,
     private medicalCheckTypeData: MedicalCheckTypeData, private clinicData: ClinicData,
-    private authService: AuthService, private dialog: MatDialog) { }
+    private authService: AuthService, private dialog: MatDialog, private userProfileData: UserProfileData) { }
 
   ngOnInit() {
     this.currentUserIdSubscription = this.authService.currentUserId.subscribe(userId => {
       this.currentUserId = userId;
+      this.initForm();
     });
     this.minDate = this.getMinDate();
-    this.initForm();
     this.getCountriesSelect();
+    this.getCurrentUserRole();
+  }
+
+  getCurrentUserRole() {
+    this.isDoctorSubscription = this.authService.isDoctor.subscribe(isDoctor => {
+      this.isDoctor = isDoctor;
+    });
+    this.isNurseSubscription = this.authService.isNurse.subscribe(isNurse => {
+      this.isNurse = isNurse;
+    });
+    this.isAdminSubscription = this.authService.isAdmin.subscribe(isAdmin => {
+      this.isAdmin = isAdmin;
+    });
   }
 
   ngOnDestroy() {
     this.currentUserIdSubscription.unsubscribe();
+    this.isDoctorSubscription.unsubscribe();
+    this.isNurseSubscription.unsubscribe();
+    this.isAdminSubscription.unsubscribe();
   }
 
   ngAfterViewInit(): void {
+    if (this.isDoctor || this.isNurse || this.isAdmin) {
+      this.getUsersSelect();
+    }
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
   }
@@ -116,7 +143,8 @@ export class MedicalCheckComponent implements OnInit, AfterViewInit, OnDestroy {
       cityId: new FormControl('', [Validators.required]),
       clinicId: new FormControl('', [Validators.required]),
       medicalCheckTypeId: new FormControl('', [Validators.required]),
-      employeeId: new FormControl('', [Validators.required])
+      employeeId: new FormControl('', [Validators.required]),
+      patientId: new FormControl(this.currentUserId.toString(), [Validators.required])
     });
   }
 
@@ -130,6 +158,15 @@ export class MedicalCheckComponent implements OnInit, AfterViewInit, OnDestroy {
 
   setEmployeeName(event) {
     this.employeeName = this.employeeSelectList.selectItems.find(x => x.value === event).label;
+  }
+
+  getUsersSelect() {
+    this.userProfileData.getUserProfilesDropdown().subscribe((users: SelectItemsList) => {
+      this.userSelectList = users;
+    },
+      error => {
+        this.uiService.showErrorSnackbar(error, null, 3000);
+      })
   }
 
   getCountriesSelect() {
@@ -216,9 +253,8 @@ export class MedicalCheckComponent implements OnInit, AfterViewInit, OnDestroy {
       appointment: this.selectedAppointment,
       clinicId: +this.medicalCheckForm.value.clinicId,
       medicalCheckTypeId: +this.medicalCheckForm.value.medicalCheckTypeId,
-      patientId: this.currentUserId
+      patientId: +this.medicalCheckForm.value.patientId
     } as AddMedicalCheckCommand;
-    console.log(addMedicalCheckCommand);
     this.medicalCheckData.AddMedicalCheck(addMedicalCheckCommand).subscribe((res: Result) => {
       this.uiService.showSuccessSnackbar(res.successMessage, null, 3000);
       this._location.back();

@@ -18,8 +18,13 @@ export class EmployeeMedicalChecksComponent implements OnInit, AfterViewInit, On
   displayedColumns = ['id', 'appointment', 'medicalCheckTypeName', 'diagnosisName', 'clinicName', 'patientName', 'patientCnp', 'deleted'];
   employeeId = -1;
   currentUserId = -1;
+  isAdmin = false;
+  isDoctor = false;
+  isNurse = false;
   currentUserIdSubscription: Subscription;
   adminSubscription: Subscription;
+  doctorSubscription: Subscription;
+  nurseSubscription: Subscription;
   dataSource = new MatTableDataSource<EmployeeMedicalCheckLookup>();
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -33,11 +38,15 @@ export class EmployeeMedicalChecksComponent implements OnInit, AfterViewInit, On
     }
     this.currentUserIdSubscription = this.authService.currentUserId.subscribe(userId => {
       this.currentUserId = userId;
-      this.adminSubscription = this.authService.isAdmin.subscribe(isAdmin => {
-        if (isAdmin || this.employeeId === this.currentUserId) {
-          this.getMedicalChecks();
-        }
-      })
+    })
+    this.adminSubscription = this.authService.isAdmin.subscribe(isAdmin => {
+      this.isAdmin = isAdmin;
+    })
+    this.nurseSubscription = this.authService.isNurse.subscribe(isNurse => {
+      this.isNurse = isNurse;
+    })
+    this.doctorSubscription = this.authService.isDoctor.subscribe(isDoctor => {
+      this.isDoctor = isDoctor;
     })
   }
 
@@ -53,6 +62,9 @@ export class EmployeeMedicalChecksComponent implements OnInit, AfterViewInit, On
   }
 
   ngAfterViewInit(): void {
+    if (this.isAdmin || (this.isDoctor && this.employeeId === this.currentUserId) || this.isNurse) {
+      this.getMedicalChecks();
+    }
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
   }

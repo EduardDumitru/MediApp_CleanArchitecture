@@ -18,6 +18,7 @@ export class PatientMedicalChecksComponent implements OnInit, AfterViewInit, OnD
   displayedColumns = ['id', 'appointment', 'medicalCheckTypeName', 'diagnosisName', 'clinicName', 'employeeName', 'deleted'];
   patientId = -1;
   currentUserId = -1;
+  isAdmin = false;
   currentUserIdSubscription: Subscription;
   adminSubscription: Subscription;
   dataSource = new MatTableDataSource<PatientMedicalCheckLookup>();
@@ -33,11 +34,9 @@ export class PatientMedicalChecksComponent implements OnInit, AfterViewInit, OnD
     }
     this.currentUserIdSubscription = this.authService.currentUserId.subscribe(userId => {
       this.currentUserId = userId;
-      this.adminSubscription = this.authService.isAdmin.subscribe(isAdmin => {
-        if (isAdmin || this.patientId === this.currentUserId) {
-          this.getMedicalChecks();
-        }
-      })
+    })
+    this.adminSubscription = this.authService.isAdmin.subscribe(isAdmin => {
+      this.isAdmin = isAdmin;
     })
   }
 
@@ -53,6 +52,9 @@ export class PatientMedicalChecksComponent implements OnInit, AfterViewInit, OnD
   }
 
   ngAfterViewInit(): void {
+    if (this.isAdmin || this.patientId === this.currentUserId) {
+      this.getMedicalChecks();
+    }
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
   }
