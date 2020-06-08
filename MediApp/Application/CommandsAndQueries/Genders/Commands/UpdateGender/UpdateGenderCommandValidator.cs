@@ -1,14 +1,17 @@
 ﻿using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Application.Common.Interfaces;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.CommandsAndQueries
 {
-    public class UpdateGenderValidator : AbstractValidator<UpdateGenderCommand>
+    public class UpdateGenderCommandValidator : AbstractValidator<UpdateGenderCommand>
     {
         private readonly IApplicationDbContext _context;
 
-        public UpdateGenderValidator(IApplicationDbContext context)
+        public UpdateGenderCommandValidator(IApplicationDbContext context)
         {
             _context = context;
             RuleFor(x => x.Id)
@@ -17,14 +20,15 @@ namespace Application.CommandsAndQueries
             RuleFor(x => x.Name)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("Name is required")
-                .Must(BeUniqueGender).WithMessage("Name already exists");
+                .MustAsync(BeUniqueGender).WithMessage("Name already exists");
         }
 
-        private bool BeUniqueGender(UpdateGenderCommand updateGenderCommand, string name)
+        private async Task<bool> BeUniqueGender(UpdateGenderCommand updateGenderCommand, string name,
+            CancellationToken cancellationToken)
         {
-            return _context.Genders
+            return await _context.Genders
                 .Where(x => x.Id != updateGenderCommand.Id)
-                .All(x => x.Name != name);
+                .AllAsync(x => x.Name != name, cancellationToken);
         }
     }
 }

@@ -64,7 +64,7 @@ namespace Application.CommandsAndQueries
             RuleFor(x => x.CityId)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("City is required")
-                .Must(IsCityMappedCorrectly).WithMessage("Country, County and City are not valid");
+                .MustAsync(IsCityMappedCorrectly).WithMessage("Country, County and City are not valid");
 
             RuleFor(x => x.GenderId)
                 .Cascade(CascadeMode.StopOnFirstFailure)
@@ -145,16 +145,16 @@ namespace Application.CommandsAndQueries
                 .AllAsync(x => x.PhoneNumber != phoneNumber, cancellationToken);
         }
 
-        private bool IsCityMappedCorrectly(AddUserCommand user, int cityId)
+        private async Task<bool> IsCityMappedCorrectly(AddUserCommand user, int cityId,
+            CancellationToken cancellationToken)
         {
-            return _context.Cities
+            return await _context.Cities
                 .Include(x => x.County)
                 .ThenInclude(x => x.Country)
-                .Where(x => x.Id == cityId
-                            && x.County.Id == user.CountyId
-                            && x.County.Country.Id == user.CountryId
-                            && !x.Deleted)
-                .Any();
+                .AnyAsync(x => x.Id == cityId
+                               && x.County.Id == user.CountyId
+                               && x.County.Country.Id == user.CountryId
+                               && !x.Deleted, cancellationToken);
         }
 
         private async Task<bool> IsGenderValid(short genderId, CancellationToken cancellationToken)

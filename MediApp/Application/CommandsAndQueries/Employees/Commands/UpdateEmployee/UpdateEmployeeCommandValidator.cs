@@ -25,8 +25,8 @@ namespace Application.CommandsAndQueries
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("Employee Type is required")
                 .MustAsync(ExistsEmployeeType).WithMessage("Employee Type is not valid")
-                .Must(HaveNoMedicalCheckTypeIfNotDoctor).WithMessage("Only doctors can have medical check type")
-                .Must(HaveMedicalCheckTypeIfDoctor).WithMessage("Medical Check Type is required for doctor");
+                .MustAsync(HaveNoMedicalCheckTypeIfNotDoctor).WithMessage("Only doctors can have medical check type")
+                .MustAsync(HaveMedicalCheckTypeIfDoctor).WithMessage("Medical Check Type is required for doctor");
             RuleFor(x => x.StartHour)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("Start Hour is required")
@@ -100,21 +100,25 @@ namespace Application.CommandsAndQueries
             return await _context.EmployeeTypes.AnyAsync(x => x.Id == employeeTypeId && !x.Deleted, cancellationToken);
         }
 
-        private bool HaveNoMedicalCheckTypeIfNotDoctor(UpdateEmployeeCommand employeeCommand, short employeeTypeId)
+        private async Task<bool> HaveNoMedicalCheckTypeIfNotDoctor(UpdateEmployeeCommand employeeCommand,
+            short employeeTypeId,
+            CancellationToken cancellationToken)
         {
-            var doctorTypeId = GetDoctorTypeId();
+            var doctorTypeId = await GetDoctorTypeId(cancellationToken);
             return employeeTypeId == doctorTypeId || !employeeCommand.MedicalCheckTypeId.HasValue;
         }
 
-        private bool HaveMedicalCheckTypeIfDoctor(UpdateEmployeeCommand employeeCommand, short employeeTypeId)
+        private async Task<bool> HaveMedicalCheckTypeIfDoctor(UpdateEmployeeCommand employeeCommand, short employeeTypeId,
+            CancellationToken cancellationToken)
         {
-            var doctorTypeId = GetDoctorTypeId();
+            var doctorTypeId = await GetDoctorTypeId(cancellationToken);
             return employeeTypeId != doctorTypeId || employeeCommand.MedicalCheckTypeId.HasValue;
         }
 
-        private short GetDoctorTypeId()
+        private async Task<short> GetDoctorTypeId(CancellationToken cancellationToken)
         {
-            return _context.EmployeeTypes.Single(x => x.Name == EmployeeTypeConstants.Doctor).Id;
+            return (await _context.EmployeeTypes.SingleAsync(x => x.Name == EmployeeTypeConstants.Doctor,
+                cancellationToken)).Id;
         }
     }
 }

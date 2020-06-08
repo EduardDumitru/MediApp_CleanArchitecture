@@ -1,6 +1,9 @@
 ﻿using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Application.Common.Interfaces;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.CommandsAndQueries
 {
@@ -17,14 +20,15 @@ namespace Application.CommandsAndQueries
             RuleFor(x => x.Name)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("Name is required")
-                .Must(BeUniqueDiagnosis).WithMessage("Name already exists");
+                .MustAsync(BeUniqueDiagnosis).WithMessage("Name already exists");
         }
 
-        private bool BeUniqueDiagnosis(UpdateDiagnosisCommand updateDiagnosisCommand, string name)
+        private async Task<bool> BeUniqueDiagnosis(UpdateDiagnosisCommand updateDiagnosisCommand, string name,
+            CancellationToken cancellationToken)
         {
-            return _context.Diagnoses
+            return await _context.Diagnoses
                 .Where(x => x.Id != updateDiagnosisCommand.Id)
-                .All(x => x.Name != name);
+                .AllAsync(x => x.Name != name, cancellationToken);
         }
     }
 }

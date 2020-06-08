@@ -6,7 +6,7 @@ namespace Application.CommandsAndQueries
     {
         public GetUserProfileDetailQueryValidator()
         {
-            RuleFor(v => v.Id).NotEmpty();
+            RuleFor(v => v.Id).NotEmpty().WithMessage("Id is required.");
         }
     }
 }

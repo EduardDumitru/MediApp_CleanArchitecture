@@ -33,8 +33,8 @@ namespace Application.CommandsAndQueries
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("Employee is required")
                 .MustAsync(ExistsEmployee).WithMessage("Employee is not valid")
-                .Must(ExistsEmployeeInClinic).WithMessage("Employee is not available in this clinic")
-                .Must(ExistsEmployeeInMedicalCheckType)
+                .MustAsync(ExistsEmployeeInClinic).WithMessage("Employee is not available in this clinic")
+                .MustAsync(ExistsEmployeeInMedicalCheckType)
                 .WithMessage("Employee is not available in this medical check type");
             RuleFor(x => x.Appointment)
                 .Cascade(CascadeMode.StopOnFirstFailure)
@@ -51,17 +51,20 @@ namespace Application.CommandsAndQueries
                 .AnyAsync(x => x.Id == employeeId && !x.Deleted, cancellationToken);
         }
 
-        private bool ExistsEmployeeInClinic(AddMedicalCheckCommand medicalCheckCommand, long employeeId)
+        private async Task<bool> ExistsEmployeeInClinic(AddMedicalCheckCommand medicalCheckCommand, long employeeId,
+            CancellationToken cancellationToken)
         {
-            return _context.Employees
-                .Any(x => x.Id == employeeId && x.ClinicId == medicalCheckCommand.ClinicId && !x.Deleted);
+            return await _context.Employees
+                .AnyAsync(x => x.Id == employeeId && x.ClinicId == medicalCheckCommand.ClinicId && !x.Deleted,
+                    cancellationToken);
         }
 
-        private bool ExistsEmployeeInMedicalCheckType(AddMedicalCheckCommand medicalCheckCommand, long employeeId)
+        private async Task<bool> ExistsEmployeeInMedicalCheckType(AddMedicalCheckCommand medicalCheckCommand, long employeeId,
+            CancellationToken cancellationToken)
         {
-            return _context.Employees
-                .Any(x => x.Id == employeeId && x.MedicalCheckTypeId == medicalCheckCommand.MedicalCheckTypeId &&
-                          !x.Deleted);
+            return await _context.Employees
+                .AnyAsync(x => x.Id == employeeId && x.MedicalCheckTypeId == medicalCheckCommand.MedicalCheckTypeId &&
+                               !x.Deleted, cancellationToken);
         }
 
         private async Task<bool> ExistsClinic(int clinicId, CancellationToken cancellationToken)

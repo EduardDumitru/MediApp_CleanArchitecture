@@ -5,11 +5,8 @@ namespace Application.CommandsAndQueries
 {
     public class UpdatePrescriptionCommandValidator : AbstractValidator<UpdatePrescriptionCommand>
     {
-        private readonly IApplicationDbContext _context;
-
-        public UpdatePrescriptionCommandValidator(IApplicationDbContext context)
+        public UpdatePrescriptionCommandValidator()
         {
-            _context = context;
             RuleFor(x => x.Id)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("Id is required");

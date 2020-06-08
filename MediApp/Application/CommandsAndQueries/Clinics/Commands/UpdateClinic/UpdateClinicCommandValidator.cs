@@ -41,13 +41,13 @@ namespace Application.CommandsAndQueries
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .MustAsync(ExistsCounty)
                 .WithMessage("County is not valid")
-                .Must(ExistsCountyInCountry)
+                .MustAsync(ExistsCountyInCountry)
                 .WithMessage("County is not in the selected country");
             RuleFor(x => x.CityId)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .MustAsync(ExistsCity)
                 .WithMessage("City is not valid")
-                .Must(ExistsCityInCounty)
+                .MustAsync(ExistsCityInCounty)
                 .WithMessage("City is not in the selected county");
         }
 
@@ -63,12 +63,13 @@ namespace Application.CommandsAndQueries
                 .AnyAsync(x => x.Id == countyId && !x.Deleted, cancellationToken);
         }
 
-        private bool ExistsCountyInCountry(UpdateClinicCommand clinicCommand, int countyId)
+        private async Task<bool> ExistsCountyInCountry(UpdateClinicCommand clinicCommand, int countyId,
+            CancellationToken cancellationToken)
         {
-            return _context.Counties
-                .Any(x => x.Id == countyId
-                          && x.CountryId == clinicCommand.CountryId
-                          && !x.Deleted);
+            return await _context.Counties
+                .AnyAsync(x => x.Id == countyId
+                               && x.CountryId == clinicCommand.CountryId
+                               && !x.Deleted, cancellationToken);
         }
 
         private async Task<bool> ExistsCity(int cityId, CancellationToken cancellationToken)
@@ -78,12 +79,13 @@ namespace Application.CommandsAndQueries
                                && !x.Deleted, cancellationToken);
         }
 
-        private bool ExistsCityInCounty(UpdateClinicCommand clinicCommand, int cityId)
+        private async Task<bool> ExistsCityInCounty(UpdateClinicCommand clinicCommand, int cityId,
+            CancellationToken cancellationToken)
         {
-            return _context.Cities
-                .Any(x => x.Id == cityId
-                          && x.CountyId == clinicCommand.CountyId
-                          && !x.Deleted);
+            return await _context.Cities
+                .AnyAsync(x => x.Id == cityId
+                               && x.CountyId == clinicCommand.CountyId
+                               && !x.Deleted, cancellationToken);
         }
     }
 }

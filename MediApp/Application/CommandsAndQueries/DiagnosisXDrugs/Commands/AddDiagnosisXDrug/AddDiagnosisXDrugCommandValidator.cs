@@ -22,14 +22,14 @@ namespace Application.CommandsAndQueries
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("Drug is required")
                 .MustAsync(ExistsDrug).WithMessage("Drug is not valid")
-                .Must(NoExistingLinkBetweenDiagnosisAndDrug).WithMessage("Link already exists");
+                .MustAsync(NoExistingLinkBetweenDiagnosisAndDrug).WithMessage("Link already exists");
         }
 
-        private bool NoExistingLinkBetweenDiagnosisAndDrug(AddDiagnosisXDrugCommand addDiagnosisXDrugCommand,
-            long drugId)
+        private async Task<bool> NoExistingLinkBetweenDiagnosisAndDrug(AddDiagnosisXDrugCommand addDiagnosisXDrugCommand,
+            long drugId, CancellationToken cancellationToken)
         {
-            return _context.DiagnosisXDrugs.All(x =>
-                x.DrugId != drugId && x.DiagnosisId != addDiagnosisXDrugCommand.DiagnosisId);
+            return await _context.DiagnosisXDrugs.AllAsync(x =>
+                x.DrugId != drugId && x.DiagnosisId != addDiagnosisXDrugCommand.DiagnosisId, cancellationToken);
         }
 
         private async Task<bool> ExistsDrug(long drugId, CancellationToken cancellationToken)

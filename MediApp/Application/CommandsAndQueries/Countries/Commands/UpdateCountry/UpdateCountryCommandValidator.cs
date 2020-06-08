@@ -1,6 +1,9 @@
 ﻿using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Application.Common.Interfaces;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.CommandsAndQueries
 {
@@ -17,14 +20,15 @@ namespace Application.CommandsAndQueries
             RuleFor(x => x.Name)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("Name is required")
-                .Must(BeUniqueCountry).WithMessage("Name already exists");
+                .MustAsync(BeUniqueCountry).WithMessage("Name already exists");
         }
 
-        private bool BeUniqueCountry(UpdateCountryCommand updateCountryCommand, string name)
+        private async Task<bool> BeUniqueCountry(UpdateCountryCommand updateCountryCommand, string name,
+            CancellationToken cancellationToken)
         {
-            return _context.Countries
+            return await _context.Countries
                 .Where(x => x.Id != updateCountryCommand.Id)
-                .All(x => x.Name != name);
+                .AllAsync(x => x.Name != name, cancellationToken);
         }
     }
 }
