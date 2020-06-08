@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Application.CommandsAndQueries;
+﻿using Application.CommandsAndQueries;
 using Application.Common.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MediApp.Controllers
 {
@@ -43,6 +41,20 @@ namespace MediApp.Controllers
         public async Task<ActionResult<PatientMedicalChecksListVm>> GetPatientMedicalCheck(long patientId)
         {
             var vm = await Mediator.Send(new GetPatientMedicalChecksListQuery() {PatientId = patientId});
+
+            if (vm == null)
+            {
+                return BadRequest(Result.Failure(new List<string> {"No valid medical check was found"}));
+            }
+
+            return Ok(vm);
+        }
+
+        [HttpGet("byclinic/{clinicId}")]
+        [Authorize(Roles = "Admin, Doctor, Nurse")]
+        public async Task<ActionResult<MedicalChecksByClinicListVm>> GetMedicalChecksByClinic(int clinicId)
+        {
+            var vm = await Mediator.Send(new GetMedicalChecksByClinicQuery() {ClinicId = clinicId});
 
             if (vm == null)
             {

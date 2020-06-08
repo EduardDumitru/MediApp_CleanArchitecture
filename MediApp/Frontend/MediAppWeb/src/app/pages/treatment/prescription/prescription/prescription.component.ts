@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { PrescriptionData, PrescriptionDetails, UpdatePrescriptionCommand, AddPrescriptionCommand } from 'src/app/@core/data/prescription';
 import { UIService } from 'src/app/shared/ui.service';
@@ -13,7 +13,7 @@ import { AuthService } from 'src/app/auth/auth.service';
   templateUrl: './prescription.component.html',
   styleUrls: ['./prescription.component.scss']
 })
-export class PrescriptionComponent implements OnInit {
+export class PrescriptionComponent implements OnInit, OnDestroy {
   isLoading = false;
   prescriptionForm: FormGroup;
   prescriptionId: number;
@@ -41,6 +41,11 @@ export class PrescriptionComponent implements OnInit {
         this.isDoctor = isDoctor;
       })
       this.initForm();
+  }
+
+  ngOnDestroy(): void {
+    this.isAdminSubscription.unsubscribe();
+    this.isDoctorSubscription.unsubscribe();
   }
 
   initForm() {

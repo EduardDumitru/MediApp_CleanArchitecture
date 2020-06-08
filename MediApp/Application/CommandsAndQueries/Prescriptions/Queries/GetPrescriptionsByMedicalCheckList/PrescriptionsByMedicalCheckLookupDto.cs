@@ -1,10 +1,13 @@
-﻿using Application.Common.Mappings;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using Application.Common.Mappings;
 using AutoMapper;
 using Domain.Entities;
 
 namespace Application.CommandsAndQueries
 {
-    public class PatientPrescriptionsLookupDto : IMapFrom<Prescription>
+    public class PrescriptionsByMedicalCheckLookupDto : IMapFrom<Prescription>
     {
         public long Id { get; set; }
         public int NoOfDays { get; set; }
@@ -13,16 +16,19 @@ namespace Application.CommandsAndQueries
         public string MedicalCheckTypeName { get; set; }
         public string ClinicName { get; set; }
         public string EmployeeName { get; set; }
+        public string PatientName { get; set; }
         public string DiagnosisName { get; set; }
         public bool? Deleted { get; set; }
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Prescription, PatientPrescriptionsLookupDto>()
+            profile.CreateMap<Prescription, PrescriptionsByMedicalCheckLookupDto>()
                 .ForMember(d => d.MedicalCheckTypeName,
                     opt => opt.MapFrom(s =>
-                        s.MedicalCheck != null ? 
-                            (s.MedicalCheck.MedicalCheckType != null ? s.MedicalCheck.MedicalCheckType.Name : string.Empty) 
+                        s.MedicalCheck != null
+                            ? (s.MedicalCheck.MedicalCheckType != null
+                                ? s.MedicalCheck.MedicalCheckType.Name
+                                : string.Empty)
                             : string.Empty))
                 .ForMember(d => d.ClinicName,
                     opt => opt.MapFrom(s =>
@@ -40,10 +46,15 @@ namespace Application.CommandsAndQueries
                             : string.Empty))
                 .ForMember(d => d.EmployeeName,
                     opt => opt.MapFrom(s =>
-                        s.Employee != null 
-                            ? (s.Employee.UserProfile != null 
-                                ? s.Employee.UserProfile.GetFullName() 
-                                : string.Empty) 
+                        s.Employee != null
+                            ? (s.Employee.UserProfile != null
+                                ? s.Employee.UserProfile.GetFullName()
+                                : string.Empty)
+                            : string.Empty))
+                .ForMember(d => d.PatientName,
+                    opt => opt.MapFrom(s =>
+                        s.UserProfile != null
+                            ? s.UserProfile.GetFullName()
                             : string.Empty));
         }
     }

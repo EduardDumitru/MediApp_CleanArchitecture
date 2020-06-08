@@ -33,8 +33,8 @@ namespace MediApp.Controllers
             return Ok(vm);
         }
 
-        [HttpGet("clinicsdropdown/{countryId?}/{countyId?}/{cityId?}")]
-        public async Task<ActionResult<SelectItemVm>> GetClinicsDropdown(short? countryId, int? countyId, int? cityId)
+        [HttpGet("clinicsdropdown")]
+        public async Task<ActionResult<SelectItemVm>> GetClinicsDropdown(short? countryId = null, int? countyId = null, int? cityId = null)
         {
             var vm = await Mediator.Send(new GetClinicDropdownQuery {CountryId = countryId, CountyId = countyId, CityId = cityId});
 

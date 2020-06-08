@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { MedicalCheckData, MedicalCheckDetails,
     AddMedicalCheckCommand, UpdateMedicalCheckCommand, EmployeeMedicalChecksList,
-    PatientMedicalChecksList, MedicalChecksToAddQuery, MedicalChecksToAddList } from '../data/medicalcheck';
+    PatientMedicalChecksList, MedicalChecksToAddQuery, MedicalChecksToAddList, MedicalChecksByClinicList } from '../data/medicalcheck';
 import { environment } from 'src/environments/environment';
 import { Observable, throwError } from 'rxjs';
 import { retry, catchError, map } from 'rxjs/operators';
@@ -56,6 +56,20 @@ export class MedicalCheckService extends MedicalCheckData {
             })
         };
         return this.http.get<PatientMedicalChecksList>(this.baseUrl + '/patientmedicalchecks/' + patientId, httpOptions)
+            .pipe(
+                map((response: any) => response),
+                retry(1),
+                catchError(this.errService.errorHandl)
+            );
+    }
+    GetMedicalChecksByClinic(clinicId: number): Observable<MedicalChecksByClinicList> {
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.get<MedicalChecksByClinicList>(this.baseUrl + '/byclinic/' + clinicId, httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),

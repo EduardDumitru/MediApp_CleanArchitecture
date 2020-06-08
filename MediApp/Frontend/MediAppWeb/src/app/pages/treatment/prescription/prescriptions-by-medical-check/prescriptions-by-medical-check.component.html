@@ -1,0 +1,66 @@
+<div fxLayoutAlign="center center">
+    <mat-form-field fxFlex="40%" fxFlex.xs="100%">
+        <input matInput type="text" (keyup)="doFilter($event.target.value)" placeholder="Filter"/>
+    </mat-form-field>
+</div>
+<mat-table [dataSource]="dataSource" matSort>
+
+    <ng-container matColumnDef="id">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Id</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.id | number}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="noOfDays">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Nr of Days</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.noOfDays | number}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="description">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Description</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.description}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="medicalCheckId">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Medical Check Id</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.medicalCheckId | number}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="medicalCheckTypeName">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Medical Check Type</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.medicalCheckTypeName}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="diagnosisName">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Diagnosis Name</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.diagnosisName}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="clinicName">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Clinic Name</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.clinicName}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="employeeName">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Employee Name</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.employeeName}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="patientName">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Patient Name</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.patientName}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="deleted">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Deleted</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-checkbox [checked]="element.deleted" disabled></mat-checkbox>
+        </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns" routerLink="/treatments/prescriptions/{{row.id}}"></mat-row>
+    <mat-spinner *ngIf="isLoading"></mat-spinner>
+</mat-table>
+
+<mat-paginator #paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]" fxLayoutAlign="center center"></mat-paginator>
+

@@ -44,8 +44,8 @@ namespace Application.CommandsAndQueries
             RuleFor(x => x.TerminationDate)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .MustAsync(NotInterfereWithAppointments)
-                .WithMessage("Termination date is not valid. It interferes with medical checks. Delete those first.")
-                .When(x => x.TerminationDate.HasValue);
+                .When(x => x.TerminationDate.HasValue)
+                .WithMessage("Termination date is not valid. It interferes with medical checks. Delete those first.");
         }
 
         private async Task<bool> NotInterfereWithAppointments(UpdateEmployeeCommand updateEmployeeCommand, DateTime? date,

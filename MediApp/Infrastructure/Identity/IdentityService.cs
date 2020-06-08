@@ -241,6 +241,7 @@ namespace Infrastructure.Identity
             var key = Encoding.ASCII.GetBytes(_jwtSettings.Secret);
 
             var userProfile = await GetUserProfileByUserId(user.Id);
+            var employee = await _context.Employees.FirstOrDefaultAsync(x => x.UserProfileId == userProfile.Id);
 
             var claims = new List<Claim>
             {
@@ -251,6 +252,11 @@ namespace Infrastructure.Identity
                 new Claim("lastName", userProfile.LastName),
                 new Claim("id", userProfile.Id.ToString())
             };
+
+            if (employee != null)
+            {
+                claims.Add(new Claim("clinicId", employee.ClinicId.ToString()));
+            }
 
             var userClaims = await _userManager.GetClaimsAsync(user);
             claims.AddRange(userClaims);

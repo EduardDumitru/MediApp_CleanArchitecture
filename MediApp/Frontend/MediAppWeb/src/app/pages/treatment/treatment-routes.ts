@@ -8,6 +8,8 @@ import { EmployeeMedicalChecksComponent } from './medicalcheck/employeemedicalch
 import { PatientMedicalChecksComponent } from './medicalcheck/patientmedicalchecks/patientmedicalchecks.component';
 import { MedicalCheckComponent } from './medicalcheck/medicalcheck/medicalcheck.component';
 import { UpdateMedicalCheckComponent } from './medicalcheck/update-medical-check/update-medical-check.component';
+import { MedicalChecksByClinicComponent } from './medicalcheck/medical-checks-by-clinic/medical-checks-by-clinic.component';
+import { PrescriptionsByMedicalCheckComponent } from './prescription/prescriptions-by-medical-check/prescriptions-by-medical-check.component';
 
 const routes: Routes = [
     {
@@ -20,6 +22,12 @@ const routes: Routes = [
         path: 'patientprescriptions/:id',
         component: PatientPrescriptionsComponent,
         canActivate: [AuthGuard]
+    },
+    {
+        path: 'prescriptionsbymedicalcheck/:id',
+        component: PrescriptionsByMedicalCheckComponent,
+        canActivate: [RoleGuard],
+        data: {expectedRoles: ['Admin', 'Doctor', 'Nurse']}
     },
     {
         path: 'prescriptions/:prescriptionId',
@@ -42,6 +50,12 @@ const routes: Routes = [
         path: 'patientmedicalchecks/:id',
         component: PatientMedicalChecksComponent,
         canActivate: [AuthGuard]
+    },
+    {
+        path: 'medicalchecksbyclinic/:id',
+        component: MedicalChecksByClinicComponent,
+        canActivate: [RoleGuard],
+        data: {expectedRoles: ['Admin', 'Doctor', 'Nurse']}
     },
     {
         path: 'medicalchecks/add',

@@ -59,6 +59,7 @@
             <button mat-menu-item routerLink="/treatments/patientprescriptions/{{currentUserId}}">My Prescriptions</button>
             <button *ngIf="isDoctor" mat-menu-item routerLink="/treatments/employeemedicalchecks/{{currentUserId}}">Doctor Medical Checks</button>
             <button mat-menu-item routerLink="/treatments/patientmedicalchecks/{{currentUserId}}">My Medical Checks</button>
+            <button *ngIf="isDoctor || isNurse" mat-menu-item routerLink="/treatments/medicalchecksbyclinic/{{clinicId}}">Clinic Medical Checks</button>
           </ng-template>
         </mat-menu>
         <a style="cursor:pointer" [matMenuTriggerFor]="employeeMenu">

@@ -5,8 +5,7 @@
         >Update Medical Check</mat-card-title
       >
       <mat-card-actions fxLayoutAlign="center" *ngIf="!isLoading">
-        <button
-        type="submit"
+        <a
         mat-raised-button
         *ngIf="!isLoading && showAddPrescription"
         color="primary"
@@ -15,7 +14,17 @@
         routerLink="/treatments/prescriptions/add/{{medicalCheckId}}"
       >
         Add Prescription
-      </button>
+      </a>
+      <a
+        mat-raised-button
+        *ngIf="!isLoading && hasPrescriptions"
+        color="primary"
+        fxFlex="200px"
+        fxFlex.xs="100%"
+        routerLink="/treatments/prescriptionsbymedicalcheck/{{medicalCheckId}}"
+      >
+        Show Prescriptions
+      </a>
       </mat-card-actions>
       <mat-card-content fxLayout="column" fxLayoutAlign="center">
         <mat-form-field>
@@ -91,6 +100,7 @@
           mat-raised-button
           color="primary"
           [disabled]="medicalCheckForm.invalid"
+          *ngIf="!isDeleted && medicalCheckId"
         >
           Update
         </button>

@@ -41,6 +41,23 @@ namespace MediApp.Controllers
             return Ok(vm);
         }
 
+        [HttpGet("bymedicalcheck/{medicalCheckId}")]
+        [Authorize(Roles = "Admin, Doctor, Nurse")]
+        public async Task<ActionResult<PrescriptionsByMedicalCheckListVm>> GetPrescriptionsByMedicalCheck(long medicalCheckId)
+        {
+            var vm = await Mediator.Send(new GetPrescriptionsByMedicalCheckListQuery
+            {
+                MedicalCheckId = medicalCheckId
+            });
+
+            if (vm == null)
+            {
+                return BadRequest(Result.Failure(new List<string> {"No valid prescription was found"}));
+            }
+
+            return Ok(vm);
+        }
+
         [HttpPost]
         [Authorize(Roles = "Admin, Doctor")]
         public async Task<ActionResult<Result>> AddPrescription([FromBody] AddPrescriptionCommand command)

@@ -32,6 +32,23 @@ export class EmployeePrescriptionsList {
     employeePrescriptions: EmployeePrescriptionLookup[];
 }
 
+export class PrescriptionsByMedicalCheckLookup {
+    id: number;
+    noOfDays: number;
+    description: string;
+    medicalCheckId: number;
+    medicalCheckTypeName: string;
+    diagnosisName: string;
+    clinicName: string;
+    patientName: string;
+    employeeName: string;
+    deleted?: boolean;
+}
+
+export class PrescriptionsByMedicalCheckList {
+    prescriptionsByMedicalCheck: PrescriptionsByMedicalCheckLookup[];
+}
+
 export class PatientPrescriptionLookup {
     id: number;
     noOfDays: number;
@@ -83,6 +100,7 @@ export abstract class PrescriptionData {
     abstract GetPrescriptionDetails(id: number): Observable<PrescriptionDetails>;
     abstract GetEmployeePrescriptions(employeeId: number): Observable<EmployeePrescriptionsList>;
     abstract GetPatientPrescriptions(patientId: number): Observable<PatientPrescriptionsList>;
+    abstract GetPrescriptionsByMedicalCheck(medicalCheckId: number): Observable<PrescriptionsByMedicalCheckList>;
     abstract AddPrescription(addPrescriptionCommand: AddPrescriptionCommand): Observable<Result>;
     abstract UpdatePrescription(updatePrescriptionCommand: UpdatePrescriptionCommand): Observable<Result>;
     abstract DeletePrescription(id: number): Observable<Result>;

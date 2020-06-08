@@ -12,13 +12,16 @@ import { PatientPrescriptionsComponent } from './prescription/patientprescriptio
 import { PatientMedicalChecksComponent } from './medicalcheck/patientmedicalchecks/patientmedicalchecks.component';
 import { AddMedicalCheckPopupComponent } from './medicalcheck/medicalcheck/addmedicalcheckpopup.component';
 import { UpdateMedicalCheckComponent } from './medicalcheck/update-medical-check/update-medical-check.component';
+import { PrescriptionsByMedicalCheckComponent } from './prescription/prescriptions-by-medical-check/prescriptions-by-medical-check.component';
+import { MedicalChecksByClinicComponent } from './medicalcheck/medical-checks-by-clinic/medical-checks-by-clinic.component';
 
 
 
 @NgModule({
   declarations: [MedicalCheckComponent, EmployeeMedicalChecksComponent, PatientMedicalChecksComponent,
     PrescriptionComponent, EmployeePrescriptionsComponent, PrescriptionXDrugsComponent,
-    PatientPrescriptionsComponent, UpdateMedicalCheckComponent, AddMedicalCheckPopupComponent, PrescriptionXDrugComponent],
+    PatientPrescriptionsComponent, UpdateMedicalCheckComponent, AddMedicalCheckPopupComponent,
+    PrescriptionXDrugComponent, PrescriptionsByMedicalCheckComponent, MedicalChecksByClinicComponent],
   imports: [
     CommonModule,
     SharedModule,

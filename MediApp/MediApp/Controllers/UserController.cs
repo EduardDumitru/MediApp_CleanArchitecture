@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Application.CommandsAndQueries;
-using Application.Common.Models;
+﻿using Application.CommandsAndQueries;
 using Application.Common.Models.Authentication;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace MediApp.Controllers
 {

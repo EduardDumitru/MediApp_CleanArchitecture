@@ -22,6 +22,9 @@ export class EmployeeComponent implements OnInit {
   employeeForm: FormGroup;
   employeeId: number;
   isDeleted = false;
+  doctorEmployeeType = 'Doctor';
+  userEmployeeType: string;
+  employeeTypeId = -1;
   userProfileSelectList: SelectItemsList = new SelectItemsList();
   clinicSelectList: SelectItemsList = new SelectItemsList();
   employeeTypeSelectList: SelectItemsList = new SelectItemsList();
@@ -38,7 +41,6 @@ export class EmployeeComponent implements OnInit {
           this.employeeId = +this.route.snapshot.params.id;
       }
       this.initForm();
-      this.getEmployeeTypeSelect();
       this.getClinicSelect();
   }
 
@@ -79,6 +81,7 @@ export class EmployeeComponent implements OnInit {
             endMinutes: employee.startHour.minutes.toString(),
             terminationDate: employee.terminationDate ? new Date(employee.terminationDate) : null
           });
+          this.employeeTypeId = employee.employeeTypeId;
           this.isDeleted = employee.deleted;
           if (this.isDeleted) {
               this.employeeForm.disable();
@@ -86,6 +89,7 @@ export class EmployeeComponent implements OnInit {
           if (employee.medicalCheckTypeId) {
             this.getMedicalCheckTypeSelect();
           }
+          this.getEmployeeTypeSelect();
           this.isLoading = false;
       },
           error => {
@@ -187,6 +191,8 @@ export class EmployeeComponent implements OnInit {
   getEmployeeTypeSelect() {
     this.employeeTypeData.GetEmployeeTypesDropdown().subscribe((empTypes: SelectItemsList) => {
       this.employeeTypeSelectList = empTypes;
+      this.userEmployeeType = this.employeeTypeSelectList.selectItems.find(x => x.value === this.employeeTypeId.toString()).label;
+      console.log(this.userEmployeeType);
     },
     error => {
         this.uiService.showErrorSnackbar(error, null, 3000);
@@ -203,7 +209,7 @@ export class EmployeeComponent implements OnInit {
   }
 
   getClinicSelect() {
-    this.clinicData.GetClinicsDropdown().subscribe((clinics: SelectItemsList) => {
+    this.clinicData.GetClinicsDropdown(null, null, null).subscribe((clinics: SelectItemsList) => {
       this.clinicSelectList = clinics;
     },
     error => {

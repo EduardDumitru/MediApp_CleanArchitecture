@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PrescriptionData, PrescriptionDetails,
-    EmployeePrescriptionsList, PatientPrescriptionsList, AddPrescriptionCommand, UpdatePrescriptionCommand } from '../data/prescription';
+    EmployeePrescriptionsList, PatientPrescriptionsList, AddPrescriptionCommand, UpdatePrescriptionCommand, PrescriptionsByMedicalCheckList } from '../data/prescription';
 import { environment } from 'src/environments/environment';
 import { Observable, throwError } from 'rxjs';
 import { retry, catchError, map } from 'rxjs/operators';
@@ -55,6 +55,20 @@ export class PrescriptionService extends PrescriptionData {
             })
         };
         return this.http.get<PatientPrescriptionsList>(this.baseUrl + '/patientprescriptions/' + patientId, httpOptions)
+            .pipe(
+                map((response: any) => response),
+                retry(1),
+                catchError(this.errService.errorHandl)
+            );
+    }
+    GetPrescriptionsByMedicalCheck(medicalCheckId: number): Observable<PrescriptionsByMedicalCheckList> {
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.get<PrescriptionsByMedicalCheckList>(this.baseUrl + '/bymedicalcheck/' + medicalCheckId, httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),

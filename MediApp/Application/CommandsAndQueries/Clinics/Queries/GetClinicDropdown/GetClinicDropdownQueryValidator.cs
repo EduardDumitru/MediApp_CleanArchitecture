@@ -25,19 +25,19 @@ namespace Application.CommandsAndQueries
             RuleFor(x => x.CountyId)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .MustAsync(ExistsCounty)
+                .When(x => x.CountyId.HasValue)
                 .WithMessage("County is not valid")
-                .Must(ExistsCountyInCountry)
-                .WithMessage("County is not in the selected country")
-                .When(x => x.CountyId.HasValue);
+                .MustAsync(ExistsCountyInCountry)
+                .When(x => x.CountyId.HasValue)
+                .WithMessage("County is not in the selected country");
             RuleFor(x => x.CityId)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .MustAsync(ExistsCity)
                 .WithMessage("City is not valid")
-                .Must(ExistsCityInCounty)
-                .WithMessage("City is not in the selected county")
-                .When(x => x.CityId.HasValue);
-
-
+                .When(x => x.CityId.HasValue)
+                .MustAsync(ExistsCityInCounty)
+                .When(x => x.CityId.HasValue)
+                .WithMessage("City is not in the selected county");
         }
 
         private async Task<bool> ExistsCountry(short? countryId, CancellationToken cancellationToken)
@@ -52,12 +52,12 @@ namespace Application.CommandsAndQueries
                 .AnyAsync(x => x.Id == countyId && !x.Deleted, cancellationToken);
         }
 
-        private bool ExistsCountyInCountry(GetClinicDropdownQuery clinicQuery, int? countyId)
+        private async Task<bool> ExistsCountyInCountry(GetClinicDropdownQuery clinicQuery, int? countyId, CancellationToken cancellationToken)
         {
-            return _context.Counties
-                .Any(x => x.Id == countyId 
+            return await _context.Counties
+                .AnyAsync(x => x.Id == countyId 
                           && x.CountryId == clinicQuery.CountryId 
-                          && !x.Deleted);
+                          && !x.Deleted, cancellationToken);
         }
 
         private async Task<bool> ExistsCity(int? cityId, CancellationToken cancellationToken)
@@ -67,12 +67,12 @@ namespace Application.CommandsAndQueries
                                && !x.Deleted, cancellationToken);
         }
 
-        private bool ExistsCityInCounty(GetClinicDropdownQuery clinicQuery, int? cityId)
+        private async Task<bool> ExistsCityInCounty(GetClinicDropdownQuery clinicQuery, int? cityId, CancellationToken cancellationToken)
         {
-            return _context.Cities
-                .Any(x => x.Id == cityId
+            return await _context.Cities
+                .AnyAsync(x => x.Id == cityId
                           && x.CountyId == clinicQuery.CountyId
-                          && !x.Deleted);
+                          && !x.Deleted, cancellationToken);
         }
     }
 }

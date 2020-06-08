@@ -13,6 +13,7 @@ export class AuthService {
   isDoctor = new BehaviorSubject<boolean>(false);
   isNurse = new BehaviorSubject<boolean>(false);
   currentUserId = new BehaviorSubject<number>(-1);
+  clinicId = new BehaviorSubject<number>(-1);
 
   private isUserAuthenticated = false;
 
@@ -43,6 +44,7 @@ export class AuthService {
               this.isNurse.next(true);
             }
             this.currentUserId.next(+token.id);
+            this.clinicId.next(+token.clinicId);
         } else {
             this.isUserAuthenticated = false;
             this.authChange.next(false);
@@ -50,6 +52,7 @@ export class AuthService {
             this.isDoctor.next(false);
             this.isNurse.next(false);
             this.currentUserId.next(-1);
+            this.clinicId.next(-1);
             this.router.navigate(['/login']);
         }
     });
@@ -90,6 +93,7 @@ export class AuthService {
     this.isDoctor.next(false);
     this.isNurse.next(false);
     this.currentUserId.next(-1);
+    this.clinicId.next(-1);
     this.router.navigate(['/login']);
   }
 }

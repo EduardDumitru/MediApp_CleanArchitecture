@@ -16,11 +16,13 @@ export class NavbarComponent implements OnInit, OnDestroy {
   isDoctor = false;
   isNurse = false;
   currentUserId = -1;
+  clinicId = -1;
   authSubscription: Subscription;
   adminSubscription: Subscription;
   doctorSubscription: Subscription;
   nurseSubscription: Subscription;
   currentUserIdSubscription: Subscription;
+  clinicIdSubscription: Subscription;
 
   constructor(private authService: AuthService) { }
 
@@ -40,6 +42,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.currentUserIdSubscription = this.authService.currentUserId.subscribe(userId => {
       this.currentUserId = userId;
     })
+    this.clinicIdSubscription = this.authService.clinicId.subscribe(clinicId => {
+      this.clinicId = clinicId;
+    })
   }
 
   ngOnDestroy(): void {
@@ -48,6 +53,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.doctorSubscription.unsubscribe();
     this.nurseSubscription.unsubscribe();
     this.currentUserIdSubscription.unsubscribe();
+    this.clinicIdSubscription.unsubscribe();
   }
 
   onToggleSidenav() {

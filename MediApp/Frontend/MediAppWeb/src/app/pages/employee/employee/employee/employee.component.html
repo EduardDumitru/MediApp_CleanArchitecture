@@ -4,6 +4,22 @@
       <mat-card fxFlex.xs="100%" fxFlex="600px">
         <mat-card-title fxLayoutAlign="center" *ngIf="!employeeId">Add Employee</mat-card-title>
         <mat-card-title fxLayoutAlign="center" *ngIf="employeeId">Update Employee</mat-card-title>
+        <mat-card-actions fxLayoutAlign="center" *ngIf="!isLoading && employeeId && userEmployeeType === doctorEmployeeType">
+          <a
+            mat-raised-button
+            color="primary"
+            routerLink="/treatments/employeemedicalchecks/{{employeeId}}"
+          >
+            Medical Checks
+        </a>
+          <a
+            mat-raised-button
+            color="primary"
+            routerLink="/treatments/employeeprescriptions/{{employeeId}}"
+          >
+            Prescriptions
+      </a>
+        </mat-card-actions>
         <mat-card-content fxLayout="column" fxLayoutAlign="center">
               <mat-form-field *ngIf="this.employeeId">
                 <input matInput placeholder="Name" formControlName="name"/>

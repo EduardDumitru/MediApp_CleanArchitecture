@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { ClinicData, ClinicDetails, ClinicsList, AddClinicCommand, UpdateClinicCommand, RestoreClinicCommand } from '../data/clinic';
 import { environment } from 'src/environments/environment';
 import { Observable, throwError } from 'rxjs';
@@ -47,14 +47,20 @@ export class ClinicService extends ClinicData {
             );
     }
     GetClinicsDropdown(countryId?: number, countyId?: number, cityId?: number): Observable<SelectItemsList> {
+        const params = new HttpParams({
+            fromObject: {
+                countryId: countryId ? countryId.toString() : '',
+                countyId: countyId ? countyId.toString() : '',
+                cityId: cityId ? cityId.toString() : ''
+            }
+          });
+
         const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
+            headers: new HttpHeaders({  'Content-Type': 'application/json', Authorization: `Bearer ${this.authService.getToken()}`}),
+            params
         };
-        return this.http.get<SelectItemsList>(this.baseUrl + '/clinicsdropdown/' +
-        countryId + '/' + countyId + '/' + cityId, httpOptions)
+
+        return this.http.get<SelectItemsList>(this.baseUrl + '/clinicsdropdown/', httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),
