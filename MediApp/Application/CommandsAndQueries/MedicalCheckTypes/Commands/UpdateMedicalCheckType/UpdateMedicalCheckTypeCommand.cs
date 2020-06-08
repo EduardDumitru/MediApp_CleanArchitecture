@@ -23,17 +23,14 @@ namespace Application.CommandsAndQueries
             _context = context;
         }
 
-        public async Task<Result> Handle(UpdateMedicalCheckTypeCommand request, 
+        public async Task<Result> Handle(UpdateMedicalCheckTypeCommand request,
             CancellationToken cancellationToken)
         {
             var entity = await _context.MedicalCheckTypes
-                .FirstOrDefaultAsync(x => x.Id == request.Id 
+                .FirstOrDefaultAsync(x => x.Id == request.Id
                                           && !x.Deleted, cancellationToken);
 
-            if (entity == null)
-            {
-                return Result.Failure(new List<string> {"No valid medical check type found"});
-            }
+            if (entity == null) return Result.Failure(new List<string> {"No valid medical check type found"});
 
             entity.Name = request.Name;
 

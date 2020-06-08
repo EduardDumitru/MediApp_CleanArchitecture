@@ -7,45 +7,45 @@ namespace Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropIndex(
-                name: "IX_PrescriptionXDrug_PrescriptionId",
-                table: "PrescriptionXDrug");
+                "IX_PrescriptionXDrug_PrescriptionId",
+                "PrescriptionXDrug");
 
             migrationBuilder.DropIndex(
-                name: "IX_DiagnosisXDrug_DiagnosisId",
-                table: "DiagnosisXDrug");
+                "IX_DiagnosisXDrug_DiagnosisId",
+                "DiagnosisXDrug");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PrescriptionXDrug_PrescriptionId_DrugId",
-                table: "PrescriptionXDrug",
-                columns: new[] { "PrescriptionId", "DrugId" },
+                "IX_PrescriptionXDrug_PrescriptionId_DrugId",
+                "PrescriptionXDrug",
+                new[] {"PrescriptionId", "DrugId"},
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_DiagnosisXDrug_DiagnosisId_DrugId",
-                table: "DiagnosisXDrug",
-                columns: new[] { "DiagnosisId", "DrugId" },
+                "IX_DiagnosisXDrug_DiagnosisId_DrugId",
+                "DiagnosisXDrug",
+                new[] {"DiagnosisId", "DrugId"},
                 unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropIndex(
-                name: "IX_PrescriptionXDrug_PrescriptionId_DrugId",
-                table: "PrescriptionXDrug");
+                "IX_PrescriptionXDrug_PrescriptionId_DrugId",
+                "PrescriptionXDrug");
 
             migrationBuilder.DropIndex(
-                name: "IX_DiagnosisXDrug_DiagnosisId_DrugId",
-                table: "DiagnosisXDrug");
+                "IX_DiagnosisXDrug_DiagnosisId_DrugId",
+                "DiagnosisXDrug");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PrescriptionXDrug_PrescriptionId",
-                table: "PrescriptionXDrug",
-                column: "PrescriptionId");
+                "IX_PrescriptionXDrug_PrescriptionId",
+                "PrescriptionXDrug",
+                "PrescriptionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DiagnosisXDrug_DiagnosisId",
-                table: "DiagnosisXDrug",
-                column: "DiagnosisId");
+                "IX_DiagnosisXDrug_DiagnosisId",
+                "DiagnosisXDrug",
+                "DiagnosisId");
         }
     }
 }

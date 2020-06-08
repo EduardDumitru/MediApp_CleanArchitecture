@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
 using AutoMapper;
@@ -32,7 +29,7 @@ namespace Application.CommandsAndQueries
                 .ProjectTo<DiagnosesLookupDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
 
-            var vm = new DiagnosesListVm()
+            var vm = new DiagnosesListVm
             {
                 Diagnoses = diagnoses
             };

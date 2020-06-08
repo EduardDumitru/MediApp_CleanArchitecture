@@ -8,8 +8,8 @@ namespace Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Country",
-                columns: table => new
+                "Country",
+                table => new
                 {
                     Id = table.Column<short>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
@@ -22,14 +22,11 @@ namespace Infrastructure.Migrations
                     DeletedOn = table.Column<DateTime>(nullable: true),
                     Name = table.Column<string>(maxLength: 150, nullable: false)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Country", x => x.Id);
-                });
+                constraints: table => { table.PrimaryKey("PK_Country", x => x.Id); });
 
             migrationBuilder.CreateTable(
-                name: "Diagnosis",
-                columns: table => new
+                "Diagnosis",
+                table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
@@ -42,14 +39,11 @@ namespace Infrastructure.Migrations
                     DeletedOn = table.Column<DateTime>(nullable: true),
                     Name = table.Column<string>(maxLength: 150, nullable: false)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Diagnosis", x => x.Id);
-                });
+                constraints: table => { table.PrimaryKey("PK_Diagnosis", x => x.Id); });
 
             migrationBuilder.CreateTable(
-                name: "Drug",
-                columns: table => new
+                "Drug",
+                table => new
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
@@ -62,14 +56,11 @@ namespace Infrastructure.Migrations
                     DeletedOn = table.Column<DateTime>(nullable: true),
                     Name = table.Column<string>(maxLength: 150, nullable: false)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Drug", x => x.Id);
-                });
+                constraints: table => { table.PrimaryKey("PK_Drug", x => x.Id); });
 
             migrationBuilder.CreateTable(
-                name: "EmployeeType",
-                columns: table => new
+                "EmployeeType",
+                table => new
                 {
                     Id = table.Column<short>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
@@ -82,14 +73,11 @@ namespace Infrastructure.Migrations
                     DeletedOn = table.Column<DateTime>(nullable: true),
                     Name = table.Column<string>(maxLength: 150, nullable: false)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EmployeeType", x => x.Id);
-                });
+                constraints: table => { table.PrimaryKey("PK_EmployeeType", x => x.Id); });
 
             migrationBuilder.CreateTable(
-                name: "Gender",
-                columns: table => new
+                "Gender",
+                table => new
                 {
                     Id = table.Column<short>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
@@ -102,14 +90,11 @@ namespace Infrastructure.Migrations
                     DeletedOn = table.Column<DateTime>(nullable: true),
                     Name = table.Column<string>(maxLength: 150, nullable: false)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Gender", x => x.Id);
-                });
+                constraints: table => { table.PrimaryKey("PK_Gender", x => x.Id); });
 
             migrationBuilder.CreateTable(
-                name: "MedicalCheckType",
-                columns: table => new
+                "MedicalCheckType",
+                table => new
                 {
                     Id = table.Column<short>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
@@ -122,14 +107,11 @@ namespace Infrastructure.Migrations
                     DeletedOn = table.Column<DateTime>(nullable: true),
                     Name = table.Column<string>(maxLength: 150, nullable: false)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MedicalCheckType", x => x.Id);
-                });
+                constraints: table => { table.PrimaryKey("PK_MedicalCheckType", x => x.Id); });
 
             migrationBuilder.CreateTable(
-                name: "Role",
-                columns: table => new
+                "Role",
+                table => new
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
@@ -137,14 +119,11 @@ namespace Infrastructure.Migrations
                     NormalizedName = table.Column<string>(maxLength: 256, nullable: true),
                     ConcurrencyStamp = table.Column<string>(nullable: true)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Role", x => x.Id);
-                });
+                constraints: table => { table.PrimaryKey("PK_Role", x => x.Id); });
 
             migrationBuilder.CreateTable(
-                name: "User",
-                columns: table => new
+                "User",
+                table => new
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
@@ -164,14 +143,11 @@ namespace Infrastructure.Migrations
                     AccessFailedCount = table.Column<int>(nullable: false),
                     IsActive = table.Column<bool>(nullable: true, defaultValue: true)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_User", x => x.Id);
-                });
+                constraints: table => { table.PrimaryKey("PK_User", x => x.Id); });
 
             migrationBuilder.CreateTable(
-                name: "County",
-                columns: table => new
+                "County",
+                table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
@@ -189,16 +165,16 @@ namespace Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_County", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_County_Country_CountryId",
-                        column: x => x.CountryId,
-                        principalTable: "Country",
-                        principalColumn: "Id",
+                        "FK_County_Country_CountryId",
+                        x => x.CountryId,
+                        "Country",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "DiagnosisXDrug",
-                columns: table => new
+                "DiagnosisXDrug",
+                table => new
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
@@ -216,22 +192,22 @@ namespace Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_DiagnosisXDrug", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_DiagnosisXDrug_Diagnosis_DiagnosisId",
-                        column: x => x.DiagnosisId,
-                        principalTable: "Diagnosis",
-                        principalColumn: "Id",
+                        "FK_DiagnosisXDrug_Diagnosis_DiagnosisId",
+                        x => x.DiagnosisId,
+                        "Diagnosis",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_DiagnosisXDrug_Drug_DrugId",
-                        column: x => x.DrugId,
-                        principalTable: "Drug",
-                        principalColumn: "Id",
+                        "FK_DiagnosisXDrug_Drug_DrugId",
+                        x => x.DrugId,
+                        "Drug",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetRoleClaims",
-                columns: table => new
+                "AspNetRoleClaims",
+                table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
@@ -243,16 +219,16 @@ namespace Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_AspNetRoleClaims", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AspNetRoleClaims_Role_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "Role",
-                        principalColumn: "Id",
+                        "FK_AspNetRoleClaims_Role_RoleId",
+                        x => x.RoleId,
+                        "Role",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetUserClaims",
-                columns: table => new
+                "AspNetUserClaims",
+                table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
@@ -264,16 +240,16 @@ namespace Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_AspNetUserClaims", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AspNetUserClaims_User_UserId",
-                        column: x => x.UserId,
-                        principalTable: "User",
-                        principalColumn: "Id",
+                        "FK_AspNetUserClaims_User_UserId",
+                        x => x.UserId,
+                        "User",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetUserLogins",
-                columns: table => new
+                "AspNetUserLogins",
+                table => new
                 {
                     LoginProvider = table.Column<string>(nullable: false),
                     ProviderKey = table.Column<string>(nullable: false),
@@ -282,42 +258,42 @@ namespace Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AspNetUserLogins", x => new { x.LoginProvider, x.ProviderKey });
+                    table.PrimaryKey("PK_AspNetUserLogins", x => new {x.LoginProvider, x.ProviderKey});
                     table.ForeignKey(
-                        name: "FK_AspNetUserLogins_User_UserId",
-                        column: x => x.UserId,
-                        principalTable: "User",
-                        principalColumn: "Id",
+                        "FK_AspNetUserLogins_User_UserId",
+                        x => x.UserId,
+                        "User",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetUserRoles",
-                columns: table => new
+                "AspNetUserRoles",
+                table => new
                 {
                     UserId = table.Column<long>(nullable: false),
                     RoleId = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AspNetUserRoles", x => new { x.UserId, x.RoleId });
+                    table.PrimaryKey("PK_AspNetUserRoles", x => new {x.UserId, x.RoleId});
                     table.ForeignKey(
-                        name: "FK_AspNetUserRoles_Role_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "Role",
-                        principalColumn: "Id",
+                        "FK_AspNetUserRoles_Role_RoleId",
+                        x => x.RoleId,
+                        "Role",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_AspNetUserRoles_User_UserId",
-                        column: x => x.UserId,
-                        principalTable: "User",
-                        principalColumn: "Id",
+                        "FK_AspNetUserRoles_User_UserId",
+                        x => x.UserId,
+                        "User",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetUserTokens",
-                columns: table => new
+                "AspNetUserTokens",
+                table => new
                 {
                     UserId = table.Column<long>(nullable: false),
                     LoginProvider = table.Column<string>(nullable: false),
@@ -326,18 +302,18 @@ namespace Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AspNetUserTokens", x => new { x.UserId, x.LoginProvider, x.Name });
+                    table.PrimaryKey("PK_AspNetUserTokens", x => new {x.UserId, x.LoginProvider, x.Name});
                     table.ForeignKey(
-                        name: "FK_AspNetUserTokens_User_UserId",
-                        column: x => x.UserId,
-                        principalTable: "User",
-                        principalColumn: "Id",
+                        "FK_AspNetUserTokens_User_UserId",
+                        x => x.UserId,
+                        "User",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "City",
-                columns: table => new
+                "City",
+                table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
@@ -355,16 +331,16 @@ namespace Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_City", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_City_County_CountyId",
-                        column: x => x.CountyId,
-                        principalTable: "County",
-                        principalColumn: "Id",
+                        "FK_City_County_CountyId",
+                        x => x.CountyId,
+                        "County",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Clinic",
-                columns: table => new
+                "Clinic",
+                table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
@@ -389,28 +365,28 @@ namespace Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Clinic", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Clinic_City_CityId",
-                        column: x => x.CityId,
-                        principalTable: "City",
-                        principalColumn: "Id",
+                        "FK_Clinic_City_CityId",
+                        x => x.CityId,
+                        "City",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Clinic_Country_CountryId",
-                        column: x => x.CountryId,
-                        principalTable: "Country",
-                        principalColumn: "Id",
+                        "FK_Clinic_Country_CountryId",
+                        x => x.CountryId,
+                        "Country",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Clinic_County_CountyId",
-                        column: x => x.CountyId,
-                        principalTable: "County",
-                        principalColumn: "Id",
+                        "FK_Clinic_County_CountyId",
+                        x => x.CountyId,
+                        "County",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserProfile",
-                columns: table => new
+                "UserProfile",
+                table => new
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
@@ -440,34 +416,34 @@ namespace Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_UserProfile", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_UserProfile_City_CityId",
-                        column: x => x.CityId,
-                        principalTable: "City",
-                        principalColumn: "Id",
+                        "FK_UserProfile_City_CityId",
+                        x => x.CityId,
+                        "City",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_UserProfile_Country_CountryId",
-                        column: x => x.CountryId,
-                        principalTable: "Country",
-                        principalColumn: "Id",
+                        "FK_UserProfile_Country_CountryId",
+                        x => x.CountryId,
+                        "Country",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_UserProfile_County_CountyId",
-                        column: x => x.CountyId,
-                        principalTable: "County",
-                        principalColumn: "Id",
+                        "FK_UserProfile_County_CountyId",
+                        x => x.CountyId,
+                        "County",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_UserProfile_Gender_GenderId",
-                        column: x => x.GenderId,
-                        principalTable: "Gender",
-                        principalColumn: "Id",
+                        "FK_UserProfile_Gender_GenderId",
+                        x => x.GenderId,
+                        "Gender",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Employee",
-                columns: table => new
+                "Employee",
+                table => new
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
@@ -490,34 +466,34 @@ namespace Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Employee", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Employee_Clinic_ClinicId",
-                        column: x => x.ClinicId,
-                        principalTable: "Clinic",
-                        principalColumn: "Id",
+                        "FK_Employee_Clinic_ClinicId",
+                        x => x.ClinicId,
+                        "Clinic",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Employee_EmployeeType_EmployeeTypeId",
-                        column: x => x.EmployeeTypeId,
-                        principalTable: "EmployeeType",
-                        principalColumn: "Id",
+                        "FK_Employee_EmployeeType_EmployeeTypeId",
+                        x => x.EmployeeTypeId,
+                        "EmployeeType",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Employee_MedicalCheckType_MedicalCheckTypeId",
-                        column: x => x.MedicalCheckTypeId,
-                        principalTable: "MedicalCheckType",
-                        principalColumn: "Id",
+                        "FK_Employee_MedicalCheckType_MedicalCheckTypeId",
+                        x => x.MedicalCheckTypeId,
+                        "MedicalCheckType",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Employee_UserProfile_UserProfileId",
-                        column: x => x.UserProfileId,
-                        principalTable: "UserProfile",
-                        principalColumn: "Id",
+                        "FK_Employee_UserProfile_UserProfileId",
+                        x => x.UserProfileId,
+                        "UserProfile",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "HolidayInterval",
-                columns: table => new
+                "HolidayInterval",
+                table => new
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
@@ -536,16 +512,16 @@ namespace Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_HolidayInterval", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_HolidayInterval_Employee_EmployeeId",
-                        column: x => x.EmployeeId,
-                        principalTable: "Employee",
-                        principalColumn: "Id",
+                        "FK_HolidayInterval_Employee_EmployeeId",
+                        x => x.EmployeeId,
+                        "Employee",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "MedicalCheck",
-                columns: table => new
+                "MedicalCheck",
+                table => new
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
@@ -567,40 +543,40 @@ namespace Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_MedicalCheck", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MedicalCheck_Clinic_ClinicId",
-                        column: x => x.ClinicId,
-                        principalTable: "Clinic",
-                        principalColumn: "Id",
+                        "FK_MedicalCheck_Clinic_ClinicId",
+                        x => x.ClinicId,
+                        "Clinic",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_MedicalCheck_Diagnosis_DiagnosisId",
-                        column: x => x.DiagnosisId,
-                        principalTable: "Diagnosis",
-                        principalColumn: "Id",
+                        "FK_MedicalCheck_Diagnosis_DiagnosisId",
+                        x => x.DiagnosisId,
+                        "Diagnosis",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_MedicalCheck_Employee_EmployeeId",
-                        column: x => x.EmployeeId,
-                        principalTable: "Employee",
-                        principalColumn: "Id",
+                        "FK_MedicalCheck_Employee_EmployeeId",
+                        x => x.EmployeeId,
+                        "Employee",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_MedicalCheck_MedicalCheckType_MedicalCheckTypeId",
-                        column: x => x.MedicalCheckTypeId,
-                        principalTable: "MedicalCheckType",
-                        principalColumn: "Id",
+                        "FK_MedicalCheck_MedicalCheckType_MedicalCheckTypeId",
+                        x => x.MedicalCheckTypeId,
+                        "MedicalCheckType",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_MedicalCheck_UserProfile_PatientId",
-                        column: x => x.PatientId,
-                        principalTable: "UserProfile",
-                        principalColumn: "Id",
+                        "FK_MedicalCheck_UserProfile_PatientId",
+                        x => x.PatientId,
+                        "UserProfile",
+                        "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Prescription",
-                columns: table => new
+                "Prescription",
+                table => new
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
@@ -621,28 +597,28 @@ namespace Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Prescription", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Prescription_Employee_EmployeeId",
-                        column: x => x.EmployeeId,
-                        principalTable: "Employee",
-                        principalColumn: "Id",
+                        "FK_Prescription_Employee_EmployeeId",
+                        x => x.EmployeeId,
+                        "Employee",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Prescription_MedicalCheck_MedicalCheckId",
-                        column: x => x.MedicalCheckId,
-                        principalTable: "MedicalCheck",
-                        principalColumn: "Id",
+                        "FK_Prescription_MedicalCheck_MedicalCheckId",
+                        x => x.MedicalCheckId,
+                        "MedicalCheck",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Prescription_UserProfile_PatientId",
-                        column: x => x.PatientId,
-                        principalTable: "UserProfile",
-                        principalColumn: "Id",
+                        "FK_Prescription_UserProfile_PatientId",
+                        x => x.PatientId,
+                        "UserProfile",
+                        "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "PrescriptionXDrug",
-                columns: table => new
+                "PrescriptionXDrug",
+                table => new
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
@@ -663,283 +639,283 @@ namespace Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_PrescriptionXDrug", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_PrescriptionXDrug_Drug_DrugId",
-                        column: x => x.DrugId,
-                        principalTable: "Drug",
-                        principalColumn: "Id",
+                        "FK_PrescriptionXDrug_Drug_DrugId",
+                        x => x.DrugId,
+                        "Drug",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_PrescriptionXDrug_Prescription_PrescriptionId",
-                        column: x => x.PrescriptionId,
-                        principalTable: "Prescription",
-                        principalColumn: "Id",
+                        "FK_PrescriptionXDrug_Prescription_PrescriptionId",
+                        x => x.PrescriptionId,
+                        "Prescription",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetRoleClaims_RoleId",
-                table: "AspNetRoleClaims",
-                column: "RoleId");
+                "IX_AspNetRoleClaims_RoleId",
+                "AspNetRoleClaims",
+                "RoleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUserClaims_UserId",
-                table: "AspNetUserClaims",
-                column: "UserId");
+                "IX_AspNetUserClaims_UserId",
+                "AspNetUserClaims",
+                "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUserLogins_UserId",
-                table: "AspNetUserLogins",
-                column: "UserId");
+                "IX_AspNetUserLogins_UserId",
+                "AspNetUserLogins",
+                "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUserRoles_RoleId",
-                table: "AspNetUserRoles",
-                column: "RoleId");
+                "IX_AspNetUserRoles_RoleId",
+                "AspNetUserRoles",
+                "RoleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_City_CountyId",
-                table: "City",
-                column: "CountyId");
+                "IX_City_CountyId",
+                "City",
+                "CountyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Clinic_CityId",
-                table: "Clinic",
-                column: "CityId");
+                "IX_Clinic_CityId",
+                "Clinic",
+                "CityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Clinic_CountryId",
-                table: "Clinic",
-                column: "CountryId");
+                "IX_Clinic_CountryId",
+                "Clinic",
+                "CountryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Clinic_CountyId",
-                table: "Clinic",
-                column: "CountyId");
+                "IX_Clinic_CountyId",
+                "Clinic",
+                "CountyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_County_CountryId",
-                table: "County",
-                column: "CountryId");
+                "IX_County_CountryId",
+                "County",
+                "CountryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DiagnosisXDrug_DiagnosisId",
-                table: "DiagnosisXDrug",
-                column: "DiagnosisId");
+                "IX_DiagnosisXDrug_DiagnosisId",
+                "DiagnosisXDrug",
+                "DiagnosisId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DiagnosisXDrug_DrugId",
-                table: "DiagnosisXDrug",
-                column: "DrugId");
+                "IX_DiagnosisXDrug_DrugId",
+                "DiagnosisXDrug",
+                "DrugId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Employee_ClinicId",
-                table: "Employee",
-                column: "ClinicId");
+                "IX_Employee_ClinicId",
+                "Employee",
+                "ClinicId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Employee_EmployeeTypeId",
-                table: "Employee",
-                column: "EmployeeTypeId");
+                "IX_Employee_EmployeeTypeId",
+                "Employee",
+                "EmployeeTypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Employee_MedicalCheckTypeId",
-                table: "Employee",
-                column: "MedicalCheckTypeId");
+                "IX_Employee_MedicalCheckTypeId",
+                "Employee",
+                "MedicalCheckTypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Employee_UserProfileId",
-                table: "Employee",
-                column: "UserProfileId");
+                "IX_Employee_UserProfileId",
+                "Employee",
+                "UserProfileId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_HolidayInterval_EmployeeId",
-                table: "HolidayInterval",
-                column: "EmployeeId");
+                "IX_HolidayInterval_EmployeeId",
+                "HolidayInterval",
+                "EmployeeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MedicalCheck_ClinicId",
-                table: "MedicalCheck",
-                column: "ClinicId");
+                "IX_MedicalCheck_ClinicId",
+                "MedicalCheck",
+                "ClinicId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MedicalCheck_DiagnosisId",
-                table: "MedicalCheck",
-                column: "DiagnosisId");
+                "IX_MedicalCheck_DiagnosisId",
+                "MedicalCheck",
+                "DiagnosisId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MedicalCheck_EmployeeId",
-                table: "MedicalCheck",
-                column: "EmployeeId");
+                "IX_MedicalCheck_EmployeeId",
+                "MedicalCheck",
+                "EmployeeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MedicalCheck_MedicalCheckTypeId",
-                table: "MedicalCheck",
-                column: "MedicalCheckTypeId");
+                "IX_MedicalCheck_MedicalCheckTypeId",
+                "MedicalCheck",
+                "MedicalCheckTypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MedicalCheck_PatientId",
-                table: "MedicalCheck",
-                column: "PatientId");
+                "IX_MedicalCheck_PatientId",
+                "MedicalCheck",
+                "PatientId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Prescription_EmployeeId",
-                table: "Prescription",
-                column: "EmployeeId");
+                "IX_Prescription_EmployeeId",
+                "Prescription",
+                "EmployeeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Prescription_MedicalCheckId",
-                table: "Prescription",
-                column: "MedicalCheckId");
+                "IX_Prescription_MedicalCheckId",
+                "Prescription",
+                "MedicalCheckId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Prescription_PatientId",
-                table: "Prescription",
-                column: "PatientId");
+                "IX_Prescription_PatientId",
+                "Prescription",
+                "PatientId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PrescriptionXDrug_DrugId",
-                table: "PrescriptionXDrug",
-                column: "DrugId");
+                "IX_PrescriptionXDrug_DrugId",
+                "PrescriptionXDrug",
+                "DrugId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PrescriptionXDrug_PrescriptionId",
-                table: "PrescriptionXDrug",
-                column: "PrescriptionId");
+                "IX_PrescriptionXDrug_PrescriptionId",
+                "PrescriptionXDrug",
+                "PrescriptionId");
 
             migrationBuilder.CreateIndex(
-                name: "RoleNameIndex",
-                table: "Role",
-                column: "NormalizedName",
+                "RoleNameIndex",
+                "Role",
+                "NormalizedName",
                 unique: true,
                 filter: "[NormalizedName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "EmailIndex",
-                table: "User",
-                column: "NormalizedEmail");
+                "EmailIndex",
+                "User",
+                "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
-                name: "UserNameIndex",
-                table: "User",
-                column: "NormalizedUserName",
+                "UserNameIndex",
+                "User",
+                "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_User_PhoneNumber",
-                table: "User",
-                column: "PhoneNumber",
+                "IX_User_PhoneNumber",
+                "User",
+                "PhoneNumber",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserProfile_CNP",
-                table: "UserProfile",
-                column: "CNP",
+                "IX_UserProfile_CNP",
+                "UserProfile",
+                "CNP",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserProfile_CityId",
-                table: "UserProfile",
-                column: "CityId");
+                "IX_UserProfile_CityId",
+                "UserProfile",
+                "CityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserProfile_CountryId",
-                table: "UserProfile",
-                column: "CountryId");
+                "IX_UserProfile_CountryId",
+                "UserProfile",
+                "CountryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserProfile_CountyId",
-                table: "UserProfile",
-                column: "CountyId");
+                "IX_UserProfile_CountyId",
+                "UserProfile",
+                "CountyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserProfile_EmailAddress",
-                table: "UserProfile",
-                column: "EmailAddress",
+                "IX_UserProfile_EmailAddress",
+                "UserProfile",
+                "EmailAddress",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserProfile_GenderId",
-                table: "UserProfile",
-                column: "GenderId");
+                "IX_UserProfile_GenderId",
+                "UserProfile",
+                "GenderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserProfile_PhoneNumber",
-                table: "UserProfile",
-                column: "PhoneNumber",
+                "IX_UserProfile_PhoneNumber",
+                "UserProfile",
+                "PhoneNumber",
                 unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AspNetRoleClaims");
+                "AspNetRoleClaims");
 
             migrationBuilder.DropTable(
-                name: "AspNetUserClaims");
+                "AspNetUserClaims");
 
             migrationBuilder.DropTable(
-                name: "AspNetUserLogins");
+                "AspNetUserLogins");
 
             migrationBuilder.DropTable(
-                name: "AspNetUserRoles");
+                "AspNetUserRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUserTokens");
+                "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "DiagnosisXDrug");
+                "DiagnosisXDrug");
 
             migrationBuilder.DropTable(
-                name: "HolidayInterval");
+                "HolidayInterval");
 
             migrationBuilder.DropTable(
-                name: "PrescriptionXDrug");
+                "PrescriptionXDrug");
 
             migrationBuilder.DropTable(
-                name: "Role");
+                "Role");
 
             migrationBuilder.DropTable(
-                name: "User");
+                "User");
 
             migrationBuilder.DropTable(
-                name: "Drug");
+                "Drug");
 
             migrationBuilder.DropTable(
-                name: "Prescription");
+                "Prescription");
 
             migrationBuilder.DropTable(
-                name: "MedicalCheck");
+                "MedicalCheck");
 
             migrationBuilder.DropTable(
-                name: "Diagnosis");
+                "Diagnosis");
 
             migrationBuilder.DropTable(
-                name: "Employee");
+                "Employee");
 
             migrationBuilder.DropTable(
-                name: "Clinic");
+                "Clinic");
 
             migrationBuilder.DropTable(
-                name: "EmployeeType");
+                "EmployeeType");
 
             migrationBuilder.DropTable(
-                name: "MedicalCheckType");
+                "MedicalCheckType");
 
             migrationBuilder.DropTable(
-                name: "UserProfile");
+                "UserProfile");
 
             migrationBuilder.DropTable(
-                name: "City");
+                "City");
 
             migrationBuilder.DropTable(
-                name: "Gender");
+                "Gender");
 
             migrationBuilder.DropTable(
-                name: "County");
+                "County");
 
             migrationBuilder.DropTable(
-                name: "Country");
+                "Country");
         }
     }
 }

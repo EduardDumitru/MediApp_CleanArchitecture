@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
@@ -25,7 +22,8 @@ namespace Application.CommandsAndQueries
             _context = context;
         }
 
-        public async Task<SelectItemVm> Handle(GetCityByCountyDropdownQuery request, CancellationToken cancellationToken)
+        public async Task<SelectItemVm> Handle(GetCityByCountyDropdownQuery request,
+            CancellationToken cancellationToken)
         {
             var vm = new SelectItemVm
             {

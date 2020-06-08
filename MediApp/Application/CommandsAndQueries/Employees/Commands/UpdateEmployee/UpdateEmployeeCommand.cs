@@ -34,10 +34,7 @@ namespace Application.CommandsAndQueries
             var entity = await _context.Employees
                 .FirstOrDefaultAsync(x => x.Id == request.Id && !x.Deleted, cancellationToken);
 
-            if (entity == null)
-            {
-                return Result.Failure(new List<string> {"No valid employee found"});
-            }
+            if (entity == null) return Result.Failure(new List<string> {"No valid employee found"});
 
             entity.StartHour = TimeSpan.Parse(request.StartHour);
             entity.EndHour = TimeSpan.Parse(request.EndHour);
@@ -45,7 +42,7 @@ namespace Application.CommandsAndQueries
             entity.EmployeeTypeId = request.EmployeeTypeId;
             entity.MedicalCheckTypeId = request.MedicalCheckTypeId;
             entity.ClinicId = request.ClinicId;
-            
+
             await _context.SaveChangesAsync(cancellationToken);
 
             return Result.Success("Employee update was successful");

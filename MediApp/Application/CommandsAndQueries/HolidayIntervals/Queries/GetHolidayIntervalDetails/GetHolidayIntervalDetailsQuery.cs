@@ -12,7 +12,9 @@ namespace Application.CommandsAndQueries
         public long Id { get; set; }
     }
 
-    public class GetHolidayIntervalDetailsQueryHandler : IRequestHandler<GetHolidayIntervalDetailsQuery, HolidayIntervalDetailsVm>
+    public class
+        GetHolidayIntervalDetailsQueryHandler : IRequestHandler<GetHolidayIntervalDetailsQuery, HolidayIntervalDetailsVm
+        >
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
@@ -23,7 +25,8 @@ namespace Application.CommandsAndQueries
             _mapper = mapper;
         }
 
-        public async Task<HolidayIntervalDetailsVm> Handle(GetHolidayIntervalDetailsQuery request, CancellationToken cancellationToken)
+        public async Task<HolidayIntervalDetailsVm> Handle(GetHolidayIntervalDetailsQuery request,
+            CancellationToken cancellationToken)
         {
             var entity = await _context.HolidayIntervals
                 .Include(x => x.Employee)

@@ -29,7 +29,7 @@ namespace Application.CommandsAndQueries
                 .ProjectTo<DrugsLookupDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
 
-            var vm = new DrugsListVm()
+            var vm = new DrugsListVm
             {
                 Drugs = drugs
             };

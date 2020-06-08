@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Application.CommandsAndQueries;
 using Application.Common.Models;
-using Application.Common.Models.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,12 +13,9 @@ namespace MediApp.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<PrescriptionDetailsVm>> GetPrescription(long id)
         {
-            var vm = await Mediator.Send(new GetPrescriptionDetailsQuery() {Id = id});
+            var vm = await Mediator.Send(new GetPrescriptionDetailsQuery {Id = id});
 
-            if (vm == null)
-            {
-                return BadRequest(Result.Failure(new List<string> {"No valid prescription was found"}));
-            }
+            if (vm == null) return BadRequest(Result.Failure(new List<string> {"No valid prescription was found"}));
 
             return Ok(vm);
         }
@@ -28,7 +24,7 @@ namespace MediApp.Controllers
         [Authorize(Roles = "Admin, Doctor, Nurse")]
         public async Task<ActionResult<EmployeePrescriptionsListVm>> GetEmployeePrescriptions(long employeeId)
         {
-            var vm = await Mediator.Send(new GetEmployeePrescriptionsListQuery() {EmployeeId = employeeId});
+            var vm = await Mediator.Send(new GetEmployeePrescriptionsListQuery {EmployeeId = employeeId});
 
             return Ok(vm);
         }
@@ -36,24 +32,22 @@ namespace MediApp.Controllers
         [HttpGet("patientprescriptions/{patientId}")]
         public async Task<ActionResult<PatientPrescriptionsListVm>> GetPatientPrescriptions(long patientId)
         {
-            var vm = await Mediator.Send(new GetPatientPrescriptionsListQuery() {PatientId = patientId});
+            var vm = await Mediator.Send(new GetPatientPrescriptionsListQuery {PatientId = patientId});
 
             return Ok(vm);
         }
 
         [HttpGet("bymedicalcheck/{medicalCheckId}")]
         [Authorize(Roles = "Admin, Doctor, Nurse")]
-        public async Task<ActionResult<PrescriptionsByMedicalCheckListVm>> GetPrescriptionsByMedicalCheck(long medicalCheckId)
+        public async Task<ActionResult<PrescriptionsByMedicalCheckListVm>> GetPrescriptionsByMedicalCheck(
+            long medicalCheckId)
         {
             var vm = await Mediator.Send(new GetPrescriptionsByMedicalCheckListQuery
             {
                 MedicalCheckId = medicalCheckId
             });
 
-            if (vm == null)
-            {
-                return BadRequest(Result.Failure(new List<string> {"No valid prescription was found"}));
-            }
+            if (vm == null) return BadRequest(Result.Failure(new List<string> {"No valid prescription was found"}));
 
             return Ok(vm);
         }
@@ -64,10 +58,7 @@ namespace MediApp.Controllers
         {
             var result = await Mediator.Send(command);
 
-            if (!result.Succeeded)
-            {
-                return BadRequest(result);
-            }
+            if (!result.Succeeded) return BadRequest(result);
 
             return Ok(result);
         }
@@ -78,10 +69,7 @@ namespace MediApp.Controllers
         {
             var result = await Mediator.Send(new DeletePrescriptionCommand {Id = prescriptionId});
 
-            if (!result.Succeeded)
-            {
-                return BadRequest(result);
-            }
+            if (!result.Succeeded) return BadRequest(result);
 
             return Ok(result);
         }
@@ -92,10 +80,7 @@ namespace MediApp.Controllers
         {
             var result = await Mediator.Send(command);
 
-            if (!result.Succeeded)
-            {
-                return BadRequest(result);
-            }
+            if (!result.Succeeded) return BadRequest(result);
 
             return Ok(result);
         }

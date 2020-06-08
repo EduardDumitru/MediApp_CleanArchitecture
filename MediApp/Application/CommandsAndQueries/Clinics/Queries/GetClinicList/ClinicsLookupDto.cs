@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Application.Common.Mappings;
+﻿using Application.Common.Mappings;
 using AutoMapper;
 using Domain.Entities;
 
@@ -13,7 +10,7 @@ namespace Application.CommandsAndQueries
         public string Name { get; set; }
         public string CountryName { get; set; }
         public string CountyName { get; set; }
-        public string CityName { get ; set; }
+        public string CityName { get; set; }
         public bool? Deleted { get; set; }
 
         public void Mapping(Profile profile)

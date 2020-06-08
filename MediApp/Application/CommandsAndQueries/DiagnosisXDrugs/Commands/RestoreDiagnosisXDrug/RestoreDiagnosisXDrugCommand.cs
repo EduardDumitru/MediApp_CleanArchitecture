@@ -32,10 +32,7 @@ namespace Application.CommandsAndQueries
                 .FirstOrDefaultAsync(x => x.Id == request.Id && x.Deleted, cancellationToken);
 
             var validationResult = Validations(entity);
-            if (!validationResult.Succeeded)
-            {
-                return validationResult;
-            }
+            if (!validationResult.Succeeded) return validationResult;
 
             entity.Deleted = false;
             entity.DeletedBy = null;
@@ -51,19 +48,13 @@ namespace Application.CommandsAndQueries
             var errors = new List<string>();
 
             if (entity == null)
-            {
                 return Result.Failure(new List<string> {"No valid link between diagnosis and drug found"});
-            }
 
             if (entity.Diagnosis == null || entity.Diagnosis != null && entity.Diagnosis.Deleted)
-            {
                 errors.Add("Diagnosis is deleted. You must update that first.");
-            }
 
             if (entity.Drug == null || entity.Drug != null && entity.Drug.Deleted)
-            {
                 errors.Add("Drug is deleted. You must update that first.");
-            }
 
             return errors.Any() ? Result.Failure(errors) : Result.Success();
         }

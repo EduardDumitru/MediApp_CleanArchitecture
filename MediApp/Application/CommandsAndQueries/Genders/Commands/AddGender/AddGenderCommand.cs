@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
 using Application.Common.Models;
@@ -23,6 +20,7 @@ namespace Application.CommandsAndQueries
         {
             _context = context;
         }
+
         public async Task<Result> Handle(AddGenderCommand request, CancellationToken cancellationToken)
         {
             var entity = new Gender

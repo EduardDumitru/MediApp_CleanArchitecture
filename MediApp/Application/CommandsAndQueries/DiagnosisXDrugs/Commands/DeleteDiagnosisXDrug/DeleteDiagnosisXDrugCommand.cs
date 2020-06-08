@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
 using Application.Common.Models;
-using Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -30,9 +28,7 @@ namespace Application.CommandsAndQueries
                 .FirstOrDefaultAsync(x => x.Id == request.Id && !x.Deleted, cancellationToken);
 
             if (entity == null)
-            {
                 return Result.Failure(new List<string> {"No valid link between diagnosis and drug was found"});
-            }
 
             entity.Deleted = true;
 

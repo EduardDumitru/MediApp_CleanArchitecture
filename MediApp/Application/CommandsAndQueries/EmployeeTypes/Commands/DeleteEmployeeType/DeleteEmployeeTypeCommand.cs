@@ -31,10 +31,7 @@ namespace Application.CommandsAndQueries
                 .FirstOrDefaultAsync(x => x.Id == request.Id && !x.Deleted, cancellationToken);
 
             var validationResult = Validations(entity);
-            if (!validationResult.Succeeded)
-            {
-                return validationResult;
-            }
+            if (!validationResult.Succeeded) return validationResult;
             entity.Deleted = true;
 
             await _context.SaveChangesAsync(cancellationToken);
@@ -46,17 +43,11 @@ namespace Application.CommandsAndQueries
         {
             var errors = new List<string>();
 
-            if (entity == null)
-            {
-                return Result.Failure(new List<string> {"No valid employee type found"});
-            }
+            if (entity == null) return Result.Failure(new List<string> {"No valid employee type found"});
 
             var isUsedInEmployee = entity.Employees.Any(x => !x.Deleted);
 
-            if (isUsedInEmployee)
-            {
-                errors.Add("Employee type is used in employees. You can't delete it while in use.");
-            }
+            if (isUsedInEmployee) errors.Add("Employee type is used in employees. You can't delete it while in use.");
 
             return errors.Any() ? Result.Failure(errors) : Result.Success();
         }

@@ -1,16 +1,14 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
 using Application.Common.Models;
-using Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.CommandsAndQueries
 {
-    public class DeleteHolidayIntervalCommand: IRequest<Result>
+    public class DeleteHolidayIntervalCommand : IRequest<Result>
     {
         public long Id { get; set; }
     }
@@ -29,10 +27,7 @@ namespace Application.CommandsAndQueries
             var entity = await _context.HolidayIntervals
                 .FirstOrDefaultAsync(x => x.Id == request.Id && !x.Deleted, cancellationToken);
 
-            if (entity == null)
-            {
-                return Result.Failure(new List<string> {"No valid holiday interval found"});
-            }
+            if (entity == null) return Result.Failure(new List<string> {"No valid holiday interval found"});
 
             entity.Deleted = true;
 

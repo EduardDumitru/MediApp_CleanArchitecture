@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using FluentValidation;
+﻿using FluentValidation;
 
 namespace Application.CommandsAndQueries
-{ 
+{
     public class RestoreCountyCommandValidator : AbstractValidator<RestoreCountyCommand>
     {
         public RestoreCountyCommandValidator()

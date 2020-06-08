@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
@@ -28,7 +25,8 @@ namespace Application.CommandsAndQueries
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("Phone number is required.")
                 .Length(10).WithMessage("Phone number must have 10 digits")
-                .Matches("^(07[0-8]{1}[0-9]{1}|02[0-9]{2}|03[0-9]{2}){1}?([0-9]{3}){2}$").WithMessage("Phone number is not valid");
+                .Matches("^(07[0-8]{1}[0-9]{1}|02[0-9]{2}|03[0-9]{2}){1}?([0-9]{3}){2}$")
+                .WithMessage("Phone number is not valid");
             RuleFor(x => x.StreetNo)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("Street Number is required");
@@ -65,15 +63,15 @@ namespace Application.CommandsAndQueries
         private bool ExistsCountyInCountry(AddClinicCommand clinicCommand, int countyId)
         {
             return _context.Counties
-                .Any(x => x.Id == countyId 
-                          && x.CountryId == clinicCommand.CountryId 
+                .Any(x => x.Id == countyId
+                          && x.CountryId == clinicCommand.CountryId
                           && !x.Deleted);
         }
 
         private async Task<bool> ExistsCity(int cityId, CancellationToken cancellationToken)
         {
             return await _context.Cities
-                .AnyAsync(x => x.Id == cityId 
+                .AnyAsync(x => x.Id == cityId
                                && !x.Deleted, cancellationToken);
         }
 

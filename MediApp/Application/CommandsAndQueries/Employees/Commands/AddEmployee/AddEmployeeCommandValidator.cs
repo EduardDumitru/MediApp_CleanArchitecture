@@ -61,9 +61,7 @@ namespace Application.CommandsAndQueries
             if (TimeSpan.TryParseExact(hours, "h\\:mm\\:ss", CultureInfo.CurrentCulture,
                 TimeSpanStyles.None,
                 out var result))
-            {
                 return await Task.FromResult(result.Minutes == 0 || result.Minutes == 30);
-            }
 
             return await Task.FromResult(false);
         }
@@ -78,9 +76,7 @@ namespace Application.CommandsAndQueries
                 CultureInfo.CurrentCulture,
                 TimeSpanStyles.None,
                 out var startHours))
-            {
                 return await Task.FromResult(endHours >= startHours + new TimeSpan(4, 0, 0));
-            }
 
             return await Task.FromResult(false);
         }

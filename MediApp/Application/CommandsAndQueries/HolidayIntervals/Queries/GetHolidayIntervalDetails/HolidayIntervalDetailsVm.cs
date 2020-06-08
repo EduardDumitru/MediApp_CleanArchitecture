@@ -1,6 +1,5 @@
 ﻿using System;
 using Application.Common.Mappings;
-using AutoMapper;
 using Domain.Entities;
 
 namespace Application.CommandsAndQueries

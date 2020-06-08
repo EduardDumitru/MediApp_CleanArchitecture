@@ -12,7 +12,8 @@ namespace Application.CommandsAndQueries
     {
     }
 
-    public class GetMedicalCheckTypesListQueryHandler : IRequestHandler<GetMedicalCheckTypesListQuery, MedicalCheckTypesListVm>
+    public class
+        GetMedicalCheckTypesListQueryHandler : IRequestHandler<GetMedicalCheckTypesListQuery, MedicalCheckTypesListVm>
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
@@ -23,13 +24,14 @@ namespace Application.CommandsAndQueries
             _mapper = mapper;
         }
 
-        public async Task<MedicalCheckTypesListVm> Handle(GetMedicalCheckTypesListQuery request, CancellationToken cancellationToken)
+        public async Task<MedicalCheckTypesListVm> Handle(GetMedicalCheckTypesListQuery request,
+            CancellationToken cancellationToken)
         {
             var medicalCheckTypes = await _context.MedicalCheckTypes
                 .ProjectTo<MedicalCheckTypesLookupDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
 
-            var vm = new MedicalCheckTypesListVm()
+            var vm = new MedicalCheckTypesListVm
             {
                 MedicalCheckTypes = medicalCheckTypes
             };

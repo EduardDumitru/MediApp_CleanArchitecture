@@ -1,8 +1,8 @@
-﻿using Application.CommandsAndQueries;
+﻿using System.Threading.Tasks;
+using Application.CommandsAndQueries;
 using Application.Common.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace MediApp.Controllers
 {
@@ -32,10 +32,7 @@ namespace MediApp.Controllers
         {
             var result = await Mediator.Send(command);
 
-            if (!result.Succeeded)
-            {
-                return BadRequest(result);
-            }
+            if (!result.Succeeded) return BadRequest(result);
 
             return Ok(result);
         }
@@ -46,10 +43,7 @@ namespace MediApp.Controllers
         {
             var result = await Mediator.Send(new DeleteDiagnosisXDrugCommand {Id = diagnosisXDrugId});
 
-            if (!result.Succeeded)
-            {
-                return BadRequest(result);
-            }
+            if (!result.Succeeded) return BadRequest(result);
 
             return Ok(result);
         }
@@ -60,10 +54,7 @@ namespace MediApp.Controllers
         {
             var result = await Mediator.Send(command);
 
-            if (!result.Succeeded)
-            {
-                return BadRequest(result);
-            }
+            if (!result.Succeeded) return BadRequest(result);
 
             return Ok(result);
         }

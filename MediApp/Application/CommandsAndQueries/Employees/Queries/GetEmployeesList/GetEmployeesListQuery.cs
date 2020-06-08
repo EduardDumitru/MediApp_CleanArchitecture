@@ -4,7 +4,6 @@ using Application.Common.Interfaces;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.CommandsAndQueries
@@ -36,7 +35,7 @@ namespace Application.CommandsAndQueries
                 .ProjectTo<EmployeesLookupDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
 
-            var vm = new EmployeesListVm()
+            var vm = new EmployeesListVm
             {
                 Employees = employees
             };

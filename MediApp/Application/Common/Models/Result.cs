@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Application.Common.Models
 {
     public class Result
     {
-        public Result() {}
+        public Result()
+        {
+        }
 
         private Result(bool succeeded, IEnumerable<string> errors)
         {
@@ -21,6 +21,7 @@ namespace Application.Common.Models
             Succeeded = succeeded;
             SuccessMessage = successMessage;
         }
+
         public bool Succeeded { get; }
 
         public string SuccessMessage { get; }

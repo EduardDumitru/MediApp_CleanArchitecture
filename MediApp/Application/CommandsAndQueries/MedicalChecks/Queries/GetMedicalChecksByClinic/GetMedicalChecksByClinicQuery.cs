@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
@@ -43,7 +40,7 @@ namespace Application.CommandsAndQueries
                 .ProjectTo<MedicalChecksByClinicLookupDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
 
-            var vm = new MedicalChecksByClinicListVm()
+            var vm = new MedicalChecksByClinicListVm
             {
                 MedicalChecksByClinic = medicalChecksByClinic
             };

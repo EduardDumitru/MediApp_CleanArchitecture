@@ -1,14 +1,14 @@
-﻿using Application.CommandsAndQueries;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Application.CommandsAndQueries;
 using Application.Common.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace MediApp.Controllers
 {
     [Authorize]
-    public class MedicalCheckTypeController: ApiController
+    public class MedicalCheckTypeController : ApiController
     {
         [HttpGet("{id}")]
         [Authorize(Roles = "Admin")]
@@ -17,9 +17,7 @@ namespace MediApp.Controllers
             var vm = await Mediator.Send(new GetMedicalCheckTypeDetailsQuery {Id = id});
 
             if (vm == null)
-            {
                 return BadRequest(Result.Failure(new List<string> {"No valid medical check type was found"}));
-            }
 
             return Ok(vm);
         }
@@ -47,10 +45,7 @@ namespace MediApp.Controllers
         {
             var result = await Mediator.Send(command);
 
-            if (!result.Succeeded)
-            {
-                return BadRequest(result);
-            }
+            if (!result.Succeeded) return BadRequest(result);
 
             return Ok(result);
         }
@@ -61,10 +56,7 @@ namespace MediApp.Controllers
         {
             var result = await Mediator.Send(command);
 
-            if (!result.Succeeded)
-            {
-                return BadRequest(result);
-            }
+            if (!result.Succeeded) return BadRequest(result);
 
             return Ok(result);
         }
@@ -75,24 +67,19 @@ namespace MediApp.Controllers
         {
             var result = await Mediator.Send(new DeleteMedicalCheckTypeCommand {Id = medicalCheckTypeId});
 
-            if (!result.Succeeded)
-            {
-                return BadRequest(result);
-            }
+            if (!result.Succeeded) return BadRequest(result);
 
             return Ok(result);
         }
 
         [HttpPut("restore")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<Result>> RestoreMedicalCheckType([FromBody] RestoreMedicalCheckTypeCommand command)
+        public async Task<ActionResult<Result>> RestoreMedicalCheckType(
+            [FromBody] RestoreMedicalCheckTypeCommand command)
         {
             var result = await Mediator.Send(command);
 
-            if (!result.Succeeded)
-            {
-                return BadRequest(result);
-            }
+            if (!result.Succeeded) return BadRequest(result);
 
             return Ok(result);
         }

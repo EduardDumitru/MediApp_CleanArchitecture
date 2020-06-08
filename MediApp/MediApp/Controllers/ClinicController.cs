@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace MediApp.Controllers
 {
     [Authorize]
-    public class ClinicController: ApiController
+    public class ClinicController : ApiController
     {
         [HttpGet("{id}")]
         [Authorize(Roles = "Admin")]
@@ -16,10 +16,7 @@ namespace MediApp.Controllers
         {
             var vm = await Mediator.Send(new GetClinicDetailsQuery {Id = id});
 
-            if (vm == null)
-            {
-                return BadRequest(Result.Failure(new List<string> {"No valid clinic was found"}));
-            }
+            if (vm == null) return BadRequest(Result.Failure(new List<string> {"No valid clinic was found"}));
 
             return Ok(vm);
         }
@@ -34,9 +31,11 @@ namespace MediApp.Controllers
         }
 
         [HttpGet("clinicsdropdown")]
-        public async Task<ActionResult<SelectItemVm>> GetClinicsDropdown(short? countryId = null, int? countyId = null, int? cityId = null)
+        public async Task<ActionResult<SelectItemVm>> GetClinicsDropdown(short? countryId = null, int? countyId = null,
+            int? cityId = null)
         {
-            var vm = await Mediator.Send(new GetClinicDropdownQuery {CountryId = countryId, CountyId = countyId, CityId = cityId});
+            var vm = await Mediator.Send(new GetClinicDropdownQuery
+                {CountryId = countryId, CountyId = countyId, CityId = cityId});
 
             return Ok(vm);
         }
@@ -47,10 +46,7 @@ namespace MediApp.Controllers
         {
             var result = await Mediator.Send(command);
 
-            if (!result.Succeeded)
-            {
-                return BadRequest(result);
-            }
+            if (!result.Succeeded) return BadRequest(result);
 
             return Ok(result);
         }
@@ -61,10 +57,7 @@ namespace MediApp.Controllers
         {
             var result = await Mediator.Send(command);
 
-            if (!result.Succeeded)
-            {
-                return BadRequest(result);
-            }
+            if (!result.Succeeded) return BadRequest(result);
 
             return Ok(result);
         }
@@ -75,10 +68,7 @@ namespace MediApp.Controllers
         {
             var result = await Mediator.Send(new DeleteClinicCommand {Id = clinicId});
 
-            if (!result.Succeeded)
-            {
-                return BadRequest(result);
-            }
+            if (!result.Succeeded) return BadRequest(result);
 
             return Ok(result);
         }
@@ -89,10 +79,7 @@ namespace MediApp.Controllers
         {
             var result = await Mediator.Send(command);
 
-            if (!result.Succeeded)
-            {
-                return BadRequest(result);
-            }
+            if (!result.Succeeded) return BadRequest(result);
 
             return Ok(result);
         }

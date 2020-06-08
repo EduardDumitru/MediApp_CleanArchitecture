@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Application.Common.Models;
-using Domain.Entities;
 using MediatR;
 
 namespace Application.CommandsAndQueries
@@ -33,6 +29,7 @@ namespace Application.CommandsAndQueries
     {
         private readonly IApplicationDbContext _context;
         private readonly IIdentityService _identityService;
+
         public UpdateUserProfileCommandHandler(IApplicationDbContext context, IIdentityService identityService)
         {
             _context = context;
@@ -43,10 +40,7 @@ namespace Application.CommandsAndQueries
         {
             var entity = await _context.UserProfiles.FindAsync(request.Id);
 
-            if (entity == null)
-            {
-                return Result.Failure(new List<string> { "No valid profile found" });
-            }
+            if (entity == null) return Result.Failure(new List<string> {"No valid profile found"});
 
             entity.FirstName = request.FirstName;
             entity.LastName = request.LastName;

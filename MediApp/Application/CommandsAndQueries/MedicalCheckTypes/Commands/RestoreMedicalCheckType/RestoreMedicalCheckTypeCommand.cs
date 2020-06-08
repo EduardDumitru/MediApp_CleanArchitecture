@@ -28,10 +28,7 @@ namespace Application.CommandsAndQueries
                 .FirstOrDefaultAsync(x => x.Id == request.Id && x.Deleted, cancellationToken);
             ;
 
-            if (entity == null)
-            {
-                return Result.Failure(new List<string> {"No valid medical check type found"});
-            }
+            if (entity == null) return Result.Failure(new List<string> {"No valid medical check type found"});
 
             entity.Deleted = false;
             entity.DeletedBy = null;

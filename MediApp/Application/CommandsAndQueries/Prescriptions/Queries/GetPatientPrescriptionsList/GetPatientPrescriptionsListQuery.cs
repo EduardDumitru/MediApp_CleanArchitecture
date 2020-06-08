@@ -14,7 +14,7 @@ namespace Application.CommandsAndQueries
         public long PatientId { get; set; }
     }
 
-    public class GetPatientPrescriptionsListQueryHandler 
+    public class GetPatientPrescriptionsListQueryHandler
         : IRequestHandler<GetPatientPrescriptionsListQuery, PatientPrescriptionsListVm>
     {
         private readonly IApplicationDbContext _context;
@@ -39,7 +39,7 @@ namespace Application.CommandsAndQueries
                 .ProjectTo<PatientPrescriptionsLookupDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
 
-            var vm = new PatientPrescriptionsListVm()
+            var vm = new PatientPrescriptionsListVm
             {
                 PatientPrescriptions = patientPrescriptions
             };

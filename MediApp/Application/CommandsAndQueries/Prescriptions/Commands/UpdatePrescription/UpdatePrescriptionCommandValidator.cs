@@ -1,14 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Application.Common.Interfaces;
+﻿using Application.Common.Interfaces;
 using FluentValidation;
-using Microsoft.EntityFrameworkCore;
 
 namespace Application.CommandsAndQueries
 {
-    public class UpdatePrescriptionCommandValidator: AbstractValidator<UpdatePrescriptionCommand>
+    public class UpdatePrescriptionCommandValidator : AbstractValidator<UpdatePrescriptionCommand>
     {
         private readonly IApplicationDbContext _context;
 

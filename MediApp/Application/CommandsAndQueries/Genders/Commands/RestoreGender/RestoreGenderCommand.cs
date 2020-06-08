@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
@@ -18,6 +16,7 @@ namespace Application.CommandsAndQueries.Genders.Commands.RestoreGender
     public class RestoreGenderCommandHandler : IRequestHandler<RestoreGenderCommand, Result>
     {
         private readonly IApplicationDbContext _context;
+
         public RestoreGenderCommandHandler(IApplicationDbContext context)
         {
             _context = context;
@@ -29,10 +28,7 @@ namespace Application.CommandsAndQueries.Genders.Commands.RestoreGender
                 .FirstOrDefaultAsync(x => x.Id == request.Id && x.Deleted, cancellationToken);
             ;
 
-            if (entity == null)
-            {
-                return Result.Failure(new List<string> {"No valid gender found"});
-            }
+            if (entity == null) return Result.Failure(new List<string> {"No valid gender found"});
 
             entity.Deleted = false;
             entity.DeletedBy = null;

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
 using Application.Common.Models;
@@ -35,7 +32,7 @@ namespace Application.CommandsAndQueries
                 EmployeeId = request.EmployeeId,
                 NoOfDays = request.NoOfDays,
                 Description = request.Description,
-                PatientId = request.PatientId, 
+                PatientId = request.PatientId,
                 MedicalCheckId = request.MedicalCheckId
             };
 

@@ -12,9 +12,7 @@ using Application.Common.Interfaces;
 using Application.Common.Models;
 using Domain.Entities;
 using Infrastructure.Persistence;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
@@ -22,10 +20,10 @@ namespace Infrastructure.Identity
 {
     public class IdentityService : IIdentityService
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly ApplicationDbContext _context;
         private readonly JwtSettings _jwtSettings;
+        private readonly RoleManager<ApplicationRole> _roleManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
         public IdentityService(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager,
             ApplicationDbContext context, JwtSettings jwtSettings)
@@ -46,7 +44,7 @@ namespace Infrastructure.Identity
         public async Task<Result> CreateRoleAsync(string name)
         {
             var result = await _roleManager.CreateAsync(new ApplicationRole(name));
-            return (result.ToApplicationResult());
+            return result.ToApplicationResult();
         }
 
         public async Task<Result> AddToRoleAsync(long userId, string role)
@@ -60,7 +58,7 @@ namespace Infrastructure.Identity
         public async Task<Result> DeleteUserAsync(long userId)
         {
             var user = _userManager.Users.SingleOrDefault(u => u.Id == userId);
-            
+
             if (user != null)
             {
                 user.IsActive = false;
@@ -68,13 +66,6 @@ namespace Infrastructure.Identity
             }
 
             return Result.Success();
-        }
-
-        private async Task<Result> DeleteUserAsync(ApplicationUser user)
-        {
-            var result = await _userManager.UpdateAsync(user);
-
-            return result.ToApplicationResult();
         }
 
         public async Task<bool> RoleExistsAsync(string role)
@@ -145,12 +136,10 @@ namespace Infrastructure.Identity
             var existingUser = await _userManager.FindByEmailAsync(userToAdd.Email);
 
             if (existingUser != null)
-            {
                 return new AuthenticationResult
                 {
-                    Errors = new[] { "User with this email address already exists" }
+                    Errors = new[] {"User with this email address already exists"}
                 };
-            }
 
             await using var transaction = await _context.Database.BeginTransactionAsync();
             try
@@ -159,19 +148,16 @@ namespace Infrastructure.Identity
                 {
                     UserName = userToAdd.Email,
                     Email = userToAdd.Email,
-                    PhoneNumber = userToAdd.PhoneNumber,
-
+                    PhoneNumber = userToAdd.PhoneNumber
                 };
 
                 var createdUser = await _userManager.CreateAsync(user, userToAdd.Password);
 
                 if (!createdUser.Succeeded)
-                {
                     return new AuthenticationResult
                     {
                         Errors = createdUser.Errors.Select(x => x.Description)
                     };
-                }
 
                 await _userManager.AddToRoleAsync(user, RoleConstants.User);
 
@@ -215,24 +201,78 @@ namespace Infrastructure.Identity
             var user = await _userManager.FindByEmailAsync(loginUser.Email);
 
             if (user == null)
-            {
                 return new AuthenticationResult
                 {
-                    Errors = new[] { "User does not exist" }
+                    Errors = new[] {"User does not exist"}
                 };
-            }
 
             var userHasValidPassword = await _userManager.CheckPasswordAsync(user, loginUser.Password);
 
             if (!userHasValidPassword)
-            {
                 return new AuthenticationResult
                 {
-                    Errors = new[] { "User/password combination is wrong" }
+                    Errors = new[] {"User/password combination is wrong"}
                 };
-            }
 
             return await GenerateAuthenticationResultForUserAsync(user);
+        }
+
+        public async Task<SelectItemVm> GetRolesDropdown(CancellationToken cancellationToken)
+        {
+            var vm = new SelectItemVm
+            {
+                SelectItems = await _roleManager.Roles
+                    .Select(x => new SelectItemDto {Label = x.Name, Value = x.Id.ToString()})
+                    .ToListAsync(cancellationToken)
+            };
+
+            return vm;
+        }
+
+        public async Task AddUserToRoles(long userId, List<long> roleIds, CancellationToken cancellationToken)
+        {
+            var user = await _userManager.Users
+                .FirstOrDefaultAsync(x => x.Id == userId && x.IsActive.Value, cancellationToken);
+            var roles = await _roleManager.Roles.ToListAsync(cancellationToken);
+            var existingRoleNames = await _userManager.GetRolesAsync(user);
+            var existingRoleIds = new List<long>();
+            foreach (var existingRoleName in existingRoleNames)
+            {
+                var role = await _roleManager.FindByNameAsync(existingRoleName);
+                if (role == null) continue;
+
+                existingRoleIds.Add(role.Id);
+            }
+
+            var rolesToAdd = (from roleId in roleIds
+                let role = roles.FirstOrDefault(x => x.Id == roleId)
+                where existingRoleIds.All(id => id != roleId) && role != null
+                select role.Name).ToList();
+
+            await _userManager.AddToRolesAsync(user, rolesToAdd);
+        }
+
+        public async Task<List<string>> GetUserRoleIds(long userId, CancellationToken cancellationToken)
+        {
+            var user = await _userManager.Users
+                .FirstOrDefaultAsync(x => x.Id == userId && x.IsActive.Value, cancellationToken);
+            var existingRoles = await _userManager.GetRolesAsync(user);
+            var roleIds = new List<string>();
+            foreach (var existingRole in existingRoles)
+            {
+                var role = await _roleManager.FindByNameAsync(existingRole);
+                if (role == null) continue;
+                roleIds.Add(role.Id.ToString());
+            }
+
+            return roleIds;
+        }
+
+        private async Task<Result> DeleteUserAsync(ApplicationUser user)
+        {
+            var result = await _userManager.UpdateAsync(user);
+
+            return result.ToApplicationResult();
         }
 
         private async Task<AuthenticationResult> GenerateAuthenticationResultForUserAsync(ApplicationUser user)
@@ -253,10 +293,7 @@ namespace Infrastructure.Identity
                 new Claim("id", userProfile.Id.ToString())
             };
 
-            if (employee != null)
-            {
-                claims.Add(new Claim("clinicId", employee.ClinicId.ToString()));
-            }
+            if (employee != null) claims.Add(new Claim("clinicId", employee.ClinicId.ToString()));
 
             var userClaims = await _userManager.GetClaimsAsync(user);
             claims.AddRange(userClaims);
@@ -300,57 +337,6 @@ namespace Infrastructure.Identity
         private async Task<UserProfile> GetUserProfileByUserId(long userId)
         {
             return await _context.UserProfiles.SingleOrDefaultAsync(x => x.UserId == userId && !x.Deleted);
-        }
-
-        public async Task<SelectItemVm> GetRolesDropdown(CancellationToken cancellationToken)
-        {
-            var vm = new SelectItemVm
-            {
-                SelectItems = await _roleManager.Roles
-                    .Select(x => new SelectItemDto {Label = x.Name, Value = x.Id.ToString()})
-                    .ToListAsync(cancellationToken)
-            };
-
-            return vm;
-        }
-
-        public async Task AddUserToRoles(long userId, List<long> roleIds, CancellationToken cancellationToken)
-        {
-            var user = await _userManager.Users
-                .FirstOrDefaultAsync(x => x.Id == userId && x.IsActive.Value, cancellationToken);
-            var roles = await _roleManager.Roles.ToListAsync(cancellationToken);
-            var existingRoleNames = await _userManager.GetRolesAsync(user);
-            var existingRoleIds = new List<long>();
-            foreach (var existingRoleName in existingRoleNames)
-            {
-                var role = await _roleManager.FindByNameAsync(existingRoleName);
-                if (role == null) continue;
-
-                existingRoleIds.Add(role.Id);
-            }
-
-            var rolesToAdd = (from roleId in roleIds 
-                let role = roles.FirstOrDefault(x => x.Id == roleId) 
-                where existingRoleIds.All(id => id != roleId) && role != null 
-                select role.Name).ToList();
-
-            await _userManager.AddToRolesAsync(user, rolesToAdd);
-        }
-
-        public async Task<List<string>> GetUserRoleIds(long userId, CancellationToken cancellationToken)
-        {
-            var user = await _userManager.Users
-                .FirstOrDefaultAsync(x => x.Id == userId && x.IsActive.Value, cancellationToken);
-            var existingRoles = await _userManager.GetRolesAsync(user);
-            var roleIds = new List<string>();
-            foreach (var existingRole in existingRoles)
-            {
-                var role = await _roleManager.FindByNameAsync(existingRole);
-                if (role == null) continue;
-                roleIds.Add(role.Id.ToString());
-            }
-
-            return roleIds;
         }
     }
 }

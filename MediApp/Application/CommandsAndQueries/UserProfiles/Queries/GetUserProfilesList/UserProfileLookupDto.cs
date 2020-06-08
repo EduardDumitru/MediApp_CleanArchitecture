@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Application.Common.Mappings;
+﻿using Application.Common.Mappings;
 using AutoMapper;
 using Domain.Entities;
 
@@ -34,13 +31,13 @@ namespace Application.CommandsAndQueries
                 .ForMember(d => d.CountryName,
                     opt => opt.MapFrom(s =>
                         s.City.County.Country.Name))
-                .ForMember(d => d.CountyName, 
+                .ForMember(d => d.CountyName,
                     opt => opt.MapFrom(s =>
                         s.City.County.Name))
-                .ForMember(d => d.CityName, 
+                .ForMember(d => d.CityName,
                     opt => opt.MapFrom(s =>
                         s.City.Name))
-                .ForMember(d => d.GenderName, 
+                .ForMember(d => d.GenderName,
                     opt => opt.MapFrom(s =>
                         s.Gender.Name));
         }

@@ -33,10 +33,7 @@ namespace Application.CommandsAndQueries
                 .FirstOrDefaultAsync(x => x.Id == request.Id && !x.Deleted, cancellationToken);
 
             var validationResult = Validations(entity);
-            if (!validationResult.Succeeded)
-            {
-                return validationResult;
-            }
+            if (!validationResult.Succeeded) return validationResult;
 
             entity.Deleted = true;
 
@@ -49,31 +46,22 @@ namespace Application.CommandsAndQueries
         {
             var errors = new List<string>();
 
-            if (entity == null)
-            {
-                return Result.Failure(new List<string> {"No valid employee found"});
-            }
+            if (entity == null) return Result.Failure(new List<string> {"No valid employee found"});
 
             var isUsedInHolidayIntervals = entity.HolidayIntervals.Any(x => !x.Deleted);
 
             if (isUsedInHolidayIntervals)
-            {
                 errors.Add("Employee is used in holiday intervals. You can't delete it while in use.");
-            }
 
             var isUsedInMedicalChecks = entity.MedicalChecks.Any(x => !x.Deleted);
 
             if (isUsedInMedicalChecks)
-            {
                 errors.Add("Employee is used in medical checks. You can't delete it while in use.");
-            }
 
             var isUsedInPrescriptions = entity.Prescriptions.Any(x => !x.Deleted);
 
             if (isUsedInPrescriptions)
-            {
                 errors.Add("Employee is used in prescriptions. You can't delete it while in use.");
-            }
 
             return errors.Any() ? Result.Failure(errors) : Result.Success();
         }

@@ -9,6 +9,7 @@ namespace Application.CommandsAndQueries
     public class UpdateMedicalCheckCommandValidator : AbstractValidator<UpdateMedicalCheckCommand>
     {
         private readonly IApplicationDbContext _context;
+
         public UpdateMedicalCheckCommandValidator(IApplicationDbContext context)
         {
             _context = context;

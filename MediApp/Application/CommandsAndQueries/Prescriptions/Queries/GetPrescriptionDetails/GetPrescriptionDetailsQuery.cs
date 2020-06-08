@@ -12,7 +12,7 @@ namespace Application.CommandsAndQueries
         public long Id { get; set; }
     }
 
-    public class GetPrescriptionDetailsQueryHandler 
+    public class GetPrescriptionDetailsQueryHandler
         : IRequestHandler<GetPrescriptionDetailsQuery, PrescriptionDetailsVm>
     {
         private readonly IApplicationDbContext _context;

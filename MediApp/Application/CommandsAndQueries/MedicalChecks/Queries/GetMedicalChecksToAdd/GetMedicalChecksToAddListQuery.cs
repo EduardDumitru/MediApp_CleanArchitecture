@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Constants;
 using Application.Common.Interfaces;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -38,8 +36,8 @@ namespace Application.CommandsAndQueries
         {
             var existingMedicalChecks = await _context.MedicalChecks
                 .Where(x => request.Appointment <= x.Appointment
-                            && x.ClinicId == request.ClinicId 
-                            && x.EmployeeId == request.EmployeeId 
+                            && x.ClinicId == request.ClinicId
+                            && x.EmployeeId == request.EmployeeId
                             && x.MedicalCheckTypeId == request.MedicalCheckTypeId
                             && !x.Deleted)
                 .ToListAsync(cancellationToken);
@@ -56,7 +54,7 @@ namespace Application.CommandsAndQueries
                 .Where(x => x.Id == request.MedicalCheckTypeId)
                 .FirstOrDefaultAsync(cancellationToken);
             var wantedAppointmentDate = request.Appointment.ToLocalTime();
-            
+
             wantedAppointmentDate = wantedAppointmentDate.DayOfWeek switch
             {
                 DayOfWeek.Saturday => wantedAppointmentDate.AddDays(2),
@@ -69,15 +67,16 @@ namespace Application.CommandsAndQueries
             var exceedsTerminationDate = false;
             while (nrOfMedicalChecksAdded < MedicalCheckConstants.NrOfMedicalChecksToBeShown && !exceedsTerminationDate)
             {
-                for (var time = employee.StartHour; time <= employee.EndHour && nrOfMedicalChecksAdded <=
+                for (var time = employee.StartHour;
+                    time <= employee.EndHour && nrOfMedicalChecksAdded <=
                     MedicalCheckConstants.NrOfMedicalChecksToBeShown;
                     time = time.Add(thirtyMinutes))
                 {
-                    var appointment = new DateTime(wantedAppointmentDate.Year, 
-                        wantedAppointmentDate.Month, 
-                        wantedAppointmentDate.Day, 
-                        time.Hours, 
-                        time.Minutes, 
+                    var appointment = new DateTime(wantedAppointmentDate.Year,
+                        wantedAppointmentDate.Month,
+                        wantedAppointmentDate.Day,
+                        time.Hours,
+                        time.Minutes,
                         time.Seconds);
 
                     if (employee.TerminationDate.HasValue && appointment.Date >= employee.TerminationDate.Value.Date)
@@ -86,10 +85,7 @@ namespace Application.CommandsAndQueries
                         break;
                     }
 
-                    if (existingMedicalChecks.Any(x => x.Appointment == appointment))
-                    {
-                        continue;
-                    }
+                    if (existingMedicalChecks.Any(x => x.Appointment == appointment)) continue;
 
                     medicalChecksToAdd.Add(new MedicalChecksToAddLookupDto
                     {
@@ -113,7 +109,8 @@ namespace Application.CommandsAndQueries
                     _ => wantedAppointmentDate
                 };
             }
-            var vm = new MedicalChecksToAddListVm()
+
+            var vm = new MedicalChecksToAddListVm
             {
                 MedicalChecksToAdd = medicalChecksToAdd
             };

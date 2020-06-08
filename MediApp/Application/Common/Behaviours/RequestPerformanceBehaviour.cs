@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
+﻿using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
@@ -12,10 +9,10 @@ namespace Application.Common.Behaviours
 {
     public class RequestPerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     {
-        private readonly Stopwatch _timer;
-        private readonly ILogger<TRequest> _logger;
         private readonly ICurrentUserService _currentUserService;
         private readonly IIdentityService _identityService;
+        private readonly ILogger<TRequest> _logger;
+        private readonly Stopwatch _timer;
 
         public RequestPerformanceBehaviour(
             ILogger<TRequest> logger,
@@ -44,10 +41,7 @@ namespace Application.Common.Behaviours
                 var requestName = typeof(TRequest).Name;
                 var userId = _currentUserService.UserId;
                 var userName = string.Empty;
-                if (userId.HasValue)
-                {
-                    userName = await _identityService.GetUserNameAsync(userId.Value);
-                }
+                if (userId.HasValue) userName = await _identityService.GetUserNameAsync(userId.Value);
 
                 _logger.LogWarning(
                     "MediApp Long Running Request: {Name} ({ElapsedMilliseconds} milliseconds) {@UserId} {@Request}",

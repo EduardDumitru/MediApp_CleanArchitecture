@@ -34,9 +34,7 @@ namespace Application.CommandsAndQueries
                 .FirstOrDefaultAsync(x => x.Id == request.Id && !x.Deleted, cancellationToken);
 
             if (entity == null)
-            {
                 return Result.Failure(new List<string> {"No valid link between prescription and drug found"});
-            }
 
             entity.PrescriptionId = request.PrescriptionId;
             entity.DrugId = request.DrugId;

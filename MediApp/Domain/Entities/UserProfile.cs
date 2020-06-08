@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 using Domain.Common;
 
 namespace Domain.Entities
@@ -14,6 +12,7 @@ namespace Domain.Entities
             Prescriptions = new HashSet<Prescription>();
             Employees = new HashSet<Employee>();
         }
+
         public long Id { get; set; }
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
@@ -30,28 +29,21 @@ namespace Domain.Entities
         public short GenderId { get; set; }
         public long UserId { get; set; }
 
-        [ForeignKey(nameof(CountryId))] 
-        public Country Country { get; set; }
+        [ForeignKey(nameof(CountryId))] public Country Country { get; set; }
 
-        [ForeignKey(nameof(CountyId))] 
-        public County County { get; set; }
+        [ForeignKey(nameof(CountyId))] public County County { get; set; }
 
-        [ForeignKey(nameof(CityId))] 
-        public City City { get; set; }
+        [ForeignKey(nameof(CityId))] public City City { get; set; }
 
-        [ForeignKey(nameof(GenderId))] 
-        public Gender Gender { get; set; }
+        [ForeignKey(nameof(GenderId))] public Gender Gender { get; set; }
 
-        public ICollection<MedicalCheck> MedicalChecks { get; private set; }
-        public ICollection<Employee> Employees { get; private set; }
-        public ICollection<Prescription> Prescriptions { get; private set; }
+        public ICollection<MedicalCheck> MedicalChecks { get; }
+        public ICollection<Employee> Employees { get; }
+        public ICollection<Prescription> Prescriptions { get; }
 
         public string GetFullName()
         {
-            if (string.IsNullOrWhiteSpace(MiddleName))
-            {
-                return FirstName + " " + LastName;
-            }
+            if (string.IsNullOrWhiteSpace(MiddleName)) return FirstName + " " + LastName;
 
             return FirstName + " " + MiddleName + " " + LastName;
         }

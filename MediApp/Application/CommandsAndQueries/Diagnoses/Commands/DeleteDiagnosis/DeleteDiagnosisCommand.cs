@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
@@ -34,10 +32,7 @@ namespace Application.CommandsAndQueries
                 .FirstOrDefaultAsync(x => x.Id == request.Id && !x.Deleted, cancellationToken);
 
             var validationResult = Validations(entity);
-            if (!validationResult.Succeeded)
-            {
-                return validationResult;
-            }
+            if (!validationResult.Succeeded) return validationResult;
             entity.Deleted = true;
 
             await _context.SaveChangesAsync(cancellationToken);
@@ -49,24 +44,16 @@ namespace Application.CommandsAndQueries
         {
             var errors = new List<string>();
 
-            if (entity == null)
-            {
-                return Result.Failure(new List<string> {"No valid diagnosis found"});
-            }
+            if (entity == null) return Result.Failure(new List<string> {"No valid diagnosis found"});
 
             var isUsedInMedicalCheck = entity.MedicalChecks.Any(x => !x.Deleted);
 
             if (isUsedInMedicalCheck)
-            {
                 errors.Add("Diagnosis is used in medical checks. You can't delete it while in use.");
-            }
 
             var isUsedInDiagnosisXDrugs = entity.DiagnosisXDrugs.Any(x => !x.Deleted);
 
-            if (isUsedInDiagnosisXDrugs)
-            {
-                errors.Add("Diagnosis is linked to drugs. You can't delete it while in use.");
-            }
+            if (isUsedInDiagnosisXDrugs) errors.Add("Diagnosis is linked to drugs. You can't delete it while in use.");
 
             return errors.Any() ? Result.Failure(errors) : Result.Success();
         }

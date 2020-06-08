@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Domain.Common
 {
     public class AuditableEntity
     {
-
         public long? CreatedBy { get; set; }
 
         public DateTime CreatedOn { get; set; }

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
 using MediatR;
@@ -15,10 +12,11 @@ namespace Application.System.Commands.SeedSampleData
     public class SeedSampleDataCommandHandler : IRequestHandler<SeedSampleDataCommand>
     {
         private readonly IApplicationDbContext _context;
-        private readonly IIdentityService _identityService;
         private readonly IDateTime _dateTimeService;
+        private readonly IIdentityService _identityService;
 
-        public SeedSampleDataCommandHandler(IApplicationDbContext context, IIdentityService identityService, IDateTime dateTimeService)
+        public SeedSampleDataCommandHandler(IApplicationDbContext context, IIdentityService identityService,
+            IDateTime dateTimeService)
         {
             _context = context;
             _identityService = identityService;

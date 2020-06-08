@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.CommandsAndQueries
 {
-    public class UpdatePrescriptionXDrugCommandValidator: AbstractValidator<UpdatePrescriptionXDrugCommand>
+    public class UpdatePrescriptionXDrugCommandValidator : AbstractValidator<UpdatePrescriptionXDrugCommand>
     {
         private readonly IApplicationDbContext _context;
 

@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
 using Application.Common.Models;
-using Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,7 +14,7 @@ namespace Application.CommandsAndQueries
         public int NoOfDays { get; set; }
         public string Description { get; set; }
     }
-    
+
     public class UpdatePrescriptionCommandHandler : IRequestHandler<UpdatePrescriptionCommand, Result>
     {
         private readonly IApplicationDbContext _context;
@@ -32,10 +29,7 @@ namespace Application.CommandsAndQueries
             var prescription = await _context.Prescriptions
                 .FirstOrDefaultAsync(x => x.Id == request.Id && !x.Deleted, cancellationToken);
 
-            if (prescription == null)
-            {
-                return Result.Failure(new List<string> {"No valid prescription found"});
-            }
+            if (prescription == null) return Result.Failure(new List<string> {"No valid prescription found"});
 
             prescription.Description = request.Description;
             prescription.NoOfDays = request.NoOfDays;
@@ -44,6 +38,6 @@ namespace Application.CommandsAndQueries
 
             await _context.SaveChangesAsync(cancellationToken);
             return Result.Success("Prescription update was successful");
-            }
+        }
     }
 }

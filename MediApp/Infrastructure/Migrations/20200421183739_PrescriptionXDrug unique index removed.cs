@@ -7,25 +7,25 @@ namespace Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropIndex(
-                name: "IX_PrescriptionXDrug_PrescriptionId_DrugId",
-                table: "PrescriptionXDrug");
+                "IX_PrescriptionXDrug_PrescriptionId_DrugId",
+                "PrescriptionXDrug");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PrescriptionXDrug_PrescriptionId",
-                table: "PrescriptionXDrug",
-                column: "PrescriptionId");
+                "IX_PrescriptionXDrug_PrescriptionId",
+                "PrescriptionXDrug",
+                "PrescriptionId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropIndex(
-                name: "IX_PrescriptionXDrug_PrescriptionId",
-                table: "PrescriptionXDrug");
+                "IX_PrescriptionXDrug_PrescriptionId",
+                "PrescriptionXDrug");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PrescriptionXDrug_PrescriptionId_DrugId",
-                table: "PrescriptionXDrug",
-                columns: new[] { "PrescriptionId", "DrugId" },
+                "IX_PrescriptionXDrug_PrescriptionId_DrugId",
+                "PrescriptionXDrug",
+                new[] {"PrescriptionId", "DrugId"},
                 unique: true);
         }
     }

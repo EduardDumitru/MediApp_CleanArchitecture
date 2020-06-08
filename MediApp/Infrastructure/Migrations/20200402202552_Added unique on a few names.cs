@@ -7,67 +7,67 @@ namespace Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateIndex(
-                name: "IX_MedicalCheckType_Name",
-                table: "MedicalCheckType",
-                column: "Name",
+                "IX_MedicalCheckType_Name",
+                "MedicalCheckType",
+                "Name",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Gender_Name",
-                table: "Gender",
-                column: "Name",
+                "IX_Gender_Name",
+                "Gender",
+                "Name",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_EmployeeType_Name",
-                table: "EmployeeType",
-                column: "Name",
+                "IX_EmployeeType_Name",
+                "EmployeeType",
+                "Name",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Drug_Name",
-                table: "Drug",
-                column: "Name",
+                "IX_Drug_Name",
+                "Drug",
+                "Name",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Diagnosis_Name",
-                table: "Diagnosis",
-                column: "Name",
+                "IX_Diagnosis_Name",
+                "Diagnosis",
+                "Name",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Country_Name",
-                table: "Country",
-                column: "Name",
+                "IX_Country_Name",
+                "Country",
+                "Name",
                 unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropIndex(
-                name: "IX_MedicalCheckType_Name",
-                table: "MedicalCheckType");
+                "IX_MedicalCheckType_Name",
+                "MedicalCheckType");
 
             migrationBuilder.DropIndex(
-                name: "IX_Gender_Name",
-                table: "Gender");
+                "IX_Gender_Name",
+                "Gender");
 
             migrationBuilder.DropIndex(
-                name: "IX_EmployeeType_Name",
-                table: "EmployeeType");
+                "IX_EmployeeType_Name",
+                "EmployeeType");
 
             migrationBuilder.DropIndex(
-                name: "IX_Drug_Name",
-                table: "Drug");
+                "IX_Drug_Name",
+                "Drug");
 
             migrationBuilder.DropIndex(
-                name: "IX_Diagnosis_Name",
-                table: "Diagnosis");
+                "IX_Diagnosis_Name",
+                "Diagnosis");
 
             migrationBuilder.DropIndex(
-                name: "IX_Country_Name",
-                table: "Country");
+                "IX_Country_Name",
+                "Country");
         }
     }
 }

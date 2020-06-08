@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
@@ -33,10 +31,7 @@ namespace Application.CommandsAndQueries
                 .FirstOrDefaultAsync(x => x.Id == request.Id && x.Deleted, cancellationToken);
 
             var validationResult = Validations(entity);
-            if (!validationResult.Succeeded)
-            {
-                return validationResult;
-            }
+            if (!validationResult.Succeeded) return validationResult;
 
             entity.Deleted = false;
             entity.DeletedBy = null;
@@ -51,15 +46,10 @@ namespace Application.CommandsAndQueries
         {
             var errors = new List<string>();
 
-            if (entity == null)
-            {
-                return Result.Failure(new List<string> {"No valid city found"});
-            }
+            if (entity == null) return Result.Failure(new List<string> {"No valid city found"});
 
             if (entity.County == null || entity.County != null && entity.County.Deleted)
-            {
                 errors.Add("County is deleted. You must update that first.");
-            }
 
             return errors.Any() ? Result.Failure(errors) : Result.Success();
         }

@@ -7,8 +7,8 @@ namespace Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterColumn<string>(
-                name: "Name",
-                table: "Clinic",
+                "Name",
+                "Clinic",
                 nullable: false,
                 oldClrType: typeof(string),
                 oldType: "nvarchar(max)",
@@ -18,9 +18,9 @@ namespace Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterColumn<string>(
-                name: "Name",
-                table: "Clinic",
-                type: "nvarchar(max)",
+                "Name",
+                "Clinic",
+                "nvarchar(max)",
                 nullable: true,
                 oldClrType: typeof(string));
         }

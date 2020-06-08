@@ -13,7 +13,8 @@ namespace Application.CommandsAndQueries
         public int DiagnosisId { get; set; }
     }
 
-    public class GetDrugsByDiagnosisDropdownQueryHandler : IRequestHandler<GetDrugsByDiagnosisDropdownQuery, SelectItemVm>
+    public class
+        GetDrugsByDiagnosisDropdownQueryHandler : IRequestHandler<GetDrugsByDiagnosisDropdownQuery, SelectItemVm>
     {
         private readonly IApplicationDbContext _context;
 
@@ -22,7 +23,8 @@ namespace Application.CommandsAndQueries
             _context = context;
         }
 
-        public async Task<SelectItemVm> Handle(GetDrugsByDiagnosisDropdownQuery request, CancellationToken cancellationToken)
+        public async Task<SelectItemVm> Handle(GetDrugsByDiagnosisDropdownQuery request,
+            CancellationToken cancellationToken)
         {
             var vm = new SelectItemVm
             {

@@ -11,7 +11,9 @@ namespace Application.CommandsAndQueries
         public short Id { get; set; }
     }
 
-    public class GetMedicalCheckTypeDetailsQueryHandler : IRequestHandler<GetMedicalCheckTypeDetailsQuery, MedicalCheckTypeDetailsVm>
+    public class
+        GetMedicalCheckTypeDetailsQueryHandler : IRequestHandler<GetMedicalCheckTypeDetailsQuery,
+            MedicalCheckTypeDetailsVm>
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;

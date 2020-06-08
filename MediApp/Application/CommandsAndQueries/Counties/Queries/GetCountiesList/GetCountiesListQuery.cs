@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
 using AutoMapper;
@@ -33,7 +30,7 @@ namespace Application.CommandsAndQueries
                 .ProjectTo<CountiesLookupDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
 
-            var vm = new CountiesListVm()
+            var vm = new CountiesListVm
             {
                 Counties = counties
             };

@@ -1,11 +1,8 @@
-﻿using Application.Common.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
+using Application.Common.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,9 +29,9 @@ namespace Application.CommandsAndQueries
             var vm = new SelectItemVm
             {
                 SelectItems = await _context.Clinics
-                    .Where(x => (!request.CountryId.HasValue || request.CountryId.Value == x.CountryId) 
-                                && (!request.CountyId.HasValue || request.CountyId.Value == x.CountyId) 
-                                && (!request.CityId.HasValue || request.CityId.Value == x.CityId) 
+                    .Where(x => (!request.CountryId.HasValue || request.CountryId.Value == x.CountryId)
+                                && (!request.CountyId.HasValue || request.CountyId.Value == x.CountyId)
+                                && (!request.CityId.HasValue || request.CityId.Value == x.CityId)
                                 && !x.Deleted)
                     .Select(x => new SelectItemDto {Label = x.Name, Value = x.Id.ToString()})
                     .ToListAsync(cancellationToken)

@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Application.Common.Interfaces;
 using Application.Common.Models;
 using Domain.Entities;
-using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,10 +31,7 @@ namespace Application.CommandsAndQueries
                 .FirstOrDefaultAsync(x => x.Id == request.Id && !x.Deleted, cancellationToken);
 
             var validationResult = Validations(entity);
-            if (!validationResult.Succeeded)
-            {
-                return validationResult;
-            }
+            if (!validationResult.Succeeded) return validationResult;
 
             entity.Deleted = true;
 
@@ -48,18 +44,13 @@ namespace Application.CommandsAndQueries
         {
             var errors = new List<string>();
 
-            if (entity == null)
-            {
-                return Result.Failure(new List<string> {"No valid prescription found"});
-            }
+            if (entity == null) return Result.Failure(new List<string> {"No valid prescription found"});
 
             var isUsedInPrescriptionXDrugs = entity.PrescriptionXDrugs.Any(x => !x.Deleted);
 
             if (isUsedInPrescriptionXDrugs)
-            {
                 errors.Add("Prescription is used in the link between this Prescription and Drugs. " +
                            "You must delete the links first.");
-            }
 
             return errors.Any() ? Result.Failure(errors) : Result.Success();
         }

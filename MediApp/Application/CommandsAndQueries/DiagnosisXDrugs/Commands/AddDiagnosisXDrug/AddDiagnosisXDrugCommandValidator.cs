@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
 using FluentValidation;
-using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.CommandsAndQueries
@@ -26,9 +25,11 @@ namespace Application.CommandsAndQueries
                 .Must(NoExistingLinkBetweenDiagnosisAndDrug).WithMessage("Link already exists");
         }
 
-        private bool NoExistingLinkBetweenDiagnosisAndDrug(AddDiagnosisXDrugCommand addDiagnosisXDrugCommand, long drugId)
+        private bool NoExistingLinkBetweenDiagnosisAndDrug(AddDiagnosisXDrugCommand addDiagnosisXDrugCommand,
+            long drugId)
         {
-            return _context.DiagnosisXDrugs.All(x => x.DrugId != drugId && x.DiagnosisId != addDiagnosisXDrugCommand.DiagnosisId);
+            return _context.DiagnosisXDrugs.All(x =>
+                x.DrugId != drugId && x.DiagnosisId != addDiagnosisXDrugCommand.DiagnosisId);
         }
 
         private async Task<bool> ExistsDrug(long drugId, CancellationToken cancellationToken)

@@ -27,10 +27,7 @@ namespace Application.CommandsAndQueries
             var entity = await _context.EmployeeTypes
                 .FirstOrDefaultAsync(x => x.Id == request.Id && x.Deleted, cancellationToken);
 
-            if (entity == null)
-            {
-                return Result.Failure(new List<string> {"No valid employee type found"});
-            }
+            if (entity == null) return Result.Failure(new List<string> {"No valid employee type found"});
 
             entity.Deleted = false;
             entity.DeletedBy = null;

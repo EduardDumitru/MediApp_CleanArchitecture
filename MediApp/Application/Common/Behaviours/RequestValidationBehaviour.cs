@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using MediatR;
 using FluentValidation;
 using FluentValidation.Results;
+using MediatR;
 using ValidationException = Application.Common.Exceptions.ValidationException;
 
 namespace Application.Common.Behaviours
@@ -32,16 +30,10 @@ namespace Application.Common.Behaviours
             foreach (var validator in validators)
             {
                 var validationResult = await validator;
-                if (validationResult.Errors.Any())
-                {
-                    failures.AddRange(validationResult.Errors);
-                }
+                if (validationResult.Errors.Any()) failures.AddRange(validationResult.Errors);
             }
 
-            if (failures.Count != 0)
-            {
-                throw new ValidationException(failures);
-            }
+            if (failures.Count != 0) throw new ValidationException(failures);
 
             return await next();
         }

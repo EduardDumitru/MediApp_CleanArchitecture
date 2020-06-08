@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Domain.Entities;
-using Infrastructure.Identity;
+﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -13,7 +9,7 @@ namespace Infrastructure.Persistence.Configurations
         public void Configure(EntityTypeBuilder<City> builder)
         {
             builder.ToTable(nameof(City));
-            
+
             builder.Property(x => x.Name)
                 .HasMaxLength(200)
                 .IsRequired();

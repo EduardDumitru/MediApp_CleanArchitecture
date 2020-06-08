@@ -36,7 +36,7 @@ namespace Application.CommandsAndQueries
                 .ProjectTo<PrescriptionXDrugsLookupDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
 
-            var vm = new PrescriptionXDrugsListVm()
+            var vm = new PrescriptionXDrugsListVm
             {
                 PrescriptionXDrugs = prescriptionXDrugs
             };

@@ -18,8 +18,8 @@ namespace Application.CommandsAndQueries
             profile.CreateMap<HolidayInterval, HolidayIntervalsLookupDto>()
                 .ForMember(d => d.EmployeeName,
                     opt => opt.MapFrom(s =>
-                        s.Employee != null ? 
-                            s.Employee.UserProfile != null ? s.Employee.UserProfile.GetFullName() : string.Empty
+                        s.Employee != null
+                            ? s.Employee.UserProfile != null ? s.Employee.UserProfile.GetFullName() : string.Empty
                             : string.Empty));
         }
     }

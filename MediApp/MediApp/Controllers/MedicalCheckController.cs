@@ -1,9 +1,9 @@
-﻿using Application.CommandsAndQueries;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Application.CommandsAndQueries;
 using Application.Common.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace MediApp.Controllers
 {
@@ -15,10 +15,7 @@ namespace MediApp.Controllers
         {
             var vm = await Mediator.Send(new GetMedicalCheckDetailsQuery {Id = id});
 
-            if (vm == null)
-            {
-                return BadRequest(Result.Failure(new List<string> {"No valid medical check was found"}));
-            }
+            if (vm == null) return BadRequest(Result.Failure(new List<string> {"No valid medical check was found"}));
 
             return Ok(vm);
         }
@@ -27,12 +24,9 @@ namespace MediApp.Controllers
         [Authorize(Roles = "Admin, Doctor, Nurse")]
         public async Task<ActionResult<EmployeeMedicalChecksListVm>> GetEmployeeMedicalCheck(long employeeId)
         {
-            var vm = await Mediator.Send(new GetEmployeeMedicalChecksListQuery() {EmployeeId = employeeId});
+            var vm = await Mediator.Send(new GetEmployeeMedicalChecksListQuery {EmployeeId = employeeId});
 
-            if (vm == null)
-            {
-                return BadRequest(Result.Failure(new List<string> {"No valid medical check was found"}));
-            }
+            if (vm == null) return BadRequest(Result.Failure(new List<string> {"No valid medical check was found"}));
 
             return Ok(vm);
         }
@@ -40,12 +34,9 @@ namespace MediApp.Controllers
         [HttpGet("patientmedicalchecks/{patientId}")]
         public async Task<ActionResult<PatientMedicalChecksListVm>> GetPatientMedicalCheck(long patientId)
         {
-            var vm = await Mediator.Send(new GetPatientMedicalChecksListQuery() {PatientId = patientId});
+            var vm = await Mediator.Send(new GetPatientMedicalChecksListQuery {PatientId = patientId});
 
-            if (vm == null)
-            {
-                return BadRequest(Result.Failure(new List<string> {"No valid medical check was found"}));
-            }
+            if (vm == null) return BadRequest(Result.Failure(new List<string> {"No valid medical check was found"}));
 
             return Ok(vm);
         }
@@ -54,12 +45,9 @@ namespace MediApp.Controllers
         [Authorize(Roles = "Admin, Doctor, Nurse")]
         public async Task<ActionResult<MedicalChecksByClinicListVm>> GetMedicalChecksByClinic(int clinicId)
         {
-            var vm = await Mediator.Send(new GetMedicalChecksByClinicQuery() {ClinicId = clinicId});
+            var vm = await Mediator.Send(new GetMedicalChecksByClinicQuery {ClinicId = clinicId});
 
-            if (vm == null)
-            {
-                return BadRequest(Result.Failure(new List<string> {"No valid medical check was found"}));
-            }
+            if (vm == null) return BadRequest(Result.Failure(new List<string> {"No valid medical check was found"}));
 
             return Ok(vm);
         }
@@ -70,10 +58,7 @@ namespace MediApp.Controllers
         {
             var vm = await Mediator.Send(medicalChecksToAddListQuery);
 
-            if (vm == null)
-            {
-                return BadRequest(Result.Failure(new List<string> {"No valid medical check was found"}));
-            }
+            if (vm == null) return BadRequest(Result.Failure(new List<string> {"No valid medical check was found"}));
 
             return Ok(vm);
         }
@@ -83,10 +68,7 @@ namespace MediApp.Controllers
         {
             var result = await Mediator.Send(command);
 
-            if (!result.Succeeded)
-            {
-                return BadRequest(result);
-            }
+            if (!result.Succeeded) return BadRequest(result);
 
             return Ok(result);
         }
@@ -97,10 +79,7 @@ namespace MediApp.Controllers
         {
             var result = await Mediator.Send(command);
 
-            if (!result.Succeeded)
-            {
-                return BadRequest(result);
-            }
+            if (!result.Succeeded) return BadRequest(result);
 
             return Ok(result);
         }
@@ -110,10 +89,7 @@ namespace MediApp.Controllers
         {
             var result = await Mediator.Send(new DeleteMedicalCheckCommand {Id = medicalCheckId});
 
-            if (!result.Succeeded)
-            {
-                return BadRequest(result);
-            }
+            if (!result.Succeeded) return BadRequest(result);
 
             return Ok(result);
         }

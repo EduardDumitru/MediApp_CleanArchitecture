@@ -10,8 +10,8 @@ namespace Application.CommandsAndQueries
 {
     public class GetAllEmployeesDropdownQuery : IRequest<SelectItemVm>
     {
-        
     }
+
     public class GetAllEmployeesDropdownQueryHandler : IRequestHandler<GetAllEmployeesDropdownQuery, SelectItemVm>
     {
         private readonly IApplicationDbContext _context;

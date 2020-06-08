@@ -1,10 +1,5 @@
-
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Application;
 using Application.Common.Interfaces;
-using AutoMapper;
 using FluentValidation.AspNetCore;
 using Infrastructure;
 using Infrastructure.Persistence;
@@ -13,12 +8,9 @@ using MediApp.Options;
 using MediApp.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace MediApp
 {
@@ -65,10 +57,7 @@ namespace MediApp
         {
             app.UseCors("Cors");
 
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
 
             app.UseHttpsRedirection();
 

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 using Domain.Common;
 
 namespace Domain.Entities
@@ -16,7 +13,7 @@ namespace Domain.Entities
         public TimeSpan Interval { get; set; }
 
         public Prescription Prescription { get; set; }
-        
+
         public Drug Drug { get; set; }
     }
 }

@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
@@ -34,10 +32,7 @@ namespace Application.CommandsAndQueries
                 .FirstOrDefaultAsync(x => x.Id == request.Id && !x.Deleted, cancellationToken);
 
             var validationResult = Validations(entity);
-            if (!validationResult.Succeeded)
-            {
-                return validationResult;
-            }
+            if (!validationResult.Succeeded) return validationResult;
 
             entity.Deleted = true;
 
@@ -49,24 +44,15 @@ namespace Application.CommandsAndQueries
         private Result Validations(Clinic entity)
         {
             var errors = new List<string>();
-            if (entity == null)
-            {
-                return Result.Failure(new List<string> {"No valid clinic found"});
-            }
+            if (entity == null) return Result.Failure(new List<string> {"No valid clinic found"});
 
             var isUsedInEmployee = entity.Employees.Any(x => !x.Deleted);
 
-            if (isUsedInEmployee)
-            {
-                errors.Add("Clinic is used in employees. You can't delete it while in use.");
-            }
+            if (isUsedInEmployee) errors.Add("Clinic is used in employees. You can't delete it while in use.");
 
             var isUsedInMedicalCheck = entity.MedicalChecks.Any(x => !x.Deleted);
 
-            if (isUsedInMedicalCheck)
-            {
-                errors.Add("Clinic is used in medical checks. You can't delete it while in use.");
-            }
+            if (isUsedInMedicalCheck) errors.Add("Clinic is used in medical checks. You can't delete it while in use.");
 
             return errors.Any() ? Result.Failure(errors) : Result.Success();
         }

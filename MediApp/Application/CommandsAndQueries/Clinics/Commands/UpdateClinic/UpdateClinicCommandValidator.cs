@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Application.CommandsAndQueries;
 using Application.Common.Interfaces;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +10,7 @@ namespace Application.CommandsAndQueries
     public class UpdateClinicCommandValidator : AbstractValidator<UpdateClinicCommand>
     {
         private readonly IApplicationDbContext _context;
+
         public UpdateClinicCommandValidator(IApplicationDbContext context)
         {
             _context = context;
@@ -31,7 +28,8 @@ namespace Application.CommandsAndQueries
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("Phone number is required.")
                 .Length(10).WithMessage("Phone number must have 10 digits")
-                .Matches("^(07[0-8]{1}[0-9]{1}|02[0-9]{2}|03[0-9]{2}){1}?([0-9]{3}){2}$").WithMessage("Phone number is not valid");
+                .Matches("^(07[0-8]{1}[0-9]{1}|02[0-9]{2}|03[0-9]{2}){1}?([0-9]{3}){2}$")
+                .WithMessage("Phone number is not valid");
             RuleFor(x => x.StreetNo)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("Street Number is required");

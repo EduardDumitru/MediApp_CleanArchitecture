@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
 using AutoMapper;
@@ -18,6 +15,7 @@ namespace Application.CommandsAndQueries
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
+
         public GetGenderDetailsQueryHandler(IApplicationDbContext context, IMapper mapper)
         {
             _context = context;
@@ -31,5 +29,4 @@ namespace Application.CommandsAndQueries
             return entity == null ? null : _mapper.Map<GenderDetailsVm>(entity);
         }
     }
-
 }

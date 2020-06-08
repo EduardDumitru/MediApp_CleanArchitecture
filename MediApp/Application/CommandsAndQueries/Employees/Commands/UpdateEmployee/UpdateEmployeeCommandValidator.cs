@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.CommandsAndQueries
 {
-    public class UpdateEmployeeCommandValidator: AbstractValidator<UpdateEmployeeCommand>
+    public class UpdateEmployeeCommandValidator : AbstractValidator<UpdateEmployeeCommand>
     {
         private readonly IApplicationDbContext _context;
 
@@ -48,11 +48,12 @@ namespace Application.CommandsAndQueries
                 .WithMessage("Termination date is not valid. It interferes with medical checks. Delete those first.");
         }
 
-        private async Task<bool> NotInterfereWithAppointments(UpdateEmployeeCommand updateEmployeeCommand, DateTime? date,
+        private async Task<bool> NotInterfereWithAppointments(UpdateEmployeeCommand updateEmployeeCommand,
+            DateTime? date,
             CancellationToken cancellationToken)
         {
             return await _context.MedicalChecks.AnyAsync(
-                x => updateEmployeeCommand.Id == x.Id && x.Appointment >= date.Value.ToLocalTime() && !x.Deleted, 
+                x => updateEmployeeCommand.Id == x.Id && x.Appointment >= date.Value.ToLocalTime() && !x.Deleted,
                 cancellationToken);
         }
 
@@ -69,24 +70,22 @@ namespace Application.CommandsAndQueries
             if (TimeSpan.TryParseExact(hours, "h\\:mm\\:ss", CultureInfo.CurrentCulture,
                 TimeSpanStyles.None,
                 out var result))
-            {
                 return await Task.FromResult(result.Minutes == 0 || result.Minutes == 30);
-            }
 
             return await Task.FromResult(false);
         }
 
-        private async Task<bool> BeHigherThanStartHourByAtLeastFourHours(UpdateEmployeeCommand updateEmployeeCommand, string endHour,
+        private async Task<bool> BeHigherThanStartHourByAtLeastFourHours(UpdateEmployeeCommand updateEmployeeCommand,
+            string endHour,
             CancellationToken cancellationToken)
         {
             if (TimeSpan.TryParseExact(endHour, "h\\:mm\\:ss", CultureInfo.CurrentCulture,
-                    TimeSpanStyles.None,
-                    out var endHours) && TimeSpan.TryParseExact(updateEmployeeCommand.StartHour, "h\\:mm\\:ss", CultureInfo.CurrentCulture,
-                    TimeSpanStyles.None,
-                    out var startHours))
-            {
+                TimeSpanStyles.None,
+                out var endHours) && TimeSpan.TryParseExact(updateEmployeeCommand.StartHour, "h\\:mm\\:ss",
+                CultureInfo.CurrentCulture,
+                TimeSpanStyles.None,
+                out var startHours))
                 return await Task.FromResult(endHours >= startHours + new TimeSpan(4, 0, 0));
-            }
 
             return await Task.FromResult(false);
         }

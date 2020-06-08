@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Data;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -61,7 +60,8 @@ namespace Application.CommandsAndQueries
         private bool ExistsEmployeeInMedicalCheckType(AddMedicalCheckCommand medicalCheckCommand, long employeeId)
         {
             return _context.Employees
-                .Any(x => x.Id == employeeId && x.MedicalCheckTypeId == medicalCheckCommand.MedicalCheckTypeId && !x.Deleted);
+                .Any(x => x.Id == employeeId && x.MedicalCheckTypeId == medicalCheckCommand.MedicalCheckTypeId &&
+                          !x.Deleted);
         }
 
         private async Task<bool> ExistsClinic(int clinicId, CancellationToken cancellationToken)

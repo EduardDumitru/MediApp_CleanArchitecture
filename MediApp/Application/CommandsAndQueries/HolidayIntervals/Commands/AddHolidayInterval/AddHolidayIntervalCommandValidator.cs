@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Application.CommandsAndQueries
 {
@@ -27,7 +25,8 @@ namespace Application.CommandsAndQueries
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("End date is required")
                 .Must(IsSmallerThanEndDate).WithMessage("Start date must be before end date or equal")
-                .Must(NoHolidayIntervalsInThisPeriod).WithMessage("Employee has other holiday intervals in this period");
+                .Must(NoHolidayIntervalsInThisPeriod)
+                .WithMessage("Employee has other holiday intervals in this period");
             RuleFor(x => x.EmployeeId)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("Employee is required")
@@ -38,16 +37,16 @@ namespace Application.CommandsAndQueries
         private bool NoMedicalChecksInThisPeriod(AddHolidayIntervalCommand holidayIntervalCommand, long employeeId)
         {
             return _context.MedicalChecks.Any(x => x.EmployeeId == employeeId &&
-                x.Appointment >= holidayIntervalCommand.StartDate.ToLocalTime() &&
-                x.Appointment <= holidayIntervalCommand.EndDate.ToLocalTime() &&
-                !x.Deleted);
+                                                   x.Appointment >= holidayIntervalCommand.StartDate.ToLocalTime() &&
+                                                   x.Appointment <= holidayIntervalCommand.EndDate.ToLocalTime() &&
+                                                   !x.Deleted);
         }
 
         private bool NoHolidayIntervalsInThisPeriod(AddHolidayIntervalCommand holidayIntervalCommand,
             DateTime endDate)
         {
             return _context.HolidayIntervals.Any(x =>
-                x.StartDate.ToLocalTime() >= holidayIntervalCommand.StartDate.ToLocalTime() 
+                x.StartDate.ToLocalTime() >= holidayIntervalCommand.StartDate.ToLocalTime()
                 && x.EndDate.ToLocalTime() <= endDate.ToLocalTime());
         }
 

@@ -1,14 +1,14 @@
-﻿using Application.CommandsAndQueries;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Application.CommandsAndQueries;
 using Application.CommandsAndQueries.Genders.Commands.RestoreGender;
 using Application.Common.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace MediApp.Controllers
 {
-    public class GenderController: ApiController
+    public class GenderController : ApiController
     {
         [HttpGet("{id}")]
         [Authorize(Roles = "Admin")]
@@ -16,10 +16,7 @@ namespace MediApp.Controllers
         {
             var vm = await Mediator.Send(new GetGenderDetailsQuery {Id = id});
 
-            if (vm == null)
-            {
-                return BadRequest(Result.Failure(new List<string> {"No valid gender was found"}));
-            }
+            if (vm == null) return BadRequest(Result.Failure(new List<string> {"No valid gender was found"}));
 
             return Ok(vm);
         }
@@ -47,10 +44,7 @@ namespace MediApp.Controllers
         {
             var result = await Mediator.Send(command);
 
-            if (!result.Succeeded)
-            {
-                return BadRequest(result);
-            }
+            if (!result.Succeeded) return BadRequest(result);
 
             return Ok(result);
         }
@@ -61,10 +55,7 @@ namespace MediApp.Controllers
         {
             var result = await Mediator.Send(command);
 
-            if (!result.Succeeded)
-            {
-                return BadRequest(result);
-            }
+            if (!result.Succeeded) return BadRequest(result);
 
             return Ok(result);
         }
@@ -75,10 +66,7 @@ namespace MediApp.Controllers
         {
             var result = await Mediator.Send(new DeleteGenderCommand {Id = genderId});
 
-            if (!result.Succeeded)
-            {
-                return BadRequest(result);
-            }
+            if (!result.Succeeded) return BadRequest(result);
 
             return Ok(result);
         }
@@ -89,10 +77,7 @@ namespace MediApp.Controllers
         {
             var result = await Mediator.Send(command);
 
-            if (!result.Succeeded)
-            {
-                return BadRequest(result);
-            }
+            if (!result.Succeeded) return BadRequest(result);
 
             return Ok(result);
         }

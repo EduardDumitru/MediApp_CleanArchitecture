@@ -13,7 +13,8 @@ namespace Application.CommandsAndQueries
     {
     }
 
-    public class GetHolidayIntervalsListQueryHandler : IRequestHandler<GetHolidayIntervalsListQuery, HolidayIntervalsListVm>
+    public class
+        GetHolidayIntervalsListQueryHandler : IRequestHandler<GetHolidayIntervalsListQuery, HolidayIntervalsListVm>
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
@@ -24,7 +25,8 @@ namespace Application.CommandsAndQueries
             _mapper = mapper;
         }
 
-        public async Task<HolidayIntervalsListVm> Handle(GetHolidayIntervalsListQuery request, CancellationToken cancellationToken)
+        public async Task<HolidayIntervalsListVm> Handle(GetHolidayIntervalsListQuery request,
+            CancellationToken cancellationToken)
         {
             var holidayIntervals = await _context.HolidayIntervals
                 .Include(x => x.Employee).ThenInclude(x => x.UserProfile)
@@ -32,7 +34,7 @@ namespace Application.CommandsAndQueries
                 .ProjectTo<HolidayIntervalsLookupDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
 
-            var vm = new HolidayIntervalsListVm()
+            var vm = new HolidayIntervalsListVm
             {
                 HolidayIntervals = holidayIntervals
             };

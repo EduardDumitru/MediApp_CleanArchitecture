@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
@@ -29,10 +28,7 @@ namespace Application.CommandsAndQueries
             var entity = await _context.MedicalChecks
                 .FirstOrDefaultAsync(x => x.Id == request.Id && !x.Deleted, cancellationToken);
 
-            if (entity == null)
-            {
-                return Result.Failure(new List<string> {"No valid medical check found"});
-            }
+            if (entity == null) return Result.Failure(new List<string> {"No valid medical check found"});
 
             entity.DiagnosisId = request.DiagnosisId;
 

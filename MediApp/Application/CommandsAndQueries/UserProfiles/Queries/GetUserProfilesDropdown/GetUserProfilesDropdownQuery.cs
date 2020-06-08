@@ -10,7 +10,6 @@ namespace Application.CommandsAndQueries
 {
     public class GetUserProfilesDropdownQuery : IRequest<SelectItemVm>
     {
-
     }
 
     public class GetUserProfilesDropdownQueryHandler : IRequestHandler<GetUserProfilesDropdownQuery, SelectItemVm>

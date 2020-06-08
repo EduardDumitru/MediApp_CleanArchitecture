@@ -22,23 +22,23 @@ namespace Application.CommandsAndQueries
                 .ForMember(d => d.MedicalCheckTypeName,
                     opt => opt.MapFrom(s =>
                         s.MedicalCheck != null
-                            ? (s.MedicalCheck.MedicalCheckType != null
+                            ? s.MedicalCheck.MedicalCheckType != null
                                 ? s.MedicalCheck.MedicalCheckType.Name
-                                : string.Empty)
+                                : string.Empty
                             : string.Empty))
                 .ForMember(d => d.ClinicName,
                     opt => opt.MapFrom(s =>
                         s.MedicalCheck != null
-                            ? (s.MedicalCheck.Clinic != null
+                            ? s.MedicalCheck.Clinic != null
                                 ? s.MedicalCheck.Clinic.Name
-                                : string.Empty)
+                                : string.Empty
                             : string.Empty))
                 .ForMember(d => d.DiagnosisName,
                     opt => opt.MapFrom(s =>
                         s.MedicalCheck != null
-                            ? (s.MedicalCheck.Diagnosis != null
+                            ? s.MedicalCheck.Diagnosis != null
                                 ? s.MedicalCheck.Diagnosis.Name
-                                : string.Empty)
+                                : string.Empty
                             : string.Empty))
                 .ForMember(d => d.PatientName,
                     opt => opt.MapFrom(s =>

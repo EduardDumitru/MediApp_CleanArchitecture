@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Application.Common.Mappings;
 using AutoMapper;
 using Domain.Entities;
@@ -49,9 +47,9 @@ namespace Application.CommandsAndQueries
                 .ForMember(d => d.EmployeeName,
                     opt => opt.MapFrom(s =>
                         s.Employee != null
-                            ? (s.Employee.UserProfile != null
+                            ? s.Employee.UserProfile != null
                                 ? s.Employee.UserProfile.GetFullName()
-                                : string.Empty)
+                                : string.Empty
                             : string.Empty));
         }
     }

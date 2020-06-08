@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
@@ -31,10 +29,7 @@ namespace Application.CommandsAndQueries
             var entity = await _context.Cities
                 .FirstOrDefaultAsync(x => x.Id == request.Id && !x.Deleted, cancellationToken);
 
-            if (entity == null)
-            {
-                return Result.Failure(new List<string> {"No valid city found"});
-            }
+            if (entity == null) return Result.Failure(new List<string> {"No valid city found"});
 
             entity.Name = request.Name;
             entity.CountyId = request.CountyId;

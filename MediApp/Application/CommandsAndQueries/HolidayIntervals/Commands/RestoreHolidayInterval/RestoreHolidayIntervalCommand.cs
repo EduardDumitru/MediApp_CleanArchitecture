@@ -33,10 +33,7 @@ namespace Application.CommandsAndQueries
                 .FirstOrDefaultAsync(x => x.Id == request.Id && x.Deleted, cancellationToken);
 
             var validationResult = Validations(entity);
-            if (!validationResult.Succeeded)
-            {
-                return validationResult;
-            }
+            if (!validationResult.Succeeded) return validationResult;
 
             entity.Deleted = false;
             entity.DeletedBy = null;
@@ -51,24 +48,17 @@ namespace Application.CommandsAndQueries
         {
             var errors = new List<string>();
 
-            if (entity == null)
-            {
-                return Result.Failure(new List<string> {"No valid holiday interval found"});
-            }
+            if (entity == null) return Result.Failure(new List<string> {"No valid holiday interval found"});
 
             var dateNow = _dateTime.Now.Date;
 
-            var isInPast = entity.EndDate.Date <= dateNow || entity.EndDate.Date > dateNow && entity.StartDate.Date <= dateNow;
+            var isInPast = entity.EndDate.Date <= dateNow ||
+                           entity.EndDate.Date > dateNow && entity.StartDate.Date <= dateNow;
 
-            if (isInPast)
-            {
-                errors.Add("Holiday interval is in past. You can't restore it!");
-            }
+            if (isInPast) errors.Add("Holiday interval is in past. You can't restore it!");
 
             if (entity.Employee == null || entity.Employee != null && entity.Employee.Deleted)
-            {
                 errors.Add("Employee is deleted. You must update that first.");
-            }
 
             return errors.Any() ? Result.Failure(errors) : Result.Success();
         }

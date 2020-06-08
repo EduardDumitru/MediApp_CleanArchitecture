@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using Application.Common.Interfaces;
-using Domain.Entities;
 using FluentValidation;
-using Microsoft.EntityFrameworkCore;
 
 namespace Application.CommandsAndQueries
 {
     public class UpdateGenderValidator : AbstractValidator<UpdateGenderCommand>
     {
         private readonly IApplicationDbContext _context;
+
         public UpdateGenderValidator(IApplicationDbContext context)
         {
             _context = context;

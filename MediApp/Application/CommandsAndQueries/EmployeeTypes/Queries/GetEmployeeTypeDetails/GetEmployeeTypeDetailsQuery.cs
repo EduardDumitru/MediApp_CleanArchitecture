@@ -11,7 +11,8 @@ namespace Application.CommandsAndQueries
         public short Id { get; set; }
     }
 
-    public class GetEmployeeTypeDetailsQueryHandler : IRequestHandler<GetEmployeeTypeDetailsQuery, EmployeeTypeDetailsVm>
+    public class
+        GetEmployeeTypeDetailsQueryHandler : IRequestHandler<GetEmployeeTypeDetailsQuery, EmployeeTypeDetailsVm>
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
@@ -22,7 +23,8 @@ namespace Application.CommandsAndQueries
             _mapper = mapper;
         }
 
-        public async Task<EmployeeTypeDetailsVm> Handle(GetEmployeeTypeDetailsQuery request, CancellationToken cancellationToken)
+        public async Task<EmployeeTypeDetailsVm> Handle(GetEmployeeTypeDetailsQuery request,
+            CancellationToken cancellationToken)
         {
             var entity = await _context.EmployeeTypes.FindAsync(request.Id);
 

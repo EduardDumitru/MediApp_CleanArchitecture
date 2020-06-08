@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
+﻿using System.Collections.Generic;
 using Domain.Common;
 
 namespace Domain.Entities
@@ -13,12 +10,13 @@ namespace Domain.Entities
             Clinics = new HashSet<Clinic>();
             UserProfiles = new HashSet<UserProfile>();
         }
+
         public int Id { get; set; }
         public string Name { get; set; }
         public int CountyId { get; set; }
 
         public County County { get; set; }
-        public ICollection<Clinic> Clinics { get; private set; }
-        public ICollection<UserProfile> UserProfiles { get; private set; }
+        public ICollection<Clinic> Clinics { get; }
+        public ICollection<UserProfile> UserProfiles { get; }
     }
 }

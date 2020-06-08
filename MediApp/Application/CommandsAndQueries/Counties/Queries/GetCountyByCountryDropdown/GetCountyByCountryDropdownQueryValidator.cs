@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
 using FluentValidation;
@@ -12,6 +9,7 @@ namespace Application.CommandsAndQueries
     public class GetCountyByCountryDropdownQueryValidator : AbstractValidator<GetCountyByCountryDropdownQuery>
     {
         private readonly IApplicationDbContext _context;
+
         public GetCountyByCountryDropdownQueryValidator(IApplicationDbContext context)
         {
             _context = context;

@@ -12,7 +12,8 @@ namespace Application.CommandsAndQueries
     {
     }
 
-    public class GetDiagnosisXDrugsListQueryHandler : IRequestHandler<GetDiagnosisXDrugsListQuery, DiagnosisXDrugsListVm>
+    public class
+        GetDiagnosisXDrugsListQueryHandler : IRequestHandler<GetDiagnosisXDrugsListQuery, DiagnosisXDrugsListVm>
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
@@ -32,7 +33,7 @@ namespace Application.CommandsAndQueries
                 .ProjectTo<DiagnosisXDrugsLookupDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
 
-            var vm = new DiagnosisXDrugsListVm()
+            var vm = new DiagnosisXDrugsListVm
             {
                 DiagnosisXDrugs = diagnosisXDrugs
             };

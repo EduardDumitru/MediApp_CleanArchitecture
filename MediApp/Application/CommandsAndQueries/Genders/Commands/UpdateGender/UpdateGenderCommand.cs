@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
@@ -19,6 +17,7 @@ namespace Application.CommandsAndQueries
     public class UpdateGenderCommandHandler : IRequestHandler<UpdateGenderCommand, Result>
     {
         private readonly IApplicationDbContext _context;
+
         public UpdateGenderCommandHandler(IApplicationDbContext context)
         {
             _context = context;
@@ -29,10 +28,7 @@ namespace Application.CommandsAndQueries
             var entity = await _context.Genders
                 .FirstOrDefaultAsync(x => x.Id == request.Id && !x.Deleted, cancellationToken);
 
-            if (entity == null)
-            {
-                return Result.Failure(new List<string> {"No valid gender found"});
-            }
+            if (entity == null) return Result.Failure(new List<string> {"No valid gender found"});
 
             entity.Name = request.Name;
 
@@ -41,5 +37,4 @@ namespace Application.CommandsAndQueries
             return Result.Success("Gender update was successful");
         }
     }
-
 }

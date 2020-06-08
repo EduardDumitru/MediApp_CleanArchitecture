@@ -1,17 +1,12 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http;
+﻿using System.Collections.Generic;
+using System.Text;
+using Application.Common.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Application.Common.Models;
-using MediApp.Options;
 
 namespace MediApp.Installers
 {
@@ -23,7 +18,8 @@ namespace MediApp.Installers
             configuration.Bind(nameof(jwtSettings), jwtSettings);
             services.AddSingleton(jwtSettings);
 
-            services.AddMvc(options => { options.EnableEndpointRouting = false; }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            services.AddMvc(options => { options.EnableEndpointRouting = false; })
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             var tokenValidationParameters = new TokenValidationParameters
             {
@@ -38,11 +34,11 @@ namespace MediApp.Installers
             services.AddSingleton(tokenValidationParameters);
 
             services.AddAuthentication(x =>
-            {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
+                {
+                    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
                 .AddJwtBearer(x =>
                 {
                     x.SaveToken = true;
@@ -53,7 +49,7 @@ namespace MediApp.Installers
 
             services.AddSwaggerGen(x =>
             {
-                x.SwaggerDoc("v1", new OpenApiInfo { Title = "MediApp API", Version = "v1" });
+                x.SwaggerDoc("v1", new OpenApiInfo {Title = "MediApp API", Version = "v1"});
 
                 x.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
@@ -64,11 +60,17 @@ namespace MediApp.Installers
                 });
                 x.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
-                    {new OpenApiSecurityScheme{Reference = new OpenApiReference
                     {
-                        Id = "Bearer",
-                        Type = ReferenceType.SecurityScheme
-                    }}, new List<string>()}
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Id = "Bearer",
+                                Type = ReferenceType.SecurityScheme
+                            }
+                        },
+                        new List<string>()
+                    }
                 });
             });
         }

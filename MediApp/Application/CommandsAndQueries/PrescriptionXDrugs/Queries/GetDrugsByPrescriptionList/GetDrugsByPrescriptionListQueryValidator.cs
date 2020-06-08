@@ -9,6 +9,7 @@ namespace Application.CommandsAndQueries
     public class GetDrugsByPrescriptionListQueryValidator : AbstractValidator<GetDrugsByPrescriptionListQuery>
     {
         private readonly IApplicationDbContext _context;
+
         public GetDrugsByPrescriptionListQueryValidator(IApplicationDbContext context)
         {
             _context = context;

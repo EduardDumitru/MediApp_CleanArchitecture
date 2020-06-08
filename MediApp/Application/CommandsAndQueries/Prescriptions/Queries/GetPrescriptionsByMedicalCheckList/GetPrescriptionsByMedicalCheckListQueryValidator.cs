@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
 using FluentValidation;
@@ -9,7 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.CommandsAndQueries
 {
-    public class GetPrescriptionsByMedicalCheckListQueryValidator : AbstractValidator<GetPrescriptionsByMedicalCheckListQuery>
+    public class
+        GetPrescriptionsByMedicalCheckListQueryValidator : AbstractValidator<GetPrescriptionsByMedicalCheckListQuery>
     {
         private readonly IApplicationDbContext _context;
 

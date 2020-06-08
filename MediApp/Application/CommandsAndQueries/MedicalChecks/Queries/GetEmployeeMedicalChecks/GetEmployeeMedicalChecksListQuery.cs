@@ -39,7 +39,7 @@ namespace Application.CommandsAndQueries
                 .ProjectTo<EmployeeMedicalChecksLookupDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
 
-            var vm = new EmployeeMedicalChecksListVm()
+            var vm = new EmployeeMedicalChecksListVm
             {
                 EmployeeMedicalChecks = employeeMedicalChecks
             };

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using Domain.Common;
 
 namespace Domain.Entities
@@ -15,6 +13,6 @@ namespace Domain.Entities
         public short Id { get; set; }
         public string Name { get; set; }
 
-        public ICollection<Employee> Employees { get; private set; }
+        public ICollection<Employee> Employees { get; }
     }
 }

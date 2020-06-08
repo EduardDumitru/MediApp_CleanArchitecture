@@ -1,9 +1,9 @@
-﻿using Application.CommandsAndQueries;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Application.CommandsAndQueries;
 using Application.Common.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace MediApp.Controllers
 {
@@ -14,13 +14,9 @@ namespace MediApp.Controllers
         [HttpPut]
         public async Task<ActionResult<Result>> UpdateUserProfile([FromBody] UpdateUserProfileCommand command)
         {
-
             var response = await Mediator.Send(command);
 
-            if (!response.Succeeded)
-            {
-                return BadRequest(response);
-            }
+            if (!response.Succeeded) return BadRequest(response);
 
             return Ok(response);
         }
@@ -37,12 +33,9 @@ namespace MediApp.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<UserProfileDetailVm>> GetUserProfile(long id)
         {
-            var vm = await Mediator.Send(new GetUserProfileDetailQuery() {Id = id});
+            var vm = await Mediator.Send(new GetUserProfileDetailQuery {Id = id});
 
-            if (vm == null)
-            {
-                return BadRequest(Result.Failure(new List<string> {"No valid user profile was found"}));
-            }
+            if (vm == null) return BadRequest(Result.Failure(new List<string> {"No valid user profile was found"}));
 
             return Ok(vm);
         }

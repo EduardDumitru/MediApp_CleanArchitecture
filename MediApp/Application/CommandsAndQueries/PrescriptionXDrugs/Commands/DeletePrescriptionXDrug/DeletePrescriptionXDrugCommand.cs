@@ -28,9 +28,7 @@ namespace Application.CommandsAndQueries
                 .FirstOrDefaultAsync(x => x.Id == request.Id && !x.Deleted, cancellationToken);
 
             if (entity == null)
-            {
                 return Result.Failure(new List<string> {"No valid link between prescription and drug was found"});
-            }
 
             entity.Deleted = true;
 

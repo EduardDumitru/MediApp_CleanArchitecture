@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using Domain.Common;
 
 namespace Domain.Entities
@@ -16,7 +14,7 @@ namespace Domain.Entities
         public int Id { get; set; }
         public string Name { get; set; }
 
-        public ICollection<DiagnosisXDrug> DiagnosisXDrugs { get; private set; }
-        public ICollection<MedicalCheck> MedicalChecks { get; private set; }
+        public ICollection<DiagnosisXDrug> DiagnosisXDrugs { get; }
+        public ICollection<MedicalCheck> MedicalChecks { get; }
     }
 }

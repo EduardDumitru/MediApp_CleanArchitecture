@@ -30,7 +30,7 @@ namespace Application.CommandsAndQueries
                 .ProjectTo<EmployeeTypesLookupDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
 
-            var vm = new EmployeeTypesListVm()
+            var vm = new EmployeeTypesListVm
             {
                 EmployeeTypes = employeeTypes
             };
@@ -38,5 +38,4 @@ namespace Application.CommandsAndQueries
             return vm;
         }
     }
-
 }

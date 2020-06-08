@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Application.CommandsAndQueries.Diagnoses;
+﻿using Application.CommandsAndQueries.Diagnoses;
 using FluentValidation;
 
 namespace Application.CommandsAndQueries

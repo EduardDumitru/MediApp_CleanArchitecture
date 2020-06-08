@@ -1,8 +1,8 @@
-﻿using Application.CommandsAndQueries;
+﻿using System.Threading.Tasks;
+using Application.CommandsAndQueries;
 using Application.Common.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace MediApp.Controllers
 {
@@ -12,7 +12,7 @@ namespace MediApp.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<PrescriptionXDrugDetailsVm>> GetPrescriptionXDrugDetails(long id)
         {
-            var vm = await Mediator.Send(new GetPrescriptionXDrugDetailsQuery() {Id = id});
+            var vm = await Mediator.Send(new GetPrescriptionXDrugDetailsQuery {Id = id});
 
             return Ok(vm);
         }
@@ -20,7 +20,7 @@ namespace MediApp.Controllers
         [HttpGet("drugsbyprescription/{prescriptionId}")]
         public async Task<ActionResult<PrescriptionXDrugsListVm>> GetPrescriptionXDrugs(long prescriptionId)
         {
-            var vm = await Mediator.Send(new GetDrugsByPrescriptionListQuery() {PrescriptionId = prescriptionId});
+            var vm = await Mediator.Send(new GetDrugsByPrescriptionListQuery {PrescriptionId = prescriptionId});
 
             return Ok(vm);
         }
@@ -32,10 +32,7 @@ namespace MediApp.Controllers
         {
             var result = await Mediator.Send(command);
 
-            if (!result.Succeeded)
-            {
-                return BadRequest(result);
-            }
+            if (!result.Succeeded) return BadRequest(result);
 
             return Ok(result);
         }
@@ -46,24 +43,19 @@ namespace MediApp.Controllers
         {
             var result = await Mediator.Send(new DeletePrescriptionXDrugCommand {Id = prescriptionXDrugId});
 
-            if (!result.Succeeded)
-            {
-                return BadRequest(result);
-            }
+            if (!result.Succeeded) return BadRequest(result);
 
             return Ok(result);
         }
 
         [HttpPut]
         [Authorize(Roles = "Admin, Doctor")]
-        public async Task<ActionResult<Result>> UpdatePrescriptionXDrug([FromBody] UpdatePrescriptionXDrugCommand command)
+        public async Task<ActionResult<Result>> UpdatePrescriptionXDrug(
+            [FromBody] UpdatePrescriptionXDrugCommand command)
         {
             var result = await Mediator.Send(command);
 
-            if (!result.Succeeded)
-            {
-                return BadRequest(result);
-            }
+            if (!result.Succeeded) return BadRequest(result);
 
             return Ok(result);
         }

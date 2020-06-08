@@ -32,10 +32,7 @@ namespace Application.CommandsAndQueries
                 .FirstOrDefaultAsync(x => x.Id == request.Id && !x.Deleted, cancellationToken);
 
             var validationResult = Validations(entity);
-            if (!validationResult.Succeeded)
-            {
-                return validationResult;
-            }
+            if (!validationResult.Succeeded) return validationResult;
 
             entity.Deleted = true;
 
@@ -48,24 +45,16 @@ namespace Application.CommandsAndQueries
         {
             var errors = new List<string>();
 
-            if (entity == null)
-            {
-                return Result.Failure(new List<string> {"No valid drug found"});
-            }
+            if (entity == null) return Result.Failure(new List<string> {"No valid drug found"});
 
             var isUsedInPrescriptionXDrugs = entity.PrescriptionXDrugs.Any(x => !x.Deleted);
 
             if (isUsedInPrescriptionXDrugs)
-            {
                 errors.Add("Drug is linked to prescriptions. You can't delete it while in use.");
-            }
 
             var isUsedInDiagnosisXDrugs = entity.DiagnosisXDrugs.Any(x => !x.Deleted);
 
-            if (isUsedInDiagnosisXDrugs)
-            {
-                errors.Add("Drug is linked to diagnoses. You can't delete it while in use.");
-            }
+            if (isUsedInDiagnosisXDrugs) errors.Add("Drug is linked to diagnoses. You can't delete it while in use.");
 
             return errors.Any() ? Result.Failure(errors) : Result.Success();
         }

@@ -35,9 +35,9 @@ namespace Application.CommandsAndQueries
                 .ForMember(d => d.EmployeeName,
                     opt => opt.MapFrom(s =>
                         s.Employee != null
-                            ? (s.Employee.UserProfile != null 
-                                ? s.Employee.UserProfile.GetFullName() 
-                                : string.Empty)
+                            ? s.Employee.UserProfile != null
+                                ? s.Employee.UserProfile.GetFullName()
+                                : string.Empty
                             : string.Empty));
         }
     }

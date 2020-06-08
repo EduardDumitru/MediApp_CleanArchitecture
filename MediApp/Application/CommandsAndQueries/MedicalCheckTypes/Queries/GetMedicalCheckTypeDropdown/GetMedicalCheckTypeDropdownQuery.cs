@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
@@ -15,7 +12,8 @@ namespace Application.CommandsAndQueries
     {
     }
 
-    public class GetMedicalCheckTypeDropdownQueryHandler : IRequestHandler<GetMedicalCheckTypeDropdownQuery, SelectItemVm>
+    public class
+        GetMedicalCheckTypeDropdownQueryHandler : IRequestHandler<GetMedicalCheckTypeDropdownQuery, SelectItemVm>
     {
         private readonly IApplicationDbContext _context;
 
@@ -24,7 +22,8 @@ namespace Application.CommandsAndQueries
             _context = context;
         }
 
-        public async Task<SelectItemVm> Handle(GetMedicalCheckTypeDropdownQuery request, CancellationToken cancellationToken)
+        public async Task<SelectItemVm> Handle(GetMedicalCheckTypeDropdownQuery request,
+            CancellationToken cancellationToken)
         {
             var vm = new SelectItemVm
             {

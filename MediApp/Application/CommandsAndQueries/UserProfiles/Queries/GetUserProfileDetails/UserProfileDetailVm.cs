@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using Application.Common.Mappings;
 using AutoMapper;
 using Domain.Entities;
@@ -29,16 +27,14 @@ namespace Application.CommandsAndQueries
         {
             profile.CreateMap<UserProfile, UserProfileDetailVm>()
                 .ForMember(d => d.MiddleName,
-                    opt => opt.MapFrom(s => 
+                    opt => opt.MapFrom(s =>
                         string.IsNullOrEmpty(s.MiddleName) ? "" : s.MiddleName))
                 .ForMember(d => d.Address,
-                    opt => opt.MapFrom(s => 
+                    opt => opt.MapFrom(s =>
                         string.IsNullOrEmpty(s.Address) ? "" : s.Address))
                 .ForMember(d => d.StreetName,
-                    opt => opt.MapFrom(s => 
+                    opt => opt.MapFrom(s =>
                         string.IsNullOrEmpty(s.StreetName) ? "" : s.StreetName));
-
-
         }
     }
 }

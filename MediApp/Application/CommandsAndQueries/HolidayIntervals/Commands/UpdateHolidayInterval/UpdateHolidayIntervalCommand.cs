@@ -31,10 +31,7 @@ namespace Application.CommandsAndQueries
             var entity = await _context.HolidayIntervals
                 .FirstOrDefaultAsync(x => x.Id == request.Id && !x.Deleted, cancellationToken);
 
-            if (entity == null)
-            {
-                return Result.Failure(new List<string> {"No valid holiday interval found"});
-            }
+            if (entity == null) return Result.Failure(new List<string> {"No valid holiday interval found"});
 
             entity.StartDate = request.StartDate.ToLocalTime();
             entity.EndDate = request.EndDate.ToLocalTime();

@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Application.Common.Mappings;
-using AutoMapper;
-using Domain.Entities;
 
 namespace Application.CommandsAndQueries
 {
@@ -16,6 +11,5 @@ namespace Application.CommandsAndQueries
         public string EmployeeName { get; set; }
         public short MedicalCheckTypeId { get; set; }
         public string MedicalCheckTypeName { get; set; }
-
     }
 }

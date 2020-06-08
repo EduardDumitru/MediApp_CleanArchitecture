@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
+﻿using System.Collections.Generic;
 using Domain.Common;
 
 namespace Domain.Entities
@@ -23,9 +20,9 @@ namespace Domain.Entities
         public MedicalCheck MedicalCheck { get; set; }
 
         public UserProfile UserProfile { get; set; }
-        
+
         public Employee Employee { get; set; }
 
-        public ICollection<PrescriptionXDrug> PrescriptionXDrugs { get; private set; }
+        public ICollection<PrescriptionXDrug> PrescriptionXDrugs { get; }
     }
 }

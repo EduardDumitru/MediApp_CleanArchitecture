@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
 using FluentValidation;
@@ -52,27 +48,29 @@ namespace Application.CommandsAndQueries
                 .AnyAsync(x => x.Id == countyId && !x.Deleted, cancellationToken);
         }
 
-        private async Task<bool> ExistsCountyInCountry(GetClinicDropdownQuery clinicQuery, int? countyId, CancellationToken cancellationToken)
+        private async Task<bool> ExistsCountyInCountry(GetClinicDropdownQuery clinicQuery, int? countyId,
+            CancellationToken cancellationToken)
         {
             return await _context.Counties
-                .AnyAsync(x => x.Id == countyId 
-                          && x.CountryId == clinicQuery.CountryId 
-                          && !x.Deleted, cancellationToken);
+                .AnyAsync(x => x.Id == countyId
+                               && x.CountryId == clinicQuery.CountryId
+                               && !x.Deleted, cancellationToken);
         }
 
         private async Task<bool> ExistsCity(int? cityId, CancellationToken cancellationToken)
         {
             return await _context.Cities
-                .AnyAsync(x => x.Id == cityId 
+                .AnyAsync(x => x.Id == cityId
                                && !x.Deleted, cancellationToken);
         }
 
-        private async Task<bool> ExistsCityInCounty(GetClinicDropdownQuery clinicQuery, int? cityId, CancellationToken cancellationToken)
+        private async Task<bool> ExistsCityInCounty(GetClinicDropdownQuery clinicQuery, int? cityId,
+            CancellationToken cancellationToken)
         {
             return await _context.Cities
                 .AnyAsync(x => x.Id == cityId
-                          && x.CountyId == clinicQuery.CountyId
-                          && !x.Deleted, cancellationToken);
+                               && x.CountyId == clinicQuery.CountyId
+                               && !x.Deleted, cancellationToken);
         }
     }
 }

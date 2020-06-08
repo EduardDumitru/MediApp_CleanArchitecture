@@ -1,10 +1,10 @@
-﻿using Application.CommandsAndQueries;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Application.CommandsAndQueries;
 using Application.CommandsAndQueries.Diagnoses;
 using Application.Common.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace MediApp.Controllers
 {
@@ -17,10 +17,7 @@ namespace MediApp.Controllers
         {
             var vm = await Mediator.Send(new GetDiagnosisDetailsQuery {Id = id});
 
-            if (vm == null)
-            {
-                return BadRequest(Result.Failure(new List<string> {"No valid diagnosis was found"}));
-            }
+            if (vm == null) return BadRequest(Result.Failure(new List<string> {"No valid diagnosis was found"}));
 
             return Ok(vm);
         }
@@ -48,10 +45,7 @@ namespace MediApp.Controllers
         {
             var result = await Mediator.Send(command);
 
-            if (!result.Succeeded)
-            {
-                return BadRequest(result);
-            }
+            if (!result.Succeeded) return BadRequest(result);
 
             return Ok(result);
         }
@@ -62,10 +56,7 @@ namespace MediApp.Controllers
         {
             var result = await Mediator.Send(command);
 
-            if (!result.Succeeded)
-            {
-                return BadRequest(result);
-            }
+            if (!result.Succeeded) return BadRequest(result);
 
             return Ok(result);
         }
@@ -76,10 +67,7 @@ namespace MediApp.Controllers
         {
             var result = await Mediator.Send(new DeleteDiagnosisCommand {Id = diagnosisId});
 
-            if (!result.Succeeded)
-            {
-                return BadRequest(result);
-            }
+            if (!result.Succeeded) return BadRequest(result);
 
             return Ok(result);
         }
@@ -90,10 +78,7 @@ namespace MediApp.Controllers
         {
             var result = await Mediator.Send(command);
 
-            if (!result.Succeeded)
-            {
-                return BadRequest(result);
-            }
+            if (!result.Succeeded) return BadRequest(result);
 
             return Ok(result);
         }

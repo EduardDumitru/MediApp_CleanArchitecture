@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Application.Common.Mappings;
 using AutoMapper;
@@ -40,9 +39,9 @@ namespace Application.CommandsAndQueries
                 .ForMember(d => d.EmployeeName,
                     opt => opt.MapFrom(s =>
                         s.Employee != null
-                            ? (s.Employee.UserProfile != null
+                            ? s.Employee.UserProfile != null
                                 ? s.Employee.UserProfile.GetFullName()
-                                : string.Empty)
+                                : string.Empty
                             : string.Empty))
                 .ForMember(d => d.PatientName,
                     opt => opt.MapFrom(s =>
@@ -56,8 +55,8 @@ namespace Application.CommandsAndQueries
                             : string.Empty))
                 .ForMember(d => d.DiagnosisName,
                     opt => opt.MapFrom(s =>
-                        s.Diagnosis != null 
-                            ? s.Diagnosis.Name 
+                        s.Diagnosis != null
+                            ? s.Diagnosis.Name
                             : string.Empty))
                 .ForMember(d => d.HasPrescriptions,
                     opt => opt.MapFrom(s => s.Prescriptions.Any()));

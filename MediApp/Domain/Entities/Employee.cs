@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 using Domain.Common;
 
 namespace Domain.Entities
@@ -14,6 +12,7 @@ namespace Domain.Entities
             MedicalChecks = new HashSet<MedicalCheck>();
             Prescriptions = new HashSet<Prescription>();
         }
+
         public long Id { get; set; }
         public TimeSpan StartHour { get; set; }
         public TimeSpan EndHour { get; set; }
@@ -27,8 +26,8 @@ namespace Domain.Entities
         public MedicalCheckType MedicalCheckType { get; set; }
         public Clinic Clinic { get; set; }
         public UserProfile UserProfile { get; set; }
-        public ICollection<HolidayInterval> HolidayIntervals { get; private set; }
-        public ICollection<MedicalCheck> MedicalChecks { get; private set; }
-        public ICollection<Prescription> Prescriptions { get; private set; }
+        public ICollection<HolidayInterval> HolidayIntervals { get; }
+        public ICollection<MedicalCheck> MedicalChecks { get; }
+        public ICollection<Prescription> Prescriptions { get; }
     }
 }

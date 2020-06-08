@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using Domain.Common;
 
 namespace Domain.Entities
@@ -11,8 +9,9 @@ namespace Domain.Entities
         {
             UserProfiles = new HashSet<UserProfile>();
         }
+
         public short Id { get; set; }
         public string Name { get; set; }
-        public ICollection<UserProfile> UserProfiles { get; private set; }
+        public ICollection<UserProfile> UserProfiles { get; }
     }
 }

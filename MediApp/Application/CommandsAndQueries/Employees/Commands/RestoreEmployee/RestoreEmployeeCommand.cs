@@ -34,10 +34,7 @@ namespace Application.CommandsAndQueries
                 .FirstOrDefaultAsync(x => x.Id == request.Id && x.Deleted, cancellationToken);
 
             var validationResult = Validations(entity);
-            if (!validationResult.Succeeded)
-            {
-                return validationResult;
-            }
+            if (!validationResult.Succeeded) return validationResult;
 
             entity.Deleted = false;
             entity.DeletedBy = null;
@@ -52,30 +49,19 @@ namespace Application.CommandsAndQueries
         {
             var errors = new List<string>();
 
-            if (entity == null)
-            {
-                return Result.Failure(new List<string> {"No valid employee found"});
-            }
+            if (entity == null) return Result.Failure(new List<string> {"No valid employee found"});
 
             if (entity.UserProfile == null || entity.UserProfile != null && entity.UserProfile.Deleted)
-            {
                 errors.Add("User profile is deleted. You must update that first.");
-            }
 
             if (entity.Clinic == null || entity.Clinic != null && entity.Clinic.Deleted)
-            {
                 errors.Add("Clinic is deleted. You must update that first.");
-            }
 
             if (entity.EmployeeType == null || entity.EmployeeType != null && entity.EmployeeType.Deleted)
-            {
                 errors.Add("Employee Type is deleted. You must update that first.");
-            }
 
             if (entity.MedicalCheckType == null || entity.MedicalCheckType != null && entity.MedicalCheckType.Deleted)
-            {
                 errors.Add("Medical Check Type is deleted. You must update that first.");
-            }
 
             return errors.Any() ? Result.Failure(errors) : Result.Success();
         }
