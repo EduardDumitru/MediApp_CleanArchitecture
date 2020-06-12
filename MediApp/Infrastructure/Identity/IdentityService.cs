@@ -235,18 +235,11 @@ namespace Infrastructure.Identity
                 .FirstOrDefaultAsync(x => x.Id == userId && x.IsActive.Value, cancellationToken);
             var roles = await _roleManager.Roles.ToListAsync(cancellationToken);
             var existingRoleNames = await _userManager.GetRolesAsync(user);
-            var existingRoleIds = new List<long>();
-            foreach (var existingRoleName in existingRoleNames)
-            {
-                var role = await _roleManager.FindByNameAsync(existingRoleName);
-                if (role == null) continue;
 
-                existingRoleIds.Add(role.Id);
-            }
+            await _userManager.RemoveFromRolesAsync(user, existingRoleNames);
 
             var rolesToAdd = (from roleId in roleIds
                 let role = roles.FirstOrDefault(x => x.Id == roleId)
-                where existingRoleIds.All(id => id != roleId) && role != null
                 select role.Name).ToList();
 
             await _userManager.AddToRolesAsync(user, rolesToAdd);
