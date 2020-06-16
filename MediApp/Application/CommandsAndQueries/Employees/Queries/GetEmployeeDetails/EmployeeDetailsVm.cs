@@ -7,11 +7,13 @@ namespace Application.CommandsAndQueries
 {
     public class EmployeeDetailsVm : IMapFrom<Employee>
     {
+        public long Id { get; set; }
         public TimeSpan StartHour { get; set; }
         public TimeSpan EndHour { get; set; }
         public DateTime? TerminationDate { get; set; }
         public string Name { get; set; }
         public string Cnp { get; set; }
+        public long UserProfileId { get; set; }
         public short EmployeeTypeId { get; set; }
         public short MedicalCheckTypeId { get; set; }
         public int ClinicId { get; set; }

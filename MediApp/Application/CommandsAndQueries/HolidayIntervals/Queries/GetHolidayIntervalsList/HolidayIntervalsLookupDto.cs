@@ -9,6 +9,7 @@ namespace Application.CommandsAndQueries
     {
         public long Id { get; set; }
         public string EmployeeName { get; set; }
+        public string ClinicName { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public bool? Deleted { get; set; }
@@ -20,6 +21,11 @@ namespace Application.CommandsAndQueries
                     opt => opt.MapFrom(s =>
                         s.Employee != null
                             ? s.Employee.UserProfile != null ? s.Employee.UserProfile.GetFullName() : string.Empty
+                            : string.Empty))
+                .ForMember(d => d.ClinicName,
+                    opt => opt.MapFrom(s =>
+                        s.Employee.Clinic != null
+                            ? s.Employee.Clinic != null ? s.Employee.Clinic.Name : string.Empty
                             : string.Empty));
         }
     }

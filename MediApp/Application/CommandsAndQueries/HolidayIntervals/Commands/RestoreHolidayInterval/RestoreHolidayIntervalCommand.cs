@@ -32,7 +32,7 @@ namespace Application.CommandsAndQueries
                 .Include(x => x.Employee)
                 .FirstOrDefaultAsync(x => x.Id == request.Id && x.Deleted, cancellationToken);
 
-            var validationResult = Validations(entity);
+            var validationResult = await Validations(entity, cancellationToken);
             if (!validationResult.Succeeded) return validationResult;
 
             entity.Deleted = false;
@@ -44,7 +44,7 @@ namespace Application.CommandsAndQueries
             return Result.Success("Holiday interval was restored");
         }
 
-        private Result Validations(HolidayInterval entity)
+        private async Task<Result> Validations(HolidayInterval entity, CancellationToken cancellationToken)
         {
             var errors = new List<string>();
 
@@ -60,6 +60,26 @@ namespace Application.CommandsAndQueries
             if (entity.Employee == null || entity.Employee != null && entity.Employee.Deleted)
                 errors.Add("Employee is deleted. You must update that first.");
 
+            var startDate = entity.StartDate.Date;
+            var localEndDate = entity.EndDate.Date;
+            var res = !await _context.HolidayIntervals.AnyAsync(x =>
+                    x.StartDate.Date >= startDate
+                    && x.EndDate.Date <= localEndDate
+                    && !x.Deleted
+                    && x.EmployeeId == entity.EmployeeId,
+                    cancellationToken);
+            if (res == false)
+            {
+                errors.Add("Employee has other holiday intervals in this period");
+            }
+            res = !await _context.MedicalChecks.AnyAsync(x => x.EmployeeId == entity.EmployeeId &&
+                                                              x.Appointment.Date >= startDate
+                                                              && x.Appointment.Date <= localEndDate
+                                                              && !x.Deleted, cancellationToken);
+            if (res == false)
+            {
+                errors.Add("Employee has medical checks in this period");
+            }
             return errors.Any() ? Result.Failure(errors) : Result.Success();
         }
     }

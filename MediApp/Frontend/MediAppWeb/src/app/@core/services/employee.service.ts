@@ -33,6 +33,20 @@ export class EmployeeService extends EmployeeData {
                 catchError(this.errService.errorHandl)
             );
     }
+    GetEmployeeDetailsByCurrentUser(): Observable<EmployeeDetails> {
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.get<EmployeeDetails>(this.baseUrl + '/bycurrentuser', httpOptions)
+            .pipe(
+                map((response: any) => response),
+                retry(1),
+                catchError(this.errService.errorHandl)
+            );
+    }
     GetEmployees(): Observable<EmployeesList> {
         const httpOptions = {
             headers: new HttpHeaders({

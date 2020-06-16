@@ -14,6 +14,11 @@
         <mat-cell *matCellDef="let element">{{element.id | number}}</mat-cell>
     </ng-container>
 
+    <ng-container matColumnDef="clinicName">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Clinic Name</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.clinicName}}</mat-cell>
+    </ng-container>
+
     <ng-container matColumnDef="employeeName">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Employee Name</mat-header-cell>
         <mat-cell *matCellDef="let element">{{element.employeeName}}</mat-cell>
@@ -41,4 +46,4 @@
     <mat-spinner *ngIf="isLoading"></mat-spinner>
 </mat-table>
 
-<mat-paginator #paginator [pageSize]="1" [pageSizeOptions]="[1, 5, 10, 20]"></mat-paginator>
+<mat-paginator #paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]"></mat-paginator>

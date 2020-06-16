@@ -47,6 +47,20 @@ export class HolidayIntervalService extends HolidayIntervalData {
                 catchError(this.errService.errorHandl)
             );
     }
+    GetHolidayIntervalsByClinic(clinicId: number): Observable<HolidayIntervalsList> {
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.get<HolidayIntervalsList>(this.baseUrl + '/byclinic/' + clinicId, httpOptions)
+            .pipe(
+                map((response: any) => response),
+                retry(1),
+                catchError(this.errService.errorHandl)
+            );
+    }
     AddHolidayInterval(addHolidayIntervalCommand: AddHolidayIntervalCommand): Observable<Result> {
         const httpOptions = {
             headers: new HttpHeaders({

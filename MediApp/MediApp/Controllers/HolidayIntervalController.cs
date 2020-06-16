@@ -22,10 +22,19 @@ namespace MediApp.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin, Doctor, Nurse")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<HolidayIntervalsListVm>> GetHolidayIntervals()
         {
             var vm = await Mediator.Send(new GetHolidayIntervalsListQuery());
+
+            return Ok(vm);
+        }
+
+        [HttpGet("byclinic/{clinicId}")]
+        [Authorize(Roles = "Admin, Doctor, Nurse")]
+        public async Task<ActionResult<HolidayIntervalsListVm>> GetHolidayIntervals(int clinicId)
+        {
+            var vm = await Mediator.Send(new GetHolidayIntervalsByClinicListQuery {ClinicId = clinicId});
 
             return Ok(vm);
         }

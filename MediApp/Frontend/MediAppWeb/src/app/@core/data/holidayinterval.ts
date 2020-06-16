@@ -4,6 +4,7 @@ import { Result } from './common/result';
 
 export class HolidayIntervalDetails {
     employeeId: number;
+    userProfileId?: number;
     startDate: Date;
     endDate: Date;
     deleted?: boolean;
@@ -11,6 +12,7 @@ export class HolidayIntervalDetails {
 
 export class HolidayIntervalLookup {
     id: number;
+    clinicName: string;
     employeeName: string;
     startDate: Date;
     endDate: Date;
@@ -41,6 +43,7 @@ export class RestoreHolidayIntervalCommand {
 export abstract class HolidayIntervalData {
     abstract GetHolidayIntervalDetails(id: number): Observable<HolidayIntervalDetails>;
     abstract GetHolidayIntervals(): Observable<HolidayIntervalsList>;
+    abstract GetHolidayIntervalsByClinic(clinicId: number): Observable<HolidayIntervalsList>;
     abstract AddHolidayInterval(addHolidayIntervalCommand: AddHolidayIntervalCommand): Observable<Result>;
     abstract UpdateHolidayInterval(updateHolidayIntervalCommand: UpdateHolidayIntervalCommand): Observable<Result>;
     abstract DeleteHolidayInterval(id: number): Observable<Result>;

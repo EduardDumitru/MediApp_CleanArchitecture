@@ -117,6 +117,7 @@ export class MedicalCheckComponent implements OnInit, AfterViewInit, OnDestroy {
       tempDate.setTime(tempDate.getTime() + 1000 * 60 * 60 * 48);
       return tempDate;
     }
+    return tempDate;
   }
 
   getMedicalChecks() {

@@ -21,6 +21,17 @@ namespace MediApp.Controllers
             return Ok(vm);
         }
 
+        [HttpGet("bycurrentuser")]
+        [Authorize(Roles = "Admin, Doctor, Nurse")]
+        public async Task<ActionResult<EmployeeDetailsVm>> GetEmployeeDetailsByCurrentUser()
+        {
+            var vm = await Mediator.Send(new GetEmployeeDetailsByCurrentUserQuery());
+
+            if (vm == null) return BadRequest(Result.Failure(new List<string> {"No valid employee was found"}));
+
+            return Ok(vm);
+        }
+
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<EmployeesListVm>> GetEmployees()

@@ -10,11 +10,13 @@ export class EmployeeDropdownQuery {
 }
 
 export class EmployeeDetails {
+    id: number;
     startHour: TimeSpan;
     endHour: TimeSpan;
     terminationDate?: Date;
     name: string;
     cnp: string;
+    userProfileId: number;
     employeeTypeId: number;
     medicalCheckTypeId?: number;
     clinicId: number;
@@ -63,6 +65,7 @@ export class RestoreEmployeeCommand {
 
 export abstract class EmployeeData {
     abstract GetEmployeeDetails(id: number): Observable<EmployeeDetails>;
+    abstract GetEmployeeDetailsByCurrentUser(): Observable<EmployeeDetails>;
     abstract GetEmployees(): Observable<EmployeesList>;
     abstract GetEmployeesDropdown(employeeDropdownQuery: EmployeeDropdownQuery): Observable<SelectItemsList>;
     abstract GetAllEmployeesDropdown(): Observable<SelectItemsList>;

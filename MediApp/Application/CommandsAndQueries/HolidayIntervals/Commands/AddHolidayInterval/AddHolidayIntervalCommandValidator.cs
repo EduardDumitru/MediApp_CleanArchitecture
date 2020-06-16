@@ -37,18 +37,27 @@ namespace Application.CommandsAndQueries
         private async Task<bool> NoMedicalChecksInThisPeriod(AddHolidayIntervalCommand holidayIntervalCommand, long employeeId,
             CancellationToken cancellationToken)
         {
-            return await _context.MedicalChecks.AnyAsync(x => x.EmployeeId == employeeId &&
-                                                   x.Appointment >= holidayIntervalCommand.StartDate.ToLocalTime() &&
-                                                   x.Appointment <= holidayIntervalCommand.EndDate.ToLocalTime() &&
-                                                   !x.Deleted, cancellationToken);
+            var startDate = holidayIntervalCommand.StartDate.ToLocalTime().Date;
+            var localEndDate = holidayIntervalCommand.EndDate.ToLocalTime().Date;
+
+            return !await _context.MedicalChecks.AnyAsync(x => x.EmployeeId == employeeId &&
+                                                               x.Appointment.Date >= startDate
+                                                               && x.Appointment.Date <= localEndDate
+                                                               && !x.Deleted, cancellationToken);
         }
 
         private async Task<bool> NoHolidayIntervalsInThisPeriod(AddHolidayIntervalCommand holidayIntervalCommand,
             DateTime endDate, CancellationToken cancellationToken)
         {
-            return !await _context.HolidayIntervals.AnyAsync(x =>
-                x.StartDate.ToLocalTime() >= holidayIntervalCommand.StartDate.ToLocalTime()
-                && x.EndDate.ToLocalTime() <= endDate.ToLocalTime(), cancellationToken);
+            var startDate = holidayIntervalCommand.StartDate.ToLocalTime().Date;
+            var localEndDate = endDate.ToLocalTime().Date;
+            var res = !await _context.HolidayIntervals.AnyAsync(x =>
+                    x.StartDate.Date >= startDate
+                    && x.EndDate.Date <= localEndDate
+                    && !x.Deleted
+                    && x.EmployeeId == holidayIntervalCommand.EmployeeId
+                , cancellationToken);
+            return res;
         }
 
         private async Task<bool> IsHigherThanCurrentDate(DateTime startDate, CancellationToken cancellationToken)

@@ -9,7 +9,7 @@ import { Result } from 'src/app/@core/data/common/result';
 import { AuthService } from 'src/app/auth/auth.service';
 import { Subscription } from 'rxjs';
 import { SelectItemsList } from 'src/app/@core/data/common/selectitem';
-import { EmployeeData } from 'src/app/@core/data/employee';
+import { EmployeeData, EmployeeDetails } from 'src/app/@core/data/employee';
 
 @Component({
   selector: 'app-holidayinterval',
@@ -22,7 +22,8 @@ export class HolidayintervalComponent implements OnInit, OnDestroy {
   holidayIntervalId: number;
   isDeleted = false;
   currentUserId = -1;
-  employeeId = 0;
+  currentEmployeeUserId = -1;
+  employeeId = '';
   isAdmin = false;
   currentUserIdSubscription: Subscription;
   adminSubscription: Subscription;
@@ -34,7 +35,6 @@ export class HolidayintervalComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
       this.minDate = this.getMinDate();
-      console.log(this.minDate);
       this.currentUserIdSubscription = this.authService.currentUserId.subscribe(userId => {
         this.currentUserId = userId;
       });
@@ -71,6 +71,7 @@ export class HolidayintervalComponent implements OnInit, OnDestroy {
       tempDate.setTime(tempDate.getTime() + 1000 * 60 * 60 * 48);
       return tempDate;
     }
+    return tempDate;
   }
 
 
@@ -87,16 +88,29 @@ export class HolidayintervalComponent implements OnInit, OnDestroy {
       if (this.holidayIntervalId) {
           this.getHolidayInterval();
       } else {
-        this.holidayIntervalForm.patchValue({employeeId: this.currentUserId})
         if (!this.isAdmin) {
-          this.disableEmployeeId();
+          this.getEmployee();
         }
       }
+  }
+
+  getEmployee() {
+    this.employeeData.GetEmployeeDetailsByCurrentUser().subscribe((employee: EmployeeDetails) => {
+      this.employeeId = employee.id.toString();
+      this.currentEmployeeUserId = employee.userProfileId;
+      this.holidayIntervalForm.patchValue({employeeId: this.employeeId});
+      this.disableEmployeeId();
+    },
+    error => {
+        this.uiService.showErrorSnackbar(error, null, 3000);
+        this.isLoading = false;
+    });
   }
 
   getEmployees() {
     this.employeeData.GetAllEmployeesDropdown().subscribe((employees: SelectItemsList) => {
       this.employeeSelectList = employees;
+      console.log(this.employeeSelectList);
     },
     error => {
         this.uiService.showErrorSnackbar(error, null, 3000);
@@ -111,7 +125,10 @@ export class HolidayintervalComponent implements OnInit, OnDestroy {
             startDate: new Date(holidayInterval.startDate),
             endDate: new Date(holidayInterval.endDate)});
           this.isDeleted = holidayInterval.deleted;
-          this.employeeId = holidayInterval.employeeId;
+          this.employeeId = holidayInterval.employeeId.toString();
+          this.currentEmployeeUserId = holidayInterval.userProfileId;
+          console.log(holidayInterval.userProfileId)
+          this.holidayIntervalForm.patchValue({employeeId: this.employeeId});
           this.disableEmployeeId();
           if (this.isDeleted) {
               this.holidayIntervalForm.disable();
@@ -136,7 +153,7 @@ export class HolidayintervalComponent implements OnInit, OnDestroy {
   updateHolidayInterval() {
       const updateHolidayIntervalCommand: UpdateHolidayIntervalCommand = {
           id: this.holidayIntervalId,
-          employeeId: this.employeeId,
+          employeeId: +this.employeeId,
           startDate: new Date(this.holidayIntervalForm.getRawValue().startDate),
           endDate: new Date(this.holidayIntervalForm.getRawValue().endDate)
       } as UpdateHolidayIntervalCommand;
@@ -198,7 +215,7 @@ export class HolidayintervalComponent implements OnInit, OnDestroy {
   }
 
   isCurrentUserOwner() {
-    return this.currentUserId === this.employeeId;
+    return this.currentUserId === this.currentEmployeeUserId;
   }
 
   goBack() {
