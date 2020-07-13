@@ -45,6 +45,14 @@ namespace MediApp.Controllers
             return Ok(vm);
         }
 
+        [HttpGet("countiesdropdownfromemployees/{countryId}")]
+        public async Task<ActionResult<SelectItemVm>> GetCountiesByCountryFroEmployeesDropdown(short countryId)
+        {
+            var vm = await Mediator.Send(new GetCountyByCountryFromEmployeesDropdownQuery {CountryId = countryId});
+
+            return Ok(vm);
+        }
+
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Result>> AddCounty([FromBody] AddCountyCommand command)

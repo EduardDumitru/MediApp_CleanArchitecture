@@ -62,6 +62,20 @@ export class MedicalCheckTypeService extends MedicalCheckTypeData {
                 catchError(this.errService.errorHandl)
             );
     }
+    GetMedicalCheckTypesByClinicDropdown(clinicId: number): Observable<SelectItemsList> {
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.get<SelectItemsList>(this.baseUrl + '/medicalchecktypesbyclinicdropdown/' + clinicId, httpOptions)
+            .pipe(
+                map((response: any) => response),
+                retry(1),
+                catchError(this.errService.errorHandl)
+            );
+    }
     AddMedicalCheckType(addMedicalCheckTypeCommand: AddMedicalCheckTypeCommand): Observable<Result> {
         const httpOptions = {
             headers: new HttpHeaders({

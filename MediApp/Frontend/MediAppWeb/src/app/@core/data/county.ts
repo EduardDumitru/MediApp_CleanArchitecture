@@ -39,6 +39,7 @@ export abstract class CountyData {
     abstract GetCounties(): Observable<CountiesList>;
     abstract GetCountiesDropdown(): Observable<SelectItemsList>;
     abstract GetCountiesByCountryDropdown(countryId: number): Observable<SelectItemsList>;
+    abstract GetCountiesByCountryFromEmployeesDropdown(countryId: number): Observable<SelectItemsList>;
     abstract AddCounty(addCountyCommand: AddCountyCommand): Observable<Result>;
     abstract UpdateCounty(updateCountyCommand: UpdateCountyCommand): Observable<Result>;
     abstract DeleteCounty(id: number): Observable<Result>;

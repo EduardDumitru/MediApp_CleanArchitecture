@@ -73,6 +73,19 @@ export class CountyService extends CountyData {
                 catchError(this.errService.errorHandl)
             );
     }
+    GetCountiesByCountryFromEmployeesDropdown(countryId: number): Observable<SelectItemsList> {
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json'
+            })
+        };
+        return this.http.get<SelectItemsList>(this.baseUrl + '/countiesdropdownfromemployees/' + countryId, httpOptions)
+            .pipe(
+                map((response: any) => response),
+                retry(1),
+                catchError(this.errService.errorHandl)
+            );
+    }
     AddCounty(addCountyCommand: AddCountyCommand): Observable<Result> {
         const httpOptions = {
             headers: new HttpHeaders({

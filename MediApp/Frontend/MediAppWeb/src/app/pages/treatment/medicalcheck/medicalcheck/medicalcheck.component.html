@@ -55,7 +55,7 @@
                 <mat-error>Please choose a city</mat-error>
               </mat-form-field>
               <mat-form-field *ngIf="this.clinicSelectList.selectItems">
-                <mat-select placeholder="Choose Clinic" formControlName="clinicId" (selectionChange)="getMedicalCheckTypeSelect(); getEmployeesSelect(); setClinicName($event.value)" required>
+                <mat-select placeholder="Choose Clinic" formControlName="clinicId" (selectionChange)="getMedicalCheckTypeSelect($event.value); getEmployeesSelect(); setClinicName($event.value)" required>
                   <mat-option
                     *ngFor="let clinic of clinicSelectList.selectItems"
                     [value]="clinic.value">
@@ -65,7 +65,7 @@
                 <mat-hint>Please choose a clinic</mat-hint>
                 <mat-error>Please choose a clinic</mat-error>
               </mat-form-field>
-              <mat-form-field *ngIf="this.medicalCheckTypeSelectList.selectItems">
+              <mat-form-field *ngIf="this.medicalCheckTypeSelectList.selectItems && this.medicalCheckForm.value.clinicId">
                 <mat-select placeholder="Choose Medical Check Type" formControlName="medicalCheckTypeId" (selectionChange)="getEmployeesSelect(); setMedicalCheckTypeName($event.value)" required>
                   <mat-option
                     *ngFor="let medicalCheckType of medicalCheckTypeSelectList.selectItems"
@@ -76,7 +76,7 @@
                 <mat-hint>Please choose a medical check type</mat-hint>
                 <mat-error>Please choose a medical check type</mat-error>
               </mat-form-field>
-            <mat-form-field *ngIf="this.employeeSelectList.selectItems">
+            <mat-form-field *ngIf="this.employeeSelectList.selectItems && this.medicalCheckTypeSelectList.selectItems && this.medicalCheckForm.value.medicalCheckTypeId">
                 <mat-select placeholder="Choose Employee" formControlName="employeeId" required (selectionChange)="setEmployeeName($event.value)">
                   <mat-option
                     *ngFor="let employee of employeeSelectList.selectItems"

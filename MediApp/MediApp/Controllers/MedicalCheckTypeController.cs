@@ -39,6 +39,14 @@ namespace MediApp.Controllers
             return Ok(vm);
         }
 
+        [HttpGet("medicalchecktypesbyclinicdropdown/{clinicId}")]
+        public async Task<ActionResult<SelectItemVm>> GetMedicalCheckTypesDropdown(int clinicId)
+        {
+            var vm = await Mediator.Send(new GetMedicalCheckTypeByClinicDropdownQuery {ClinicId = clinicId});
+
+            return Ok(vm);
+        }
+
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Result>> AddMedicalCheckType([FromBody] AddMedicalCheckTypeCommand command)

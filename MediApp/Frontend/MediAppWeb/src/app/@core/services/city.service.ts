@@ -73,6 +73,20 @@ export class CityService extends CityData {
                 catchError(this.errService.errorHandl)
             );
     }
+    GetCitiesByCountyFromEmployeesDropdown(countyId: number): Observable<SelectItemsList> {
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.authService.getToken()}`
+            })
+        };
+        return this.http.get<SelectItemsList>(this.baseUrl + '/citiesdropdownfromemployees/' + countyId, httpOptions)
+            .pipe(
+                map((response: any) => response),
+                retry(1),
+                catchError(this.errService.errorHandl)
+            );
+    }
     AddCity(addCityCommand: AddCityCommand): Observable<Result> {
         const httpOptions = {
             headers: new HttpHeaders({

@@ -60,6 +60,19 @@ export class CountryService extends CountryData {
                 catchError(this.errService.errorHandl)
             );
     }
+    GetCountriesFromEmployeesDropdown(): Observable<SelectItemsList> {
+        const httpOptions = {
+            headers: new HttpHeaders({
+          'Content-Type': 'application/json'
+            })
+        };
+        return this.http.get<SelectItemsList>(this.baseUrl + '/countriesdropdownfromemployees', httpOptions)
+            .pipe(
+                map((response: any) => response),
+                retry(1),
+                catchError(this.errService.errorHandl)
+            );
+    }
     AddCountry(addCountryCommand: AddCountryCommand): Observable<Result> {
         const httpOptions = {
             headers: new HttpHeaders({

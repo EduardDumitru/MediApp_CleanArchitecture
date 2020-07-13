@@ -34,6 +34,7 @@ export abstract class CountryData {
     abstract GetCountryDetails(id: number): Observable<CountryDetails>;
     abstract GetCountries(): Observable<CountriesList>;
     abstract GetCountriesDropdown(): Observable<SelectItemsList>;
+    abstract GetCountriesFromEmployeesDropdown(): Observable<SelectItemsList>;
     abstract AddCountry(addCountryCommand: AddCountryCommand): Observable<Result>;
     abstract UpdateCountry(updateCountryCommand: UpdateCountryCommand): Observable<Result>;
     abstract DeleteCountry(id: number): Observable<Result>;

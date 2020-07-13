@@ -172,7 +172,7 @@ export class MedicalCheckComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getCountriesSelect() {
     this.medicalCheckForm.patchValue({ countryId: '', countyId: '', cityId: '', clinicId: '', employeeId: '', medicalCheckTypeId: '' });
-    this.countryData.GetCountriesDropdown().subscribe((countries: SelectItemsList) => {
+    this.countryData.GetCountriesFromEmployeesDropdown().subscribe((countries: SelectItemsList) => {
       this.countrySelectList = countries;
     },
       error => {
@@ -182,7 +182,7 @@ export class MedicalCheckComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getCountiesSelect(countryId: string) {
     this.medicalCheckForm.patchValue({ countyId: '', cityId: '', clinicId: '', employeeId: '', medicalCheckTypeId: '' });
-    this.countyData.GetCountiesByCountryDropdown(+countryId).subscribe((counties: SelectItemsList) => {
+    this.countyData.GetCountiesByCountryFromEmployeesDropdown(+countryId).subscribe((counties: SelectItemsList) => {
       this.countySelectList = counties;
     },
       error => {
@@ -192,7 +192,7 @@ export class MedicalCheckComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getCitiesSelect(countyId: string) {
     this.medicalCheckForm.patchValue({ cityId: '', clinicId: '', employeeId: '', medicalCheckTypeId: '' });
-    this.cityData.GetCitiesByCountyDropdown(+countyId).subscribe((cities: SelectItemsList) => {
+    this.cityData.GetCitiesByCountyFromEmployeesDropdown(+countyId).subscribe((cities: SelectItemsList) => {
       this.citySelectList = cities;
     },
       error => {
@@ -200,9 +200,9 @@ export class MedicalCheckComponent implements OnInit, AfterViewInit, OnDestroy {
       })
   }
 
-  getMedicalCheckTypeSelect() {
+  getMedicalCheckTypeSelect(clinicId: string) {
     this.medicalCheckForm.patchValue({ medicalCheckTypeId: '', employeeId: '' });
-    this.medicalCheckTypeData.GetMedicalCheckTypesDropdown().subscribe((medCheckTypes: SelectItemsList) => {
+    this.medicalCheckTypeData.GetMedicalCheckTypesByClinicDropdown(+clinicId).subscribe((medCheckTypes: SelectItemsList) => {
       this.medicalCheckTypeSelectList = medCheckTypes;
     },
       error => {
