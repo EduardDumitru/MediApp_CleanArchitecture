@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { MedicalCheckTypeData, MedicalCheckTypeDetails,
     MedicalCheckTypesList, AddMedicalCheckTypeCommand,
-     UpdateMedicalCheckTypeCommand, RestoreMedicalCheckTypeCommand } from '../data/medicalchecktype';
+     UpdateMedicalCheckTypeCommand, RestoreMedicalCheckTypeCommand, MedicalCheckTypeFromClinicDropdownQuery } from '../data/medicalchecktype';
 import { environment } from 'src/environments/environment';
 import { Observable, throwError } from 'rxjs';
 import { retry, catchError, map } from 'rxjs/operators';
@@ -62,14 +62,17 @@ export class MedicalCheckTypeService extends MedicalCheckTypeData {
                 catchError(this.errService.errorHandl)
             );
     }
-    GetMedicalCheckTypesByClinicDropdown(clinicId: number): Observable<SelectItemsList> {
+    GetMedicalCheckTypesByClinicDropdown(medicalCheckTypeDropdownQuery: MedicalCheckTypeFromClinicDropdownQuery):
+    Observable<SelectItemsList> {
+        console.log(medicalCheckTypeDropdownQuery);
         const httpOptions = {
             headers: new HttpHeaders({
           'Content-Type': 'application/json',
           Authorization: `Bearer ${this.authService.getToken()}`
             })
         };
-        return this.http.get<SelectItemsList>(this.baseUrl + '/medicalchecktypesbyclinicdropdown/' + clinicId, httpOptions)
+        return this.http.post<SelectItemsList>(this.baseUrl + '/medicalchecktypesbyclinicdropdown', medicalCheckTypeDropdownQuery,
+        httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),

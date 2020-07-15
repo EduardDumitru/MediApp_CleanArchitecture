@@ -17,6 +17,10 @@ export class CountriesList {
     countries: CountryLookup[];
 }
 
+export class CountryFromEmployeesDropdownQuery {
+    appointment: Date;
+}
+
 export class AddCountryCommand {
     name: string;
 }
@@ -34,7 +38,7 @@ export abstract class CountryData {
     abstract GetCountryDetails(id: number): Observable<CountryDetails>;
     abstract GetCountries(): Observable<CountriesList>;
     abstract GetCountriesDropdown(): Observable<SelectItemsList>;
-    abstract GetCountriesFromEmployeesDropdown(): Observable<SelectItemsList>;
+    abstract GetCountriesFromEmployeesDropdown(countryDropdownQuery: CountryFromEmployeesDropdownQuery): Observable<SelectItemsList>;
     abstract AddCountry(addCountryCommand: AddCountryCommand): Observable<Result>;
     abstract UpdateCountry(updateCountryCommand: UpdateCountryCommand): Observable<Result>;
     abstract DeleteCountry(id: number): Observable<Result>;

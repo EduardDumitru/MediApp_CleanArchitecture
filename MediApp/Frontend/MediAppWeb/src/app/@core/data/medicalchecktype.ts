@@ -30,11 +30,17 @@ export class RestoreMedicalCheckTypeCommand {
     id: number;
 }
 
+export class MedicalCheckTypeFromClinicDropdownQuery {
+    clinicId: number;
+    appointment: Date;
+}
+
 export abstract class MedicalCheckTypeData {
     abstract GetMedicalCheckTypeDetails(id: number): Observable<MedicalCheckTypeDetails>;
     abstract GetMedicalCheckTypes(): Observable<MedicalCheckTypesList>;
     abstract GetMedicalCheckTypesDropdown(): Observable<SelectItemsList>;
-    abstract GetMedicalCheckTypesByClinicDropdown(clinicId: number): Observable<SelectItemsList>;
+    abstract GetMedicalCheckTypesByClinicDropdown(medicalCheckTypeDropdownQuery: MedicalCheckTypeFromClinicDropdownQuery)
+    : Observable<SelectItemsList>;
     abstract AddMedicalCheckType(addMedicalCheckTypeCommand: AddMedicalCheckTypeCommand): Observable<Result>;
     abstract UpdateMedicalCheckType(updateMedicalCheckTypeCommand: UpdateMedicalCheckTypeCommand): Observable<Result>;
     abstract DeleteMedicalCheckType(id: number): Observable<Result>;

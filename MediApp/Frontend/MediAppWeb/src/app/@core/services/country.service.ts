@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { CountryData, CountryDetails, CountriesList,
-    AddCountryCommand, UpdateCountryCommand, RestoreCountryCommand } from '../data/country';
+    AddCountryCommand, UpdateCountryCommand, RestoreCountryCommand, CountryFromEmployeesDropdownQuery } from '../data/country';
 import { Observable, throwError } from 'rxjs';
 import { retry, catchError, map } from 'rxjs/operators';
 import { SelectItemsList } from '../data/common/selectitem';
@@ -60,13 +60,15 @@ export class CountryService extends CountryData {
                 catchError(this.errService.errorHandl)
             );
     }
-    GetCountriesFromEmployeesDropdown(): Observable<SelectItemsList> {
+    GetCountriesFromEmployeesDropdown(countryDropdownQuery: CountryFromEmployeesDropdownQuery): Observable<SelectItemsList> {
         const httpOptions = {
             headers: new HttpHeaders({
-          'Content-Type': 'application/json'
+           'Content-Type': 'application/json',
+            Authorization: `Bearer ${this.authService.getToken()}`
             })
         };
-        return this.http.get<SelectItemsList>(this.baseUrl + '/countriesdropdownfromemployees', httpOptions)
+        return this.http.post<SelectItemsList>(this.baseUrl + '/countriesdropdownfromemployees',
+        JSON.stringify(countryDropdownQuery), httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),

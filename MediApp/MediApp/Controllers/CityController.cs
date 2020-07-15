@@ -45,10 +45,10 @@ namespace MediApp.Controllers
             return Ok(vm);
         }
 
-        [HttpGet("citiesdropdownfromemployees/{countyId}")]
-        public async Task<ActionResult<SelectItemVm>> GetCitiesByCountyFromEmployeesDropdown(int countyId)
+        [HttpPost("citiesdropdownfromemployees")]
+        public async Task<ActionResult<SelectItemVm>> GetCitiesByCountyFromEmployeesDropdown([FromBody] GetCityByCountyFromEmployeesDropdownQuery cityDropdownQuery)
         {
-            var vm = await Mediator.Send(new GetCityByCountyFromEmployeesDropdownQuery {CountyId = countyId});
+            var vm = await Mediator.Send(cityDropdownQuery);
 
             return Ok(vm);
         }

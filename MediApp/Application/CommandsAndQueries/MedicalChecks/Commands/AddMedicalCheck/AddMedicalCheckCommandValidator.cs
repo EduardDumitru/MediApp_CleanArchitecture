@@ -42,7 +42,9 @@ namespace Application.CommandsAndQueries
                 .MustAsync(BeHigherThanCurrentDate).WithMessage("Appointment is not valid")
                 .MustAsync(BeFromHalfToHalfHours).WithMessage("Appointment must be from half to half hours.")
                 .MustAsync(NotInterfereWithOtherAppointments).WithMessage("Appointment time is taken. " +
-                                                                          "Please choose another time for the appointment.");
+                                                                          "Please choose another time for the appointment.")
+                .MustAsync(NotInterfereWithHolidayInterval).WithMessage("Doctor is on a holiday. " +
+                                                                        "Please choose another time for the appointment.");
         }
 
         private async Task<bool> ExistsEmployee(long employeeId, CancellationToken cancellationToken)
@@ -102,6 +104,16 @@ namespace Application.CommandsAndQueries
         {
             return !await _context.MedicalChecks.AnyAsync(x => x.Appointment == appointmentDate.ToLocalTime()
                                                                && !x.Deleted,
+                cancellationToken);
+        }
+
+        private async Task<bool> NotInterfereWithHolidayInterval(AddMedicalCheckCommand medicalCheckCommand, DateTime appointmentDate,
+            CancellationToken cancellationToken)
+        {
+            return !await _context.HolidayIntervals.AnyAsync(x => x.StartDate.Date <= appointmentDate.ToLocalTime().Date
+                                                                  && x.EndDate.Date >= appointmentDate.ToLocalTime().Date
+                                                                  && x.EmployeeId == medicalCheckCommand.EmployeeId
+                                                                  && !x.Deleted,
                 cancellationToken);
         }
     }

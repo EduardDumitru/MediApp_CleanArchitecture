@@ -1,14 +1,14 @@
 import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
-import { CityData } from 'src/app/@core/data/city';
-import { MedicalCheckTypeData } from 'src/app/@core/data/medicalchecktype';
+import { CityData, CityFromEmployeesDropdownQuery } from 'src/app/@core/data/city';
+import { MedicalCheckTypeData, MedicalCheckTypeFromClinicDropdownQuery } from 'src/app/@core/data/medicalchecktype';
 import { Validators, FormControl, FormGroup } from '@angular/forms';
 import { SelectItemsList } from 'src/app/@core/data/common/selectitem';
 import { MedicalCheckData, AddMedicalCheckCommand, MedicalChecksToAddLookup, MedicalChecksToAddList, MedicalChecksToAddQuery } from 'src/app/@core/data/medicalcheck';
 import { UIService } from 'src/app/shared/ui.service';
 import { ActivatedRoute } from '@angular/router';
-import { CountryData } from 'src/app/@core/data/country';
+import { CountryData, CountryFromEmployeesDropdownQuery } from 'src/app/@core/data/country';
 import { EmployeeData, EmployeeDropdownQuery } from 'src/app/@core/data/employee';
-import { CountyData } from 'src/app/@core/data/county';
+import { CountyData, CountyFromEmployeesDropdownQuery } from 'src/app/@core/data/county';
 import { ClinicData } from 'src/app/@core/data/clinic';
 import { Result } from 'src/app/@core/data/common/result';
 import { MatTableDataSource } from '@angular/material/table';
@@ -172,7 +172,11 @@ export class MedicalCheckComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getCountriesSelect() {
     this.medicalCheckForm.patchValue({ countryId: '', countyId: '', cityId: '', clinicId: '', employeeId: '', medicalCheckTypeId: '' });
-    this.countryData.GetCountriesFromEmployeesDropdown().subscribe((countries: SelectItemsList) => {
+    const countryDropdownQuery = {
+      appointment: new Date(this.medicalCheckForm.getRawValue().appointment)
+    } as CountryFromEmployeesDropdownQuery
+    this.countryData.GetCountriesFromEmployeesDropdown(countryDropdownQuery)
+    .subscribe((countries: SelectItemsList) => {
       this.countrySelectList = countries;
     },
       error => {
@@ -182,7 +186,11 @@ export class MedicalCheckComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getCountiesSelect(countryId: string) {
     this.medicalCheckForm.patchValue({ countyId: '', cityId: '', clinicId: '', employeeId: '', medicalCheckTypeId: '' });
-    this.countyData.GetCountiesByCountryFromEmployeesDropdown(+countryId).subscribe((counties: SelectItemsList) => {
+    const countyDropdownQuery = {
+      appointment: new Date(this.medicalCheckForm.getRawValue().appointment),
+      countryId: +countryId
+    } as CountyFromEmployeesDropdownQuery
+    this.countyData.GetCountiesByCountryFromEmployeesDropdown(countyDropdownQuery).subscribe((counties: SelectItemsList) => {
       this.countySelectList = counties;
     },
       error => {
@@ -192,7 +200,11 @@ export class MedicalCheckComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getCitiesSelect(countyId: string) {
     this.medicalCheckForm.patchValue({ cityId: '', clinicId: '', employeeId: '', medicalCheckTypeId: '' });
-    this.cityData.GetCitiesByCountyFromEmployeesDropdown(+countyId).subscribe((cities: SelectItemsList) => {
+    const cityDropdownQuery = {
+      appointment: new Date(this.medicalCheckForm.getRawValue().appointment),
+      countyId: +countyId
+    } as CityFromEmployeesDropdownQuery
+    this.cityData.GetCitiesByCountyFromEmployeesDropdown(cityDropdownQuery).subscribe((cities: SelectItemsList) => {
       this.citySelectList = cities;
     },
       error => {
@@ -202,7 +214,12 @@ export class MedicalCheckComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getMedicalCheckTypeSelect(clinicId: string) {
     this.medicalCheckForm.patchValue({ medicalCheckTypeId: '', employeeId: '' });
-    this.medicalCheckTypeData.GetMedicalCheckTypesByClinicDropdown(+clinicId).subscribe((medCheckTypes: SelectItemsList) => {
+    const medicalCheckTypeDropdownQuery = {
+      appointment: new Date(this.medicalCheckForm.getRawValue().appointment),
+      clinicId: +clinicId
+    } as MedicalCheckTypeFromClinicDropdownQuery
+    this.medicalCheckTypeData.GetMedicalCheckTypesByClinicDropdown(medicalCheckTypeDropdownQuery)
+    .subscribe((medCheckTypes: SelectItemsList) => {
       this.medicalCheckTypeSelectList = medCheckTypes;
     },
       error => {

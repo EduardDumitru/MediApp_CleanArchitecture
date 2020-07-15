@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { CountyData, CountyDetails, CountiesList, AddCountyCommand, UpdateCountyCommand, RestoreCountyCommand } from '../data/county';
+import { CountyData, CountyDetails, CountiesList, AddCountyCommand, UpdateCountyCommand, RestoreCountyCommand, CountyFromEmployeesDropdownQuery } from '../data/county';
 import { environment } from 'src/environments/environment';
 import { Observable, throwError } from 'rxjs';
 import { retry, catchError, map } from 'rxjs/operators';
@@ -73,13 +73,15 @@ export class CountyService extends CountyData {
                 catchError(this.errService.errorHandl)
             );
     }
-    GetCountiesByCountryFromEmployeesDropdown(countryId: number): Observable<SelectItemsList> {
+    GetCountiesByCountryFromEmployeesDropdown(countyDropdownQuery: CountyFromEmployeesDropdownQuery): Observable<SelectItemsList> {
         const httpOptions = {
             headers: new HttpHeaders({
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+           Authorization: `Bearer ${this.authService.getToken()}`
             })
         };
-        return this.http.get<SelectItemsList>(this.baseUrl + '/countiesdropdownfromemployees/' + countryId, httpOptions)
+        return this.http.post<SelectItemsList>(this.baseUrl + '/countiesdropdownfromemployees', JSON.stringify(countyDropdownQuery),
+        httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),

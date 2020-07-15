@@ -29,10 +29,19 @@ namespace MediApp.Controllers
             return Ok(vm);
         }
 
-        [HttpGet("countriesdropdownfromemployees")]
-        public async Task<ActionResult<SelectItemVm>> GetCountriesDropdownByEmployees()
+        [HttpGet("countriesdropdown")]
+        public async Task<ActionResult<SelectItemVm>> GetCountriesDropdown()
         {
-            var vm = await Mediator.Send(new GetCountryFromEmployeesDropdownQuery());
+            var vm = await Mediator.Send(new GetCountryDropdownQuery());
+
+            return Ok(vm);
+        }
+
+        [HttpPost("countriesdropdownfromemployees")]
+        public async Task<ActionResult<SelectItemVm>> GetCountriesDropdownFromEmployees(
+            [FromBody] GetCountryFromEmployeesDropdownQuery countryDropdownQuery)
+        {
+            var vm = await Mediator.Send(countryDropdownQuery);
 
             return Ok(vm);
         }

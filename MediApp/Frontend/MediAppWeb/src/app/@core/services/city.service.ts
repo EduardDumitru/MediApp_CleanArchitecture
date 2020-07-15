@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpClientModule } from '@angular/common/http';
-import { CityData, CityDetails, CitiesList, AddCityCommand, UpdateCityCommand, RestoreCityCommand } from '../data/city';
+import { CityData, CityDetails, CitiesList, AddCityCommand, UpdateCityCommand, RestoreCityCommand, CityFromEmployeesDropdownQuery } from '../data/city';
 import { Observable, throwError } from 'rxjs';
 import { SelectItemsList } from '../data/common/selectitem';
 import { Result } from '../data/common/result';
@@ -62,8 +62,7 @@ export class CityService extends CityData {
     GetCitiesByCountyDropdown(countyId: number): Observable<SelectItemsList> {
         const httpOptions = {
             headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
+          'Content-Type': 'application/json'
             })
         };
         return this.http.get<SelectItemsList>(this.baseUrl + '/citiesdropdown/' + countyId, httpOptions)
@@ -73,14 +72,15 @@ export class CityService extends CityData {
                 catchError(this.errService.errorHandl)
             );
     }
-    GetCitiesByCountyFromEmployeesDropdown(countyId: number): Observable<SelectItemsList> {
+    GetCitiesByCountyFromEmployeesDropdown(cityDropdownQuery: CityFromEmployeesDropdownQuery): Observable<SelectItemsList> {
         const httpOptions = {
             headers: new HttpHeaders({
           'Content-Type': 'application/json',
           Authorization: `Bearer ${this.authService.getToken()}`
             })
         };
-        return this.http.get<SelectItemsList>(this.baseUrl + '/citiesdropdownfromemployees/' + countyId, httpOptions)
+        return this.http.post<SelectItemsList>(this.baseUrl + '/citiesdropdownfromemployees/' , JSON.stringify(cityDropdownQuery),
+        httpOptions)
             .pipe(
                 map((response: any) => response),
                 retry(1),

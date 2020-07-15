@@ -35,12 +35,17 @@ export class RestoreCityCommand {
     id: number;
 }
 
+export class CityFromEmployeesDropdownQuery {
+    countyId: number;
+    appointment: Date;
+}
+
 export abstract class CityData {
     abstract GetCityDetails(id: number): Observable<CityDetails>;
     abstract GetCities(): Observable<CitiesList>;
     abstract GetCitiesDropdown(): Observable<SelectItemsList>;
     abstract GetCitiesByCountyDropdown(countyId: number): Observable<SelectItemsList>;
-    abstract GetCitiesByCountyFromEmployeesDropdown(countyId: number): Observable<SelectItemsList>;
+    abstract GetCitiesByCountyFromEmployeesDropdown(cityDropdownQuery: CityFromEmployeesDropdownQuery): Observable<SelectItemsList>;
     abstract AddCity(addCityCommand: AddCityCommand): Observable<Result>;
     abstract UpdateCity(updateCityCommand: UpdateCityCommand): Observable<Result>;
     abstract DeleteCity(id: number): Observable<Result>;

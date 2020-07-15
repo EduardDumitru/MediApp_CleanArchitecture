@@ -34,8 +34,9 @@ namespace Application.CommandsAndQueries
         public async Task<MedicalChecksToAddListVm> Handle(GetMedicalChecksToAddListQuery request,
             CancellationToken cancellationToken)
         {
+            var wantedAppointmentDate = request.Appointment.ToLocalTime();
             var existingMedicalChecks = await _context.MedicalChecks
-                .Where(x => request.Appointment <= x.Appointment
+                .Where(x => wantedAppointmentDate <= x.Appointment
                             && x.ClinicId == request.ClinicId
                             && x.EmployeeId == request.EmployeeId
                             && x.MedicalCheckTypeId == request.MedicalCheckTypeId
@@ -53,7 +54,42 @@ namespace Application.CommandsAndQueries
             var medicalCheckType = await _context.MedicalCheckTypes
                 .Where(x => x.Id == request.MedicalCheckTypeId)
                 .FirstOrDefaultAsync(cancellationToken);
-            var wantedAppointmentDate = request.Appointment.ToLocalTime();
+
+            var startHour = employee.StartHour;
+
+            if (wantedAppointmentDate.Date == DateTime.Now.Date)
+            {
+                if (employee.StartHour > wantedAppointmentDate.TimeOfDay)
+                {
+                    startHour = employee.StartHour;
+                }
+                else if (employee.StartHour <= wantedAppointmentDate.TimeOfDay &&
+                         employee.EndHour >= wantedAppointmentDate.TimeOfDay)
+                {
+                    if (wantedAppointmentDate.Minute > 0 && wantedAppointmentDate.Minute < 30)
+                    {
+                        wantedAppointmentDate = new DateTime(wantedAppointmentDate.Year,
+                            wantedAppointmentDate.Month, wantedAppointmentDate.Day,
+                            wantedAppointmentDate.Hour, 30, wantedAppointmentDate.Second
+                        );
+                        startHour = wantedAppointmentDate.TimeOfDay;
+                    }
+
+                    if (wantedAppointmentDate.Minute > 30)
+                    {
+                        wantedAppointmentDate = new DateTime(wantedAppointmentDate.Year,
+                            wantedAppointmentDate.Month, wantedAppointmentDate.Day,
+                            wantedAppointmentDate.Hour + 1, 0, wantedAppointmentDate.Second
+                        );
+                        startHour = wantedAppointmentDate.TimeOfDay;
+                    }
+                } 
+                else if (employee.EndHour <= wantedAppointmentDate.TimeOfDay)
+                {
+                    wantedAppointmentDate = wantedAppointmentDate.AddDays(1);
+                    startHour = employee.StartHour;
+                }
+            }
 
             wantedAppointmentDate = wantedAppointmentDate.DayOfWeek switch
             {
@@ -67,7 +103,7 @@ namespace Application.CommandsAndQueries
             var exceedsTerminationDate = false;
             while (nrOfMedicalChecksAdded < MedicalCheckConstants.NrOfMedicalChecksToBeShown && !exceedsTerminationDate)
             {
-                for (var time = employee.StartHour;
+                for (var time = startHour;
                     time <= employee.EndHour && nrOfMedicalChecksAdded <=
                     MedicalCheckConstants.NrOfMedicalChecksToBeShown;
                     time = time.Add(thirtyMinutes))
@@ -108,6 +144,7 @@ namespace Application.CommandsAndQueries
                     DayOfWeek.Sunday => wantedAppointmentDate.AddDays(1),
                     _ => wantedAppointmentDate
                 };
+                startHour = employee.StartHour;
             }
 
             var vm = new MedicalChecksToAddListVm
