@@ -1,119 +1,110 @@
-<section fxLayout fxLayoutAlign="center" class="medical-check-card">
+<section class="medical-check-container">
   <form [formGroup]="medicalCheckForm" (ngSubmit)="onSubmit()">
-    <mat-card fxFlex.xs="100%" fxFlex="600px">
-      <mat-card-title fxLayoutAlign="center"
-        >Update Medical Check</mat-card-title
-      >
-      <mat-card-actions fxLayoutAlign="center" *ngIf="!isLoading">
-        <a
-        mat-raised-button
-        *ngIf="!isLoading && showAddPrescription"
-        color="primary"
-        fxFlex="200px"
-        fxFlex.xs="100%"
-        routerLink="/treatments/prescriptions/add/{{medicalCheckId}}"
-      >
-        Add Prescription
-      </a>
-      <a
-        mat-raised-button
-        *ngIf="!isLoading && hasPrescriptions"
-        color="primary"
-        fxFlex="200px"
-        fxFlex.xs="100%"
-        routerLink="/treatments/prescriptionsbymedicalcheck/{{medicalCheckId}}"
-      >
-        Show Prescriptions
-      </a>
-      </mat-card-actions>
-      <mat-card-content fxLayout="column" fxLayoutAlign="center">
-        <mat-form-field>
-          <input
-            matInput
-            placeholder="Appointment"
-            [matDatepicker]="appointmnentPicker"
-            formControlName="appointment"
-            required
-          />
-          <mat-datepicker-toggle
-            matSuffix
-            [for]="appointmnentPicker"
-          ></mat-datepicker-toggle>
+    <mat-card class="medical-check-card">
+      <mat-card-header>
+        <mat-card-title class="card-title">Update Medical Check</mat-card-title>
+      </mat-card-header>
+
+      <!-- Action buttons for prescriptions -->
+      @if (!isLoading) {
+      <div class="actions-row">
+        @if (showAddPrescription) {
+        <a mat-raised-button color="primary" class="action-button"
+          [routerLink]="['/treatments/prescriptions/add', medicalCheckId]">
+          Add Prescription
+        </a>
+        }
+        @if (hasPrescriptions) {
+        <a mat-raised-button color="primary" class="action-button"
+          [routerLink]="['/treatments/prescriptionsbymedicalcheck', medicalCheckId]">
+          Show Prescriptions
+        </a>
+        }
+      </div>
+      }
+
+      <mat-card-content class="card-content">
+        <!-- Appointment -->
+        <mat-form-field class="form-field">
+          <mat-label>Appointment</mat-label>
+          <input matInput [matDatepicker]="appointmnentPicker" formControlName="appointment" required />
+          <mat-datepicker-toggle matSuffix [for]="appointmnentPicker"></mat-datepicker-toggle>
           <mat-datepicker #appointmnentPicker></mat-datepicker>
+          @if (medicalCheckForm.get('appointment')?.hasError('required') &&
+          medicalCheckForm.get('appointment')?.touched) {
+          <mat-error>Appointment date is required</mat-error>
+          }
         </mat-form-field>
-        <mat-form-field>
-          <input
-            matInput
-            placeholder="Clinic Name"
-            formControlName="clinicName"
-          />
+
+        <!-- Clinic Name -->
+        <mat-form-field class="form-field">
+          <mat-label>Clinic Name</mat-label>
+          <input matInput formControlName="clinicName" readonly />
         </mat-form-field>
-        <mat-form-field>
-          <input
-            matInput
-            placeholder="Medical Check Type Name"
-            formControlName="medicalCheckTypeName"
-          />
+
+        <!-- Medical Check Type -->
+        <mat-form-field class="form-field">
+          <mat-label>Medical Check Type</mat-label>
+          <input matInput formControlName="medicalCheckTypeName" readonly />
         </mat-form-field>
-        <mat-form-field>
-          <input
-            matInput
-            placeholder="Employee Name"
-            formControlName="employeeName"
-          />
+
+        <!-- Employee Name -->
+        <mat-form-field class="form-field">
+          <mat-label>Employee Name</mat-label>
+          <input matInput formControlName="employeeName" readonly />
         </mat-form-field>
-        <mat-form-field>
-          <input
-            matInput
-            placeholder="Patient Name"
-            formControlName="patientName"
-          />
+
+        <!-- Patient Name -->
+        <mat-form-field class="form-field">
+          <mat-label>Patient Name</mat-label>
+          <input matInput formControlName="patientName" readonly />
         </mat-form-field>
-        <mat-form-field *ngIf="this.diagnosisSelectList.selectItems">
-          <mat-select
-            placeholder="Choose Diagnosis"
-            formControlName="diagnosisId"
-            required
-          >
-            <mat-option
-              *ngFor="let diagnosis of diagnosisSelectList.selectItems"
-              [value]="diagnosis.value"
-            >
+
+        <!-- Diagnosis Selection -->
+        @if (diagnosisSelectList.selectItems?.length) {
+        <mat-form-field class="form-field">
+          <mat-label>Choose Diagnosis</mat-label>
+          <mat-select formControlName="diagnosisId" required>
+            @for (diagnosis of diagnosisSelectList.selectItems; track diagnosis.value) {
+            <mat-option [value]="diagnosis.value">
               {{ diagnosis.label }}
             </mat-option>
+            }
           </mat-select>
+          <mat-hint align="start">Select a diagnosis for this medical check</mat-hint>
+          @if (medicalCheckForm.get('diagnosisId')?.hasError('required') &&
+          medicalCheckForm.get('diagnosisId')?.touched) {
+          <mat-error>Diagnosis is required</mat-error>
+          }
         </mat-form-field>
-        <mat-spinner *ngIf="isLoading"></mat-spinner>
+        }
+
+        <!-- Loading Spinner -->
+        @if (isLoading) {
+        <div class="spinner-container">
+          <mat-spinner></mat-spinner>
+        </div>
+        }
       </mat-card-content>
-      <mat-card-actions fxLayoutAlign="center" *ngIf="!isLoading">
-        <button
-          *ngIf="!isLoading"
-          type="button"
-          mat-raised-button
-          color="accent"
-          (click)="goBack()"
-        >
+
+      <!-- Action Buttons -->
+      @if (!isLoading) {
+      <mat-card-actions class="card-actions">
+        <button type="button" mat-raised-button color="accent" (click)="goBack()">
           Back
         </button>
-        <button
-          type="submit"
-          mat-raised-button
-          color="primary"
-          [disabled]="medicalCheckForm.invalid"
-          *ngIf="!isDeleted && medicalCheckId"
-        >
+
+        @if (!isDeleted && medicalCheckId > 0) {
+        <button type="submit" mat-raised-button color="primary" [disabled]="medicalCheckForm.invalid">
           Update
         </button>
-        <button
-          *ngIf="!isDeleted && medicalCheckId"
-          type="button"
-          mat-raised-button
-          color="warn"
-          (click)="deleteMedicalCheck()"
-        >
+
+        <button type="button" mat-raised-button color="warn" (click)="deleteMedicalCheck()">
           Delete
         </button>
+        }
       </mat-card-actions>
+      }
     </mat-card>
   </form>
 </section>

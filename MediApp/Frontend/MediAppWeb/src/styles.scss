@@ -1,31 +1,70 @@
 /* You can add global styles to this file, and also import other style files */
-@import "~@angular/material/prebuilt-themes/indigo-pink.css";
-@import "~@angular/material/theming";
-@import "src/assets/variables.scss";
-html, body {
+// Import variables that don't depend on Material theming
+@use "assets/variables" as vars;
+
+// Import the new Angular Material theming API
+@use '@angular/material' as mat;
+
+// Include the common styles for Angular Material
+@include mat.core();
+
+// Create the theme object
+$theme: mat.m2-define-light-theme((color: (primary: vars.$primaryPalette,
+                accent: vars.$accentPalette,
+                warn: vars.$warnPalette,
+            ),
+            typography: mat.m2-define-typography-config(),
+            density: 0,
+        ));
+
+// Include theme styles for core and each component
+@include mat.all-component-themes($theme);
+
+// Global styles
+html,
+body {
     font-family: 'Roboto', sans-serif;
     height: 100%;
+    margin: 0;
+    padding: 0;
 }
 
 body {
     margin: 0;
 }
 
-mat-cell > mat-checkbox {
+// Material overrides
+.mat-cell>.mat-checkbox {
     padding-left: 15px;
 }
 
-.success-snackbar {
-    background: mat-color($primaryPalette);
-    white-space: pre-wrap;
-  }
+.mat-row:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+    cursor: pointer;
+}
 
-.error-snackbar {
-    background: mat-color($warnPalette);
+// Snackbar styles
+.success-snackbar {
+    background: mat.m2-get-color-from-palette(vars.$primaryPalette);
+    color: white;
     white-space: pre-wrap;
 }
 
-mat-row:hover {
-    background-color: lightgray;
-    cursor: pointer; 
+.error-snackbar {
+    background: mat.m2-get-color-from-palette(vars.$warnPalette);
+    color: white;
+    white-space: pre-wrap;
+}
+
+// Accessibility improvements
+:focus {
+    outline: 2px solid mat.m2-get-color-from-palette(vars.$primaryPalette);
+    outline-offset: 2px;
+}
+
+// Mobile responsiveness
+@media (max-width: 599px) {
+    .mat-table {
+        overflow-x: scroll;
+    }
 }

@@ -1,7 +1,7 @@
-export class AuthFailedResponse {
+export interface AuthFailedResponse {
     errors: string[];
 }
 
-export class AuthSuccessResponse {
+export interface AuthSuccessResponse {
     token: string;
 }

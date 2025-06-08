@@ -15,33 +15,33 @@ namespace Application.CommandsAndQueries
         {
             _context = context;
             RuleFor(x => x.Name)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Name is required");
             RuleFor(x => x.Email)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Email is required.")
                 .EmailAddress().WithMessage("The specified email is not valid.");
             RuleFor(x => x.PhoneNumber)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Phone number is required.")
                 .Length(10).WithMessage("Phone number must have 10 digits")
                 .Matches("^(07[0-8]{1}[0-9]{1}|02[0-9]{2}|03[0-9]{2}){1}?([0-9]{3}){2}$")
                 .WithMessage("Phone number is not valid");
             RuleFor(x => x.StreetNo)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Street Number is required");
             RuleFor(x => x.CountryId)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .MustAsync(ExistsCountry)
                 .WithMessage("Country is not valid");
             RuleFor(x => x.CountyId)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .MustAsync(ExistsCounty)
                 .WithMessage("County is not valid")
                 .MustAsync(ExistsCountyInCountry)
                 .WithMessage("County is not in the selected country");
             RuleFor(x => x.CityId)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .MustAsync(ExistsCity)
                 .WithMessage("City is not valid")
                 .MustAsync(ExistsCityInCounty)

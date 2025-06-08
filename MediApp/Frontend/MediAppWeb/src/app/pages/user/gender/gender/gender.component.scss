@@ -1,3 +1,49 @@
 .gender-card {
-    padding: 60px;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+.form-card {
+    width: 400px;
+    max-width: 100%;
+}
+
+.card-title {
+    text-align: center;
+    width: 100%;
+    margin-bottom: 16px;
+}
+
+.card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.form-field {
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+.spinner-container {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+.card-actions {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+}
+
+@media (max-width: 599px) {
+    .card-actions {
+        flex-direction: column;
+    }
+
+    .card-actions button {
+        margin: 4px 0;
+    }
 }

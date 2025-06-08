@@ -14,12 +14,12 @@ namespace Application.CommandsAndQueries
         {
             _context = context;
             RuleFor(x => x.CountryId)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .MustAsync(ExistsCountry)
                 .When(x => x.CountryId.HasValue)
                 .WithMessage("Country is not valid");
             RuleFor(x => x.CountyId)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .MustAsync(ExistsCounty)
                 .When(x => x.CountyId.HasValue)
                 .WithMessage("County is not valid")
@@ -27,7 +27,7 @@ namespace Application.CommandsAndQueries
                 .When(x => x.CountyId.HasValue)
                 .WithMessage("County is not in the selected country");
             RuleFor(x => x.CityId)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .MustAsync(ExistsCity)
                 .WithMessage("City is not valid")
                 .When(x => x.CityId.HasValue)

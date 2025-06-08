@@ -1,142 +1,214 @@
+<section class="medical-check-card">
+  <form [formGroup]="medicalCheckForm" (ngSubmit)="onSubmit()">
+    <mat-card class="main-card">
+      <mat-card-header>
+        <mat-card-title class="card-title">Add Medical Check</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="card-content">
+        <!-- Patient Selection -->
+        @if (userSelectList.selectItems?.length) {
+        <mat-form-field class="form-field">
+          <mat-label>Choose Patient</mat-label>
+          <mat-select formControlName="patientId" required>
+            @for (patient of userSelectList.selectItems; track patient.value) {
+            <mat-option [value]="patient.value">
+              {{ patient.label }}
+            </mat-option>
+            }
+          </mat-select>
+          <mat-hint>Please choose a patient</mat-hint>
+          @if (medicalCheckForm.get('patientId')?.hasError('required') && medicalCheckForm.get('patientId')?.touched) {
+          <mat-error>Please choose a patient</mat-error>
+          }
+        </mat-form-field>
+        }
 
-<section fxLayout fxLayoutAlign="center" class="medical-check-card">
-    <form [formGroup]="medicalCheckForm" (ngSubmit)="onSubmit()">
-      <mat-card fxFlex.lt-md="100%" fxFlex="900px">
-        <mat-card-title fxLayoutAlign="center">Add Medical Check</mat-card-title>
-        <mat-card-content fxLayout="column" fxLayoutAlign="center">
-          <mat-form-field *ngIf="this.userSelectList.selectItems">
-            <mat-select placeholder="Choose Patient" formControlName="patientId" required>
-              <mat-option
-                *ngFor="let patient of userSelectList.selectItems"
-                [value]="patient.value">
-                {{ patient.label }}
-              </mat-option>
-            </mat-select>
-            <mat-hint>Please choose a patient</mat-hint>
-            <mat-error>Please choose a patient</mat-error>
-           </mat-form-field>
-            <mat-form-field>
-                <input matInput [min]="minDate" [matDatepickerFilter]="myFilter" 
-                (dateInput)="getEmployeesSelect()" placeholder="Appointment" [matDatepicker]="appointmnentPicker" formControlName="appointment" required>
-                <mat-datepicker-toggle matSuffix [for]="appointmnentPicker"></mat-datepicker-toggle>
-                <mat-datepicker #appointmnentPicker disabled="false"></mat-datepicker>
-            </mat-form-field>
-            <mat-form-field *ngIf="this.countrySelectList.selectItems">
-                <mat-select placeholder="Choose Country" formControlName="countryId" (selectionChange)="getCountiesSelect($event.value)" required>
-                  <mat-option
-                    *ngFor="let country of countrySelectList.selectItems"
-                    [value]="country.value">
-                    {{ country.label }}
-                  </mat-option>
-                </mat-select>
-                <mat-hint>Please choose a country</mat-hint>
-                <mat-error>Please choose a country</mat-error>
-              </mat-form-field>
-              <mat-form-field *ngIf="this.countySelectList.selectItems">
-                <mat-select placeholder="Choose County" formControlName="countyId" required (selectionChange)="getCitiesSelect($event.value)" required>
-                  <mat-option
-                    *ngFor="let county of countySelectList.selectItems"
-                    [value]="county.value">
-                    {{ county.label }}
-                  </mat-option>
-                </mat-select>
-                <mat-hint>Please choose a county</mat-hint>
-                <mat-error>Please choose a county</mat-error>
-              </mat-form-field>
-              <mat-form-field *ngIf="this.citySelectList.selectItems">
-                <mat-select placeholder="Choose City" formControlName="cityId" (selectionChange)="getClinicSelect()"  required>
-                  <mat-option
-                    *ngFor="let city of citySelectList.selectItems"
-                    [value]="city.value">
-                    {{ city.label }}
-                  </mat-option>
-                </mat-select>
-                <mat-hint>Please choose a city</mat-hint>
-                <mat-error>Please choose a city</mat-error>
-              </mat-form-field>
-              <mat-form-field *ngIf="this.clinicSelectList.selectItems">
-                <mat-select placeholder="Choose Clinic" formControlName="clinicId" (selectionChange)="getMedicalCheckTypeSelect($event.value); getEmployeesSelect(); setClinicName($event.value)" required>
-                  <mat-option
-                    *ngFor="let clinic of clinicSelectList.selectItems"
-                    [value]="clinic.value">
-                    {{ clinic.label }}
-                  </mat-option>
-                </mat-select>
-                <mat-hint>Please choose a clinic</mat-hint>
-                <mat-error>Please choose a clinic</mat-error>
-              </mat-form-field>
-              <mat-form-field *ngIf="this.medicalCheckTypeSelectList.selectItems && this.medicalCheckForm.value.clinicId">
-                <mat-select placeholder="Choose Medical Check Type" formControlName="medicalCheckTypeId" (selectionChange)="getEmployeesSelect(); setMedicalCheckTypeName($event.value)" required>
-                  <mat-option
-                    *ngFor="let medicalCheckType of medicalCheckTypeSelectList.selectItems"
-                    [value]="medicalCheckType.value">
-                    {{ medicalCheckType.label }}
-                  </mat-option>
-                </mat-select>
-                <mat-hint>Please choose a medical check type</mat-hint>
-                <mat-error>Please choose a medical check type</mat-error>
-              </mat-form-field>
-            <mat-form-field *ngIf="this.employeeSelectList.selectItems && this.medicalCheckTypeSelectList.selectItems && this.medicalCheckForm.value.medicalCheckTypeId">
-                <mat-select placeholder="Choose Employee" formControlName="employeeId" required (selectionChange)="setEmployeeName($event.value)">
-                  <mat-option
-                    *ngFor="let employee of employeeSelectList.selectItems"
-                    [value]="employee.value">
-                    {{ employee.label }}
-                  </mat-option>
-                </mat-select>
-                <mat-hint>Please choose an employee</mat-hint>
-                <mat-error>Please choose an employee</mat-error>
-              </mat-form-field>
-          <mat-spinner *ngIf="isLoading"></mat-spinner>
-        </mat-card-content>
-        <mat-card-actions fxLayoutAlign="center" *ngIf="!isLoading">
-          <button
-          *ngIf="!isLoading"
-          type="button"
-          mat-raised-button
-          color="accent"
-          (click)="goBack()"
-        >
+        <!-- Appointment Date -->
+        <mat-form-field class="form-field">
+          <mat-label>Appointment</mat-label>
+          <input matInput [min]="minDate" [matDatepickerFilter]="myFilter" (dateInput)="getEmployeesSelect()"
+            [matDatepicker]="appointmnentPicker" formControlName="appointment" required>
+          <mat-datepicker-toggle matSuffix [for]="appointmnentPicker"></mat-datepicker-toggle>
+          <mat-datepicker #appointmnentPicker></mat-datepicker>
+          <mat-hint>Select a weekday for your appointment</mat-hint>
+          @if (medicalCheckForm.get('appointment')?.hasError('required') &&
+          medicalCheckForm.get('appointment')?.touched) {
+          <mat-error>Appointment date is required</mat-error>
+          }
+        </mat-form-field>
+
+        <!-- Country Selection -->
+        @if (countrySelectList.selectItems?.length) {
+        <mat-form-field class="form-field">
+          <mat-label>Choose Country</mat-label>
+          <mat-select formControlName="countryId" (selectionChange)="getCountiesSelect($event.value)" required>
+            @for (country of countrySelectList.selectItems; track country.value) {
+            <mat-option [value]="country.value">
+              {{ country.label }}
+            </mat-option>
+            }
+          </mat-select>
+          <mat-hint>Please choose a country</mat-hint>
+          @if (medicalCheckForm.get('countryId')?.hasError('required') && medicalCheckForm.get('countryId')?.touched) {
+          <mat-error>Please choose a country</mat-error>
+          }
+        </mat-form-field>
+        }
+
+        <!-- County Selection -->
+        @if (countySelectList.selectItems?.length) {
+        <mat-form-field class="form-field">
+          <mat-label>Choose County</mat-label>
+          <mat-select formControlName="countyId" (selectionChange)="getCitiesSelect($event.value)" required>
+            @for (county of countySelectList.selectItems; track county.value) {
+            <mat-option [value]="county.value">
+              {{ county.label }}
+            </mat-option>
+            }
+          </mat-select>
+          <mat-hint>Please choose a county</mat-hint>
+          @if (medicalCheckForm.get('countyId')?.hasError('required') && medicalCheckForm.get('countyId')?.touched) {
+          <mat-error>Please choose a county</mat-error>
+          }
+        </mat-form-field>
+        }
+
+        <!-- City Selection -->
+        @if (citySelectList.selectItems?.length) {
+        <mat-form-field class="form-field">
+          <mat-label>Choose City</mat-label>
+          <mat-select formControlName="cityId" (selectionChange)="getClinicSelect()" required>
+            @for (city of citySelectList.selectItems; track city.value) {
+            <mat-option [value]="city.value">
+              {{ city.label }}
+            </mat-option>
+            }
+          </mat-select>
+          <mat-hint>Please choose a city</mat-hint>
+          @if (medicalCheckForm.get('cityId')?.hasError('required') && medicalCheckForm.get('cityId')?.touched) {
+          <mat-error>Please choose a city</mat-error>
+          }
+        </mat-form-field>
+        }
+
+        <!-- Clinic Selection -->
+        @if (clinicSelectList.selectItems?.length) {
+        <mat-form-field class="form-field">
+          <mat-label>Choose Clinic</mat-label>
+          <mat-select formControlName="clinicId"
+            (selectionChange)="getMedicalCheckTypeSelect($event.value); getEmployeesSelect(); setClinicName($event.value)"
+            required>
+            @for (clinic of clinicSelectList.selectItems; track clinic.value) {
+            <mat-option [value]="clinic.value">
+              {{ clinic.label }}
+            </mat-option>
+            }
+          </mat-select>
+          <mat-hint>Please choose a clinic</mat-hint>
+          @if (medicalCheckForm.get('clinicId')?.hasError('required') && medicalCheckForm.get('clinicId')?.touched) {
+          <mat-error>Please choose a clinic</mat-error>
+          }
+        </mat-form-field>
+        }
+
+        <!-- Medical Check Type Selection -->
+        @if (medicalCheckTypeSelectList.selectItems?.length && medicalCheckForm.value.clinicId) {
+        <mat-form-field class="form-field">
+          <mat-label>Choose Medical Check Type</mat-label>
+          <mat-select formControlName="medicalCheckTypeId"
+            (selectionChange)="getEmployeesSelect(); setMedicalCheckTypeName($event.value)" required>
+            @for (medicalCheckType of medicalCheckTypeSelectList.selectItems; track medicalCheckType.value) {
+            <mat-option [value]="medicalCheckType.value">
+              {{ medicalCheckType.label }}
+            </mat-option>
+            }
+          </mat-select>
+          <mat-hint>Please choose a medical check type</mat-hint>
+          @if (medicalCheckForm.get('medicalCheckTypeId')?.hasError('required') &&
+          medicalCheckForm.get('medicalCheckTypeId')?.touched) {
+          <mat-error>Please choose a medical check type</mat-error>
+          }
+        </mat-form-field>
+        }
+
+        <!-- Employee Selection -->
+        @if (employeeSelectList.selectItems?.length && medicalCheckTypeSelectList.selectItems?.length &&
+        medicalCheckForm.value.medicalCheckTypeId) {
+        <mat-form-field class="form-field">
+          <mat-label>Choose Employee</mat-label>
+          <mat-select formControlName="employeeId" (selectionChange)="setEmployeeName($event.value)" required>
+            @for (employee of employeeSelectList.selectItems; track employee.value) {
+            <mat-option [value]="employee.value">
+              {{ employee.label }}
+            </mat-option>
+            }
+          </mat-select>
+          <mat-hint>Please choose an employee</mat-hint>
+          @if (medicalCheckForm.get('employeeId')?.hasError('required') && medicalCheckForm.get('employeeId')?.touched)
+          {
+          <mat-error>Please choose an employee</mat-error>
+          }
+        </mat-form-field>
+        }
+
+        <!-- Loading Spinner -->
+        @if (isLoading) {
+        <div class="spinner-container">
+          <mat-spinner></mat-spinner>
+        </div>
+        }
+      </mat-card-content>
+
+      @if (!isLoading) {
+      <mat-card-actions class="card-actions">
+        <button type="button" mat-raised-button color="accent" (click)="goBack()">
           Back
         </button>
-          <button
-            type="submit"
-            mat-raised-button
-            color="primary"
-            [disabled]="medicalCheckForm.invalid"
-          >
-            Search
-          </button>
-        </mat-card-actions>
-        <mat-table [dataSource]="dataSource" matSort>
+        <button type="submit" mat-raised-button color="primary" [disabled]="medicalCheckForm.invalid">
+          Search
+        </button>
+      </mat-card-actions>
+      }
 
-            <ng-container matColumnDef="appointment">
-                <mat-header-cell *matHeaderCellDef mat-sort-header>Appointment</mat-header-cell>
-                <mat-cell *matCellDef="let element">{{element.appointment | date: 'dd/MM/yyyy, HH:mm'}}</mat-cell>
-            </ng-container>
-        
-            <ng-container matColumnDef="medicalCheckTypeName">
-                <mat-header-cell *matHeaderCellDef mat-sort-header>Medical Check Type</mat-header-cell>
-                <mat-cell *matCellDef="let element">{{element.medicalCheckTypeName}}</mat-cell>
-            </ng-container>
-        
-            <ng-container matColumnDef="clinicName">
-                <mat-header-cell *matHeaderCellDef mat-sort-header>Clinic Name</mat-header-cell>
-                <mat-cell *matCellDef="let element">{{element.clinicName}}</mat-cell>
-            </ng-container>
-        
-            <ng-container matColumnDef="employeeName">
-                <mat-header-cell *matHeaderCellDef mat-sort-header>Employee Name</mat-header-cell>
-                <mat-cell *matCellDef="let element">{{element.employeeName}}</mat-cell>
-            </ng-container>
-        
-            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-            <mat-row *matRowDef="let row; columns: displayedColumns" (click)="addDialogOpen(row.appointment)"></mat-row>
-            <mat-spinner *ngIf="isLoading"></mat-spinner>
-        </mat-table>
-        
-        <mat-paginator #paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" fxLayoutAlign="center center"></mat-paginator>
-      </mat-card>
-    </form>
-  </section>
-  
+      <!-- Results Table -->
+      <div class="table-container">
+        <table mat-table [dataSource]="dataSource" matSort>
+          <ng-container matColumnDef="appointment">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Appointment</th>
+            <td mat-cell *matCellDef="let element">{{element.appointment | date: 'dd/MM/yyyy, HH:mm'}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="medicalCheckTypeName">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Medical Check Type</th>
+            <td mat-cell *matCellDef="let element">{{element.medicalCheckTypeName}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="clinicName">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Clinic Name</th>
+            <td mat-cell *matCellDef="let element">{{element.clinicName}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="employeeName">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Employee Name</th>
+            <td mat-cell *matCellDef="let element">{{element.employeeName}}</td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns" (click)="addDialogOpen(row.appointment)"
+            class="clickable-row"></tr>
+
+          <!-- No data row -->
+          @if (dataSource.data.length === 0) {
+          <tr class="mat-row">
+            <td class="mat-cell no-data" colspan="4" style="text-align: center; padding: 16px;">
+              No available appointments found
+            </td>
+          </tr>
+          }
+        </table>
+
+        <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" class="mat-paginator-centered"></mat-paginator>
+      </div>
+    </mat-card>
+  </form>
+</section>

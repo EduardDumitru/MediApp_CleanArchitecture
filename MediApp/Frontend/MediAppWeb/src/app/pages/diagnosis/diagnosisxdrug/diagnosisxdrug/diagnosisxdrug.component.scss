@@ -1,3 +1,57 @@
 .diagnosis-drug-card {
-    padding: 60px;
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+
+    form {
+        width: 100%;
+        max-width: 600px;
+    }
+
+    mat-card {
+        width: 100%;
+    }
+
+    mat-card-header {
+        justify-content: center;
+        margin-bottom: 1rem;
+    }
+
+    .form-container {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        position: relative;
+
+        mat-form-field {
+            width: 100%;
+        }
+    }
+
+    .spinner-container {
+        display: flex;
+        justify-content: center;
+        padding: 1rem;
+    }
+
+    mat-card-actions {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 1rem;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .diagnosis-drug-card {
+        padding: 1rem;
+
+        mat-card-actions {
+            flex-direction: column;
+
+            button {
+                margin-top: 0.5rem;
+            }
+        }
+    }
 }

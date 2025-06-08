@@ -1,154 +1,165 @@
-<section fxLayout fxLayoutAlign="center" class="register-card">
-    <form
-      [formGroup]="registerForm"
-      (ngSubmit)="onSubmit()">
-      <mat-card fxFlex.xs="100%" fxFlex="600px">
-      <mat-card-title fxLayoutAlign="center">Register</mat-card-title>
-      <mat-card-content fxLayout="column" fxLayoutAlign="center" fxLayoutGap="15px">
-      <mat-form-field>
-        <input
-          type="email"
-          matInput
-          placeholder="Your email"
-          formControlName="email"
-          required>
-        <mat-hint>Please enter a valid email.</mat-hint>
-        <mat-error>Invalid or missing email. Example: Test@test.com</mat-error>
-      </mat-form-field>
-      <mat-form-field style="padding-bottom: 10px;">
-        <input
-          type="password"
-          matInput
-          placeholder="Your password"
-          formControlName="password"
-          hintLabel="Should be at least 8 characters long and contain at least one lowercase letter, uppercase letter and special characters"
-          required>
-        <mat-hint>Please enter a valid password with 8 characters and include special, lowercase, uppercase and numbers.</mat-hint>
-        <mat-error>Please enter a valid password with 8 characters and include special, lowercase, uppercase and numbers.</mat-error>
-      </mat-form-field>
-      <mat-form-field>
-        <input
-          matInput
-          placeholder="First Name"
-          formControlName="firstName"
-          required>
-        <mat-hint>Please enter a first name.</mat-hint>
-        <mat-error>First name is required</mat-error>
-      </mat-form-field>
-      <mat-form-field>
-        <input
-          matInput
-          placeholder="Middle Name"
-          formControlName="middleName">
-      </mat-form-field>
-      <mat-form-field>
-        <input
-          matInput
-          placeholder="Last Name"
-          formControlName="lastName"
-          required>
-        <mat-hint>Please enter a last name.</mat-hint>
-        <mat-error>Last name is required</mat-error>
-      </mat-form-field>
-      <mat-form-field>
-        <input
-          matInput
-          placeholder="Address"
-          formControlName="address">
-      </mat-form-field>
-      <mat-form-field>
-        <input
-          matInput
-          placeholder="Street Name"
-          formControlName="streetName">
-      </mat-form-field>
-      <mat-form-field>
-        <input
-          matInput
-          placeholder="Street No."
-          formControlName="streetNo"
-          required>
-        <mat-hint>Please enter a street no.</mat-hint>
-        <mat-error>Street No. is Required</mat-error>
-      </mat-form-field>
-      <mat-form-field>
-        <input
-          matInput
-          placeholder="CNP"
-          formControlName="cnp"
-          required>
-        <mat-hint>Please enter a valid CNP. Example: 1991111121123</mat-hint>
-        <mat-error>Invalid or missing CNP. Example: 1991111121123</mat-error>
-      </mat-form-field>
-      <mat-form-field>
-        <input
-          matInput
-          placeholder="Phone Number"
-          formControlName="phoneNumber"
-          required>
-        <mat-hint>Please enter a valid phone number. Example: 0743123123</mat-hint>
-        <mat-error>Invalid or missing phone number. Example: 0743123123</mat-error>
-      </mat-form-field>
-      <mat-form-field>
-        <mat-select placeholder="Choose Country" formControlName="countryId" (selectionChange)="getCountiesSelect($event.value)" required>
-          <mat-option
-            *ngFor="let country of countrySelectList.selectItems"
-            [value]="country.value">
-            {{ country.label }}
-          </mat-option>
-        </mat-select>
-        <mat-hint>Please choose a country</mat-hint>
-        <mat-error>Please choose a country</mat-error>
-      </mat-form-field>
-      <mat-form-field *ngIf="this.countySelectList.selectItems">
-        <mat-select placeholder="Choose County" formControlName="countyId" required (selectionChange)="getCitiesSelect($event.value)" required>
-          <mat-option
-            *ngFor="let county of countySelectList.selectItems"
-            [value]="county.value">
-            {{ county.label }}
-          </mat-option>
-        </mat-select>
-        <mat-hint>Please choose a county</mat-hint>
-        <mat-error>Please choose a county</mat-error>
-      </mat-form-field>
-      <mat-form-field *ngIf="this.citySelectList.selectItems">
-        <mat-select placeholder="Choose City" formControlName="cityId" required>
-          <mat-option
-            *ngFor="let city of citySelectList.selectItems"
-            [value]="city.value">
-            {{ city.label }}
-          </mat-option>
-        </mat-select>
-        <mat-hint>Please choose a city</mat-hint>
-        <mat-error>Please choose a city</mat-error>
-      </mat-form-field>
-      <mat-form-field>
-        <mat-select placeholder="Choose Gender" formControlName="genderId" required>
-          <mat-option
-            *ngFor="let gender of genderSelectList.selectItems"
-            [value]="gender.value">
-            {{ gender.label }}
-          </mat-option>
-        </mat-select>
-        <mat-hint>Please choose a gender</mat-hint>
-        <mat-error>Please choose a gender</mat-error>
-      </mat-form-field>
-      <mat-spinner *ngIf="isLoading"></mat-spinner>
-    </mat-card-content>
-      <mat-card-actions fxLayoutAlign="center" *ngIf="!isLoading">
-        <button
-        *ngIf="!isLoading"
-        type="button"
-        mat-raised-button
-        color="accent"
-        (click)="goBack()"
-      >
-        Back
-      </button>
-      <button *ngIf="!isLoading" type="submit" mat-raised-button color="primary" [disabled]="registerForm.invalid">
-        Submit
-      </button>
+<section class="register-card">
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Register</mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <!-- Account Information -->
+        <div class="form-field-container">
+          <mat-form-field appearance="outline">
+            <mat-label>Email</mat-label>
+            <input type="email" matInput formControlName="email" required>
+            <mat-hint>Please enter a valid email</mat-hint>
+            <mat-error>Invalid or missing email. Example: user&#64;example.com</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Password</mat-label>
+            <input type="password" matInput formControlName="password" required>
+            <mat-hint>Must have at least 8 characters with lowercase, uppercase, number, and special
+              character</mat-hint>
+            <mat-error>Must have at least 8 characters with lowercase, uppercase, number, and special
+              character</mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Personal Information -->
+        <div class="form-field-container">
+          <mat-form-field appearance="outline">
+            <mat-label>First Name</mat-label>
+            <input matInput formControlName="firstName" required>
+            <mat-hint>Please enter your first name</mat-hint>
+            <mat-error>First name is required</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Middle Name</mat-label>
+            <input matInput formControlName="middleName">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Last Name</mat-label>
+            <input matInput formControlName="lastName" required>
+            <mat-hint>Please enter your last name</mat-hint>
+            <mat-error>Last name is required</mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Address Information -->
+        <div class="form-field-container">
+          <mat-form-field appearance="outline">
+            <mat-label>Address</mat-label>
+            <input matInput formControlName="address">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Street Name</mat-label>
+            <input matInput formControlName="streetName">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Street Number</mat-label>
+            <input matInput formControlName="streetNo" required>
+            <mat-hint>Please enter your street number</mat-hint>
+            <mat-error>Street number is required</mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Contact Information -->
+        <div class="form-field-container">
+          <mat-form-field appearance="outline">
+            <mat-label>CNP</mat-label>
+            <input matInput formControlName="cnp" required>
+            <mat-hint>Please enter a valid CNP. Example: 1991111121123</mat-hint>
+            <mat-error>Invalid or missing CNP. Example: 1991111121123</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Phone Number</mat-label>
+            <input matInput formControlName="phoneNumber" required>
+            <mat-hint>Please enter a valid phone number. Example: 0743123123</mat-hint>
+            <mat-error>Invalid or missing phone number. Example: 0743123123</mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Location Information -->
+        <div class="form-field-container">
+          <mat-form-field appearance="outline">
+            <mat-label>Country</mat-label>
+            <mat-select formControlName="countryId" (selectionChange)="getCountiesSelect($event.value)" required>
+              @for (country of countrySelectList.selectItems; track country.value) {
+              <mat-option [value]="country.value">
+                {{ country.label }}
+              </mat-option>
+              }
+            </mat-select>
+            <mat-hint>Please choose a country</mat-hint>
+            <mat-error>Please choose a country</mat-error>
+          </mat-form-field>
+
+          @if (countySelectList.selectItems?.length) {
+          <mat-form-field appearance="outline">
+            <mat-label>County</mat-label>
+            <mat-select formControlName="countyId" (selectionChange)="getCitiesSelect($event.value)" required>
+              @for (county of countySelectList.selectItems; track county.value) {
+              <mat-option [value]="county.value">
+                {{ county.label }}
+              </mat-option>
+              }
+            </mat-select>
+            <mat-hint>Please choose a county</mat-hint>
+            <mat-error>Please choose a county</mat-error>
+          </mat-form-field>
+          }
+
+          @if (citySelectList.selectItems?.length) {
+          <mat-form-field appearance="outline">
+            <mat-label>City</mat-label>
+            <mat-select formControlName="cityId" required>
+              @for (city of citySelectList.selectItems; track city.value) {
+              <mat-option [value]="city.value">
+                {{ city.label }}
+              </mat-option>
+              }
+            </mat-select>
+            <mat-hint>Please choose a city</mat-hint>
+            <mat-error>Please choose a city</mat-error>
+          </mat-form-field>
+          }
+
+          <mat-form-field appearance="outline">
+            <mat-label>Gender</mat-label>
+            <mat-select formControlName="genderId" required>
+              @for (gender of genderSelectList.selectItems; track gender.value) {
+              <mat-option [value]="gender.value">
+                {{ gender.label }}
+              </mat-option>
+              }
+            </mat-select>
+            <mat-hint>Please choose a gender</mat-hint>
+            <mat-error>Please choose a gender</mat-error>
+          </mat-form-field>
+        </div>
+
+        @if (isLoading) {
+        <div class="spinner-container">
+          <mat-spinner></mat-spinner>
+        </div>
+        }
+      </mat-card-content>
+
+      @if (!isLoading) {
+      <mat-card-actions>
+        <button type="button" mat-raised-button color="accent" (click)="goBack()">
+          Back
+        </button>
+        <button type="submit" mat-raised-button color="primary" [disabled]="registerForm.invalid">
+          Register
+        </button>
       </mat-card-actions>
+      }
     </mat-card>
-    </form>
-  </section>
+  </form>
+</section>

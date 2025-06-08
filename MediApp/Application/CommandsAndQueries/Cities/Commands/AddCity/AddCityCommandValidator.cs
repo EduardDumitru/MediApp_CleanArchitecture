@@ -1,8 +1,8 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Application.Common.Interfaces;
+﻿using Application.Common.Interfaces;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Application.CommandsAndQueries
 {
@@ -14,10 +14,10 @@ namespace Application.CommandsAndQueries
         {
             _context = context;
             RuleFor(x => x.Name)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Name is required");
             RuleFor(x => x.CountyId)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("County is required")
                 .MustAsync(ExistsCounty).WithMessage("County is not valid");
         }

@@ -1,18 +1,19 @@
+<section class="notfound-container">
+  <div class="notfound-card">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>404 Page Not Found</mat-card-title>
+      </mat-card-header>
 
+      <mat-card-content>
+        <p>The page you were looking for doesn't exist</p>
+      </mat-card-content>
 
-      <section fxLayout fxLayoutAlign="center" class="notfound">
-          <mat-card fxFlex.xs="100%" fxFlex="400px">
-            <mat-card-title fxLayoutAlign="center"
-              >404 Page Not Found</mat-card-title>
-            <mat-card-content fxLayoutAlign="center">
-              The page you were looking for doesn't exist
-            </mat-card-content>
-            <mat-card-actions fxLayoutAlign="center">
-              <button  mat-raised-button (click)="goBack()" type="button" color="warn">
-                Go back
-              </button>
-            </mat-card-actions>
-          </mat-card>
-      </section>
-      
-  
+      <mat-card-actions>
+        <button mat-raised-button (click)="goBack()" type="button" color="primary">
+          Go back
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</section>

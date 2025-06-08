@@ -1,125 +1,156 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Location } from '@angular/common';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DrugData, DrugDetails, UpdateDrugCommand, AddDrugCommand, RestoreDrugCommand } from 'src/app/@core/data/drug';
 import { UIService } from 'src/app/shared/ui.service';
 import { ActivatedRoute } from '@angular/router';
 import { Result } from 'src/app/@core/data/common/result';
+import { finalize } from 'rxjs';
+
+import { getSharedImports } from 'src/app/shared/shared.module';
 
 @Component({
-  selector: 'app-drug',
-  templateUrl: './drug.component.html',
-  styleUrls: ['./drug.component.scss']
+    selector: 'app-drug',
+    templateUrl: './drug.component.html',
+    styleUrls: ['./drug.component.scss'],
+    standalone: true,
+    imports: [
+        ...getSharedImports(),
+    ],
 })
 export class DrugComponent implements OnInit {
-  isLoading = false;
-  drugForm: FormGroup;
-  drugId: number;
-  isDeleted = false;
-  constructor(private drugData: DrugData, private uiService: UIService,
-    private route: ActivatedRoute, private _location: Location) { }
+    isLoading = false;
+    drugForm!: FormGroup;
+    drugId?: number;
+    isDeleted = false;
 
-  ngOnInit() {
-      if (Number(this.route.snapshot.params.id)) {
-          this.drugId = +this.route.snapshot.params.id;
-      }
-      this.initForm();
-  }
+    // Dependency injection using inject function
+    private readonly drugData = inject(DrugData);
+    private readonly uiService = inject(UIService);
+    private readonly route = inject(ActivatedRoute);
+    private readonly location = inject(Location);
+    private readonly fb = inject(FormBuilder);
 
-  initForm() {
-      this.drugForm = new FormGroup({
-          name: new FormControl('', [Validators.required])
-      })
-      if (this.drugId) {
-          this.getDrug();
-      }
-  }
+    ngOnInit(): void {
+        const id = Number(this.route.snapshot.params['id']);
+        if (id) {
+            this.drugId = id;
+        }
+        this.initForm();
+    }
 
-  getDrug() {
-      this.isLoading = true;
-      this.drugData.GetDrugDetails(this.drugId).subscribe((drug: DrugDetails) => {
-          this.drugForm.setValue({name: drug.name});
-          this.isDeleted = drug.deleted;
-          if (this.isDeleted) {
-              this.drugForm.disable();
-          }
-          this.isLoading = false;
-      },
-          error => {
-              this.uiService.showErrorSnackbar(error, null, 3000);
-              this.isLoading = false;
-          });
-  }
+    initForm(): void {
+        this.drugForm = this.fb.group({
+            name: ['', [Validators.required]]
+        });
 
-  onSubmit() {
-      this.isLoading = true;
-      if (this.drugId) {
-          this.updateDrug();
-      } else {
-          this.addDrug();
-      }
-  }
+        if (this.drugId) {
+            this.getDrug();
+        }
+    }
 
-  updateDrug() {
-      const updateDrugCommand: UpdateDrugCommand = {
-          id: this.drugId,
-          name: this.drugForm.value.name
-      } as UpdateDrugCommand;
+    getDrug(): void {
+        this.isLoading = true;
+        this.drugData.GetDrugDetails(this.drugId!)
+            .pipe(
+                finalize(() => this.isLoading = false)
+            )
+            .subscribe((drug: DrugDetails) => {
+                if (!drug) return;
 
-      this.drugData.UpdateDrug(updateDrugCommand).subscribe((res: Result) => {
-          this.uiService.showSuccessSnackbar(res.successMessage, null, 3000);
-          this._location.back();
-          this.isLoading = false;
-      }, error => {
-          this.isLoading = false;
-          this.uiService.showErrorSnackbar(error, null, 3000);
-      });
-  }
+                this.drugForm.setValue({ name: drug.name });
+                this.isDeleted = !!drug.deleted;
 
-  addDrug() {
-      const addDrugCommand: AddDrugCommand = {
-          name: this.drugForm.value.name
-      } as AddDrugCommand;
+                if (this.isDeleted) {
+                    this.drugForm.disable();
+                }
+            });
+    }
 
-      this.drugData.AddDrug(addDrugCommand).subscribe((res: Result) => {
-          this.uiService.showSuccessSnackbar(res.successMessage, null, 3000);
-          this._location.back();
-          this.isLoading = false;
-      }, error => {
-          this.isLoading = false;
-          this.uiService.showErrorSnackbar(error, null, 3000);
-      });
-  }
+    onSubmit(): void {
+        if (this.drugForm.invalid) {
+            return;
+        }
 
-  deleteDrug() {
-      this.isLoading = true;
-      this.drugData.DeleteDrug(this.drugId).subscribe((res: Result) => {
-          this.uiService.showSuccessSnackbar(res.successMessage, null, 3000);
-          this._location.back();
-          this.isLoading = false;
-      }, error => {
-          this.isLoading = false;
-          this.uiService.showErrorSnackbar(error, null, 3000);
-      })
-  }
+        this.isLoading = true;
 
-  restoreDrug() {
-      this.isLoading = true;
-      const restoreDrugCommand: RestoreDrugCommand = {
-          id: this.drugId
-      } as RestoreDrugCommand;
+        if (this.drugId) {
+            this.updateDrug();
+        } else {
+            this.addDrug();
+        }
+    }
 
-      this.drugData.RestoreDrug(restoreDrugCommand).subscribe((res: Result) => {
-          this.uiService.showSuccessSnackbar(res.successMessage, null, 3000);
-          this._location.back();
-          this.isLoading = false;
-      }, error => {
-          this.isLoading = false;
-          this.uiService.showErrorSnackbar(error, null, 3000);
-      })
-  }
+    updateDrug(): void {
+        const updateDrugCommand: UpdateDrugCommand = {
+            id: this.drugId!,
+            name: this.drugForm.value.name
+        };
 
-  goBack() {
-      this._location.back();
+        this.drugData.UpdateDrug(updateDrugCommand)
+            .pipe(
+                finalize(() => this.isLoading = false)
+            )
+            .subscribe((res: Result | null) => {
+                if (!res) return;
+
+                this.uiService.showSuccessSnackbar(res.successMessage, undefined, 3000);
+                this.location.back();
+            });
+    }
+
+    addDrug(): void {
+        const addDrugCommand: AddDrugCommand = {
+            name: this.drugForm.value.name
+        };
+
+        this.drugData.AddDrug(addDrugCommand)
+            .pipe(
+                finalize(() => this.isLoading = false)
+            )
+            .subscribe((res: Result | null) => {
+                if (!res) return;
+
+                this.uiService.showSuccessSnackbar(res.successMessage, undefined, 3000);
+                this.location.back();
+            });
+    }
+
+    deleteDrug(): void {
+        this.isLoading = true;
+
+        this.drugData.DeleteDrug(this.drugId!)
+            .pipe(
+                finalize(() => this.isLoading = false)
+            )
+            .subscribe((res: Result | null) => {
+                if (!res) return;
+
+                this.uiService.showSuccessSnackbar(res.successMessage, undefined, 3000);
+                this.location.back();
+            });
+    }
+
+    restoreDrug(): void {
+        this.isLoading = true;
+
+        const restoreDrugCommand: RestoreDrugCommand = {
+            id: this.drugId!
+        };
+
+        this.drugData.RestoreDrug(restoreDrugCommand)
+            .pipe(
+                finalize(() => this.isLoading = false)
+            )
+            .subscribe((res: Result | null) => {
+                if (!res) return;
+
+                this.uiService.showSuccessSnackbar(res.successMessage, undefined, 3000);
+                this.location.back();
+            });
+    }
+
+    goBack(): void {
+        this.location.back();
     }
 }

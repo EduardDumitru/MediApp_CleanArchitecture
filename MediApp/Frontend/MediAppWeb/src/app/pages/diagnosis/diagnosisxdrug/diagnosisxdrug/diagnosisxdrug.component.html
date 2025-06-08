@@ -1,62 +1,63 @@
-<section fxLayout fxLayoutAlign="center" class="diagnosis-drug-card">
-    <form [formGroup]="diagnosisXDrugForm" (ngSubmit)="onSubmit()">
-      <mat-card fxFlex.xs="100%" fxFlex="600px">
-        <mat-card-title fxLayoutAlign="center">Add DiagnosisXDrug</mat-card-title>
-        <mat-card-content fxLayout="column" fxLayoutAlign="center">
-          <mat-form-field *ngIf="this.diagnosisSelectList.selectItems">
-            <mat-select
-              placeholder="Choose Diagnosis"
-              formControlName="diagnosisId"
-              required
-            >
-              <mat-option
-                *ngFor="let diagnosis of diagnosisSelectList.selectItems"
-                [value]="diagnosis.value"
-              >
+<section class="diagnosis-drug-card">
+  <form [formGroup]="diagnosisXDrugForm" (ngSubmit)="onSubmit()">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Add Diagnosis-Drug Relation</mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="form-container">
+          <!-- Diagnosis Selection -->
+          @if (diagnosisSelectList.selectItems?.length) {
+          <mat-form-field appearance="outline">
+            <mat-label>Choose Diagnosis</mat-label>
+            <mat-select formControlName="diagnosisId" required>
+              @for (diagnosis of diagnosisSelectList.selectItems; track diagnosis.value) {
+              <mat-option [value]="diagnosis.value">
                 {{ diagnosis.label }}
               </mat-option>
+              }
             </mat-select>
             <mat-hint>Please choose a diagnosis</mat-hint>
             <mat-error>Please choose a diagnosis</mat-error>
           </mat-form-field>
-          <mat-form-field *ngIf="this.diagnosisSelectList.selectItems">
-            <mat-select
-              placeholder="Choose Drug"
-              formControlName="drugId"
-              required
-            >
-              <mat-option
-                *ngFor="let drug of drugSelectList.selectItems"
-                [value]="drug.value"
-              >
+          }
+
+          <!-- Drug Selection -->
+          @if (drugSelectList.selectItems?.length) {
+          <mat-form-field appearance="outline">
+            <mat-label>Choose Drug</mat-label>
+            <mat-select formControlName="drugId" required>
+              @for (drug of drugSelectList.selectItems; track drug.value) {
+              <mat-option [value]="drug.value">
                 {{ drug.label }}
               </mat-option>
+              }
             </mat-select>
             <mat-hint>Please choose a drug</mat-hint>
             <mat-error>Please choose a drug</mat-error>
           </mat-form-field>
-          <mat-spinner *ngIf="isLoading"></mat-spinner>
-        </mat-card-content>
-        <mat-card-actions fxLayoutAlign="center" *ngIf="!isLoading">
-          <button
-          *ngIf="!isLoading"
-          type="button"
-          mat-raised-button
-          color="accent"
-          (click)="goBack()"
-        >
+          }
+
+          @if (isLoading) {
+          <div class="spinner-container">
+            <mat-spinner></mat-spinner>
+          </div>
+          }
+        </div>
+      </mat-card-content>
+
+      @if (!isLoading) {
+      <mat-card-actions>
+        <button type="button" mat-raised-button color="accent" (click)="goBack()">
           Back
         </button>
-          <button
-            type="submit"
-            mat-raised-button
-            color="primary"
-            [disabled]="diagnosisXDrugForm.invalid"
-          >
-            Submit
-          </button>
-        </mat-card-actions>
-      </mat-card>
-    </form>
-  </section>
-  
+
+        <button type="submit" mat-raised-button color="primary" [disabled]="diagnosisXDrugForm.invalid">
+          Submit
+        </button>
+      </mat-card-actions>
+      }
+    </mat-card>
+  </form>
+</section>

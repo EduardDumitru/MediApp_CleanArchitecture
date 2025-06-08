@@ -14,15 +14,15 @@ namespace Application.CommandsAndQueries
         {
             _context = context;
             RuleFor(x => x.EmployeeId)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Employee is required")
                 .MustAsync(ExistsEmployee).WithMessage("Employee is not valid");
             RuleFor(x => x.PatientId)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Patient is required")
                 .MustAsync(ExistsPatient).WithMessage("Patient is not valid");
             RuleFor(x => x.MedicalCheckId)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Medical Check is required")
                 .MustAsync(ExistsMedicalCheck).WithMessage("Medical Check is not valid");
         }

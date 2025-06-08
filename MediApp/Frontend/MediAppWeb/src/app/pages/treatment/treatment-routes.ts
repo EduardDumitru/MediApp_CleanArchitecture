@@ -1,6 +1,7 @@
-import { RoleGuardService as RoleGuard } from '../../auth/role-guard.service';
-import { AuthGuardService as AuthGuard } from '../../auth/auth-guard.service';
+import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { roleGuard } from '../../auth/role-guard.service';
+import { authGuard } from '../../auth/auth-guard.service';
 import { EmployeePrescriptionsComponent } from './prescription/employeeprescriptions/employeeprescriptions.component';
 import { PrescriptionComponent } from './prescription/prescription/prescription.component';
 import { PatientPrescriptionsComponent } from './prescription/patientprescriptions/patientprescriptions.component';
@@ -12,62 +13,69 @@ import { MedicalChecksByClinicComponent } from './medicalcheck/medical-checks-by
 import { PrescriptionsByMedicalCheckComponent } from './prescription/prescriptions-by-medical-check/prescriptions-by-medical-check.component';
 
 const routes: Routes = [
+    // Prescription routes - reordered for Angular 20 best practices
     {
-        path: 'employeeprescriptions/:id',
-        component: EmployeePrescriptionsComponent,
-        canActivate: [RoleGuard],
-        data: {expectedRoles: ['Admin', 'Doctor', 'Nurse']}
-    },
-    {
-        path: 'patientprescriptions/:id',
-        component: PatientPrescriptionsComponent,
-        canActivate: [AuthGuard]
-    },
-    {
-        path: 'prescriptionsbymedicalcheck/:id',
-        component: PrescriptionsByMedicalCheckComponent,
-        canActivate: [RoleGuard],
-        data: {expectedRoles: ['Admin', 'Doctor', 'Nurse']}
+        path: 'prescriptions/add/:medicalCheckId',
+        component: PrescriptionComponent,
+        canActivate: [roleGuard(['Admin', 'Doctor'])],
+        data: { expectedRoles: ['Admin', 'Doctor'] }
     },
     {
         path: 'prescriptions/:prescriptionId',
         component: PrescriptionComponent,
-        canActivate: [AuthGuard]
+        canActivate: [authGuard]
     },
     {
-        path: 'prescriptions/add/:medicalCheckId',
-        component: PrescriptionComponent,
-        canActivate: [RoleGuard],
-        data: {expectedRoles: ['Admin', 'Doctor']}
+        path: 'employeeprescriptions/:id',
+        component: EmployeePrescriptionsComponent,
+        canActivate: [roleGuard(['Admin', 'Doctor', 'Nurse'])],
+        data: { expectedRoles: ['Admin', 'Doctor', 'Nurse'] }
     },
     {
-        path: 'employeemedicalchecks/:id',
-        component: EmployeeMedicalChecksComponent,
-        canActivate: [RoleGuard],
-        data: {expectedRoles: ['Admin', 'Doctor', 'Nurse']}
+        path: 'patientprescriptions/:id',
+        component: PatientPrescriptionsComponent,
+        canActivate: [authGuard]
     },
     {
-        path: 'patientmedicalchecks/:id',
-        component: PatientMedicalChecksComponent,
-        canActivate: [AuthGuard]
+        path: 'prescriptionsbymedicalcheck/:id',
+        component: PrescriptionsByMedicalCheckComponent,
+        canActivate: [roleGuard(['Admin', 'Doctor', 'Nurse'])],
+        data: { expectedRoles: ['Admin', 'Doctor', 'Nurse'] }
     },
-    {
-        path: 'medicalchecksbyclinic/:id',
-        component: MedicalChecksByClinicComponent,
-        canActivate: [RoleGuard],
-        data: {expectedRoles: ['Admin', 'Doctor', 'Nurse']}
-    },
+
+    // Medical Check routes
     {
         path: 'medicalchecks/add',
         component: MedicalCheckComponent,
-        canActivate: [AuthGuard]
+        canActivate: [authGuard]
     },
     {
         path: 'employeemedicalchecks/update/:id',
         component: UpdateMedicalCheckComponent,
-        canActivate: [RoleGuard],
-        data: {expectedRoles: ['Admin', 'Doctor', 'Nurse']}
+        canActivate: [roleGuard(['Admin', 'Doctor', 'Nurse'])],
+        data: { expectedRoles: ['Admin', 'Doctor', 'Nurse'] }
+    },
+    {
+        path: 'employeemedicalchecks/:id',
+        component: EmployeeMedicalChecksComponent,
+        canActivate: [roleGuard(['Admin', 'Doctor', 'Nurse'])],
+        data: { expectedRoles: ['Admin', 'Doctor', 'Nurse'] }
+    },
+    {
+        path: 'patientmedicalchecks/:id',
+        component: PatientMedicalChecksComponent,
+        canActivate: [authGuard]
+    },
+    {
+        path: 'medicalchecksbyclinic/:id',
+        component: MedicalChecksByClinicComponent,
+        canActivate: [roleGuard(['Admin', 'Doctor', 'Nurse'])],
+        data: { expectedRoles: ['Admin', 'Doctor', 'Nurse'] }
     }
 ];
 
-export const TREATMENTROUTES = RouterModule.forChild(routes);
+@NgModule({
+    imports: [RouterModule.forChild(routes)],
+    exports: [RouterModule]
+})
+export class TreatmentRoutingModule { }

@@ -1,3 +1,71 @@
 .holiday-interval-card {
-    padding: 60px;
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+
+    form {
+        width: 100%;
+        max-width: 600px;
+    }
+
+    mat-card {
+        width: 100%;
+    }
+
+    mat-card-header {
+        justify-content: center;
+        margin-bottom: 1rem;
+    }
+
+    .form-container {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        position: relative;
+
+        mat-form-field {
+            width: 100%;
+        }
+    }
+
+    .spinner-container {
+        display: flex;
+        justify-content: center;
+        padding: 1rem;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.7);
+        z-index: 1;
+        align-items: center;
+    }
+
+    mat-card-actions {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 1rem;
+        flex-wrap: wrap;
+
+        button {
+            flex: 1;
+            max-width: 150px;
+        }
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .holiday-interval-card {
+        padding: 1rem;
+
+        mat-card-actions {
+            button {
+                flex: 1 1 100%;
+                max-width: none;
+                margin-bottom: 0.5rem;
+            }
+        }
+    }
 }

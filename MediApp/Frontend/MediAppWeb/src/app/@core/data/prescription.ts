@@ -1,10 +1,9 @@
 import { Observable } from 'rxjs';
-import { SelectItemsList } from './common/selectitem';
 import { Result } from './common/result';
-import { PrescriptionXDrugsLookup } from './prescriptionxdrug';
 import { TimeSpan } from './common/timespan';
+import { Injectable } from '@angular/core';
 
-export class PrescriptionDetails {
+export interface PrescriptionDetails {
     noOfDays: number;
     description: string;
     medicalCheckId: number;
@@ -16,7 +15,7 @@ export class PrescriptionDetails {
     deleted?: boolean;
 }
 
-export class EmployeePrescriptionLookup {
+export interface EmployeePrescriptionLookup {
     id: number;
     noOfDays: number;
     description: string;
@@ -29,10 +28,10 @@ export class EmployeePrescriptionLookup {
 }
 
 export class EmployeePrescriptionsList {
-    employeePrescriptions: EmployeePrescriptionLookup[];
+    employeePrescriptions: EmployeePrescriptionLookup[] = [];
 }
 
-export class PrescriptionsByMedicalCheckLookup {
+export interface PrescriptionsByMedicalCheckLookup {
     id: number;
     noOfDays: number;
     description: string;
@@ -46,10 +45,10 @@ export class PrescriptionsByMedicalCheckLookup {
 }
 
 export class PrescriptionsByMedicalCheckList {
-    prescriptionsByMedicalCheck: PrescriptionsByMedicalCheckLookup[];
+    prescriptionsByMedicalCheck: PrescriptionsByMedicalCheckLookup[] = [];
 }
 
-export class PatientPrescriptionLookup {
+export interface PatientPrescriptionLookup {
     id: number;
     noOfDays: number;
     description: string;
@@ -62,10 +61,10 @@ export class PatientPrescriptionLookup {
 }
 
 export class PatientPrescriptionsList {
-    patientPrescriptions: PatientPrescriptionLookup[];
+    patientPrescriptions: PatientPrescriptionLookup[] = [];
 }
 
-export class AddPrescriptionCommand {
+export interface AddPrescriptionCommand {
     noOfDays: number;
     description: string;
     medicalCheckId: number;
@@ -74,7 +73,7 @@ export class AddPrescriptionCommand {
     employeeId: number;
 }
 
-export class AddPrescriptionXDrug {
+export interface AddPrescriptionXDrug {
     prescriptionId: number;
     drugId: number;
     box: number;
@@ -82,13 +81,13 @@ export class AddPrescriptionXDrug {
     interval: TimeSpan;
 }
 
-export class UpdatePrescriptionCommand {
+export interface UpdatePrescriptionCommand {
     id: number;
     noOfDays: number;
     description: string;
 }
 
-export class UpdatePrescriptionXDrug {
+export interface UpdatePrescriptionXDrug {
     id: number;
     drugId: number;
     box: number;
@@ -96,12 +95,16 @@ export class UpdatePrescriptionXDrug {
     interval: TimeSpan;
 }
 
+@Injectable({
+    providedIn: 'root'
+})
+
 export abstract class PrescriptionData {
     abstract GetPrescriptionDetails(id: number): Observable<PrescriptionDetails>;
     abstract GetEmployeePrescriptions(employeeId: number): Observable<EmployeePrescriptionsList>;
     abstract GetPatientPrescriptions(patientId: number): Observable<PatientPrescriptionsList>;
     abstract GetPrescriptionsByMedicalCheck(medicalCheckId: number): Observable<PrescriptionsByMedicalCheckList>;
-    abstract AddPrescription(addPrescriptionCommand: AddPrescriptionCommand): Observable<Result>;
-    abstract UpdatePrescription(updatePrescriptionCommand: UpdatePrescriptionCommand): Observable<Result>;
-    abstract DeletePrescription(id: number): Observable<Result>;
+    abstract AddPrescription(addPrescriptionCommand: AddPrescriptionCommand): Observable<Result | null>;
+    abstract UpdatePrescription(updatePrescriptionCommand: UpdatePrescriptionCommand): Observable<Result | null>;
+    abstract DeletePrescription(id: number): Observable<Result | null>;
 }

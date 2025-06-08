@@ -20,7 +20,7 @@ namespace Application.CommandsAndQueries
             _dateTime = dateTime;
 
             RuleFor(x => x.CNP)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("CNP is required.")
                 .Length(13).WithMessage("CNP must have 13 digits")
                 .Matches("^[0-9]*$").WithMessage("CNP must be only digits")
@@ -28,7 +28,7 @@ namespace Application.CommandsAndQueries
                 .MustAsync(IsCNPValid).WithMessage("The specified CNP is not valid");
 
             RuleFor(x => x.PhoneNumber)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Phone number is required.")
                 .Length(10).WithMessage("Phone number must have 10 digits")
                 .Matches("^(07[0-8]{1}[0-9]{1}|02[0-9]{2}|03[0-9]{2}){1}?([0-9]{3}){2}$")
@@ -36,32 +36,32 @@ namespace Application.CommandsAndQueries
                 .MustAsync(BeUniquePhoneNumber).WithMessage("Phone number already exists");
 
             RuleFor(x => x.FirstName)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("First Name is required");
 
             RuleFor(x => x.LastName)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Last Name is required");
 
             RuleFor(x => x.StreetNo)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Street Number is required");
 
             RuleFor(x => x.CountryId)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Country is required");
 
             RuleFor(x => x.CountyId)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("County is required");
 
             RuleFor(x => x.CityId)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("City is required")
                 .MustAsync(IsCityMappedCorrectly).WithMessage("Country, County and City are not valid");
 
             RuleFor(x => x.GenderId)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Gender is required")
                 .MustAsync(IsGenderValid).WithMessage("Gender is not valid");
         }

@@ -1,35 +1,38 @@
-import { TestBed, async } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
+/// <reference types="jasmine" />
+
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { AppComponent } from './app.component';
+import { AuthService } from './auth/auth.service';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('AppComponent', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule
+  let component: AppComponent;
+  let fixture: ComponentFixture<AppComponent>;
+  let mockAuthService: jasmine.SpyObj<AuthService>;
+
+  beforeEach(async () => {
+    mockAuthService = jasmine.createSpyObj('AuthService', ['initAuthListener']);
+
+    await TestBed.configureTestingModule({
+      providers: [
+        provideRouter([]), // Replace RouterTestingModule with provideRouter
+        { provide: AuthService, useValue: mockAuthService }
       ],
-      declarations: [
-        AppComponent
-      ],
+      declarations: [AppComponent],
+      schemas: [NO_ERRORS_SCHEMA] // Ignore unknown elements like mat-* components
     }).compileComponents();
-  }));
+
+    fixture = TestBed.createComponent(AppComponent);
+    component = fixture.componentInstance;
+  });
 
   it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app).toBeTruthy();
+    expect(component).toBeTruthy();
   });
 
-  it(`should have as title 'MediApp'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app.title).toEqual('MediApp');
-  });
-
-  it('should render title in a h1 tag', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('Welcome to MediApp!');
+  it('should initialize auth listener on init', () => {
+    component.ngOnInit();
+    expect(mockAuthService.initAuthListener).toHaveBeenCalled();
   });
 });

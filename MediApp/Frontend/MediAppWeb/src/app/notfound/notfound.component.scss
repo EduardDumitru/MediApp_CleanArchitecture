@@ -1,3 +1,53 @@
-.notfound {
-  padding:15% 0% 0% 0%;
+.notfound-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding-top: 10vh;
+  background-color: #f5f5f5;
+
+  .notfound-card {
+    width: 100%;
+    max-width: 400px;
+
+    mat-card {
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+      mat-card-header {
+        justify-content: center;
+        margin-bottom: 1rem;
+
+        mat-card-title {
+          font-size: 1.5rem;
+          color: #e53935;
+        }
+      }
+
+      mat-card-content {
+        text-align: center;
+        margin-bottom: 1.5rem;
+
+        p {
+          font-size: 1rem;
+          color: #616161;
+        }
+      }
+
+      mat-card-actions {
+        display: flex;
+        justify-content: center;
+        padding-bottom: 1.5rem;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .notfound-container {
+    padding: 1rem;
+
+    .notfound-card {
+      width: 100%;
+    }
+  }
 }

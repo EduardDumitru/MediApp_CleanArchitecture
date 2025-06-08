@@ -14,10 +14,10 @@ namespace Application.CommandsAndQueries
         {
             _context = context;
             RuleFor(x => x.Name)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Name is required");
             RuleFor(x => x.CountryId)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Country is required")
                 .MustAsync(ExistsCountry).WithMessage("Country is not valid");
         }

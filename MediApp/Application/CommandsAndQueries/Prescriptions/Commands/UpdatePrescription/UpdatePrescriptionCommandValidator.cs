@@ -8,7 +8,7 @@ namespace Application.CommandsAndQueries
         public UpdatePrescriptionCommandValidator()
         {
             RuleFor(x => x.Id)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Id is required");
         }
     }

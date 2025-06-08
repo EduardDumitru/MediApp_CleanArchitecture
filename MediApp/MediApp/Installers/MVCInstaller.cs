@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Text;
-using Application.Common.Models;
+﻿using Application.Common.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Collections.Generic;
+using System.Text;
 
 namespace MediApp.Installers
 {
@@ -18,8 +17,7 @@ namespace MediApp.Installers
             configuration.Bind(nameof(jwtSettings), jwtSettings);
             services.AddSingleton(jwtSettings);
 
-            services.AddMvc(options => { options.EnableEndpointRouting = false; })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            services.AddMvc(options => { options.EnableEndpointRouting = false; });
 
             var tokenValidationParameters = new TokenValidationParameters
             {
@@ -49,7 +47,7 @@ namespace MediApp.Installers
 
             services.AddSwaggerGen(x =>
             {
-                x.SwaggerDoc("v1", new OpenApiInfo {Title = "MediApp API", Version = "v1"});
+                x.SwaggerDoc("v1", new OpenApiInfo { Title = "MediApp API", Version = "v1" });
 
                 x.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {

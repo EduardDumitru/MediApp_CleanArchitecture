@@ -14,7 +14,7 @@ namespace Application.CommandsAndQueries
         {
             _context = context;
             RuleFor(x => x.EmployeeId)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Employee is required")
                 .MustAsync(ExistsEmployee).WithMessage("Employee is not valid");
         }

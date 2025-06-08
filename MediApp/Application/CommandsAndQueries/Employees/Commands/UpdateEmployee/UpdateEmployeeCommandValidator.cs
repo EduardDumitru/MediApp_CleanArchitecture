@@ -18,23 +18,23 @@ namespace Application.CommandsAndQueries
         {
             _context = context;
             RuleFor(x => x.ClinicId)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Clinic is required")
                 .MustAsync(ExistsClinic).WithMessage("Clinic is not valid");
             RuleFor(x => x.EmployeeTypeId)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Employee Type is required")
                 .MustAsync(ExistsEmployeeType).WithMessage("Employee Type is not valid")
                 .MustAsync(HaveNoMedicalCheckTypeIfNotDoctor).WithMessage("Only doctors can have medical check type")
                 .MustAsync(HaveMedicalCheckTypeIfDoctor).WithMessage("Medical Check Type is required for doctor");
             RuleFor(x => x.StartHour)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Start Hour is required")
                 .MustAsync(BeValidTimeSpan).WithMessage("Start Hour is not valid")
                 .MustAsync(BeFromHalfToHalfHours)
                 .WithMessage("Start Hour must be from half to half hours. Example: 09:00 or 09:30");
             RuleFor(x => x.EndHour)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("End Hour is required")
                 .MustAsync(BeValidTimeSpan).WithMessage("End Hour is not valid")
                 .MustAsync(BeFromHalfToHalfHours)
@@ -42,7 +42,7 @@ namespace Application.CommandsAndQueries
                 .MustAsync(BeHigherThanStartHourByAtLeastFourHours)
                 .WithMessage("End Hour must be higher than Start Hour by at least four hours");
             RuleFor(x => x.TerminationDate)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .MustAsync(NotInterfereWithAppointments)
                 .When(x => x.TerminationDate.HasValue)
                 .WithMessage("Termination date is not valid. It interferes with medical checks. Delete those first.");

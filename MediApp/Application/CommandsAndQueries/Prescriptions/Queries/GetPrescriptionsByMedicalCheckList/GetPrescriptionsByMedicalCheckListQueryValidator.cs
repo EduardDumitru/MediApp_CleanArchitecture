@@ -15,7 +15,7 @@ namespace Application.CommandsAndQueries
         {
             _context = context;
             RuleFor(x => x.MedicalCheckId)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Medical check is required")
                 .MustAsync(ExistsMedicalCheck).WithMessage("Medical check is not valid");
         }

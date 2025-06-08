@@ -14,7 +14,7 @@ namespace Application.CommandsAndQueries
         {
             _context = context;
             RuleFor(x => x.Name)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Name is required")
                 .MustAsync(BeUniqueDiagnosis).WithMessage("Name already exists");
         }

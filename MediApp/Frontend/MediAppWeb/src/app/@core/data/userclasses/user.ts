@@ -1,8 +1,9 @@
 import { Observable } from 'rxjs/internal/Observable';
 import { AuthSuccessResponse } from '../common/authresponse';
 import { CurrentUser } from './currentuser';
+import { Injectable } from '@angular/core';
 
-export class AddUserCommand {
+export interface AddUserCommand {
     email: string;
     password: string;
     firstName: string;
@@ -19,13 +20,17 @@ export class AddUserCommand {
     genderId: number;
 }
 
-export class LoginUserCommand {
+export interface LoginUserCommand {
     email: string;
     password: string;
 }
 
+@Injectable({
+    providedIn: 'root'
+})
+
 export abstract class UserData {
-    abstract AddUser(addUserCommand: AddUserCommand): Observable<AuthSuccessResponse>;
-    abstract LoginUser(loginUserCommand: LoginUserCommand): Observable<AuthSuccessResponse>;
+    abstract AddUser(addUserCommand: AddUserCommand): Observable<AuthSuccessResponse | null>;
+    abstract LoginUser(loginUserCommand: LoginUserCommand): Observable<AuthSuccessResponse | null>;
     abstract GetCurrentUser(): Observable<CurrentUser>;
 }

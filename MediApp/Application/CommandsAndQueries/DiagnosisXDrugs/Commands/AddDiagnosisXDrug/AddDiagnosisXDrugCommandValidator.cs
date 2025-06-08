@@ -15,11 +15,11 @@ namespace Application.CommandsAndQueries
         {
             _context = context;
             RuleFor(x => x.DiagnosisId)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Diagnosis is required")
                 .MustAsync(ExistsDiagnosis).WithMessage("Diagnosis is not valid");
             RuleFor(x => x.DrugId)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Drug is required")
                 .MustAsync(ExistsDrug).WithMessage("Drug is not valid")
                 .MustAsync(NoExistingLinkBetweenDiagnosisAndDrug).WithMessage("Link already exists");

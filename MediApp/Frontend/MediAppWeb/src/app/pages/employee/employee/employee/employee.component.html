@@ -1,175 +1,218 @@
+<section class="employee-card">
+  <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>
+          @if (!employeeId) {
+          Add Employee
+          } @else {
+          Update Employee
+          }
+        </mat-card-title>
+      </mat-card-header>
 
-<section fxLayout fxLayoutAlign="center" class="employee-card">
-    <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()">
-      <mat-card fxFlex.xs="100%" fxFlex="600px">
-        <mat-card-title fxLayoutAlign="center" *ngIf="!employeeId">Add Employee</mat-card-title>
-        <mat-card-title fxLayoutAlign="center" *ngIf="employeeId">Update Employee</mat-card-title>
-        <mat-card-actions fxLayoutAlign="center" *ngIf="!isLoading && employeeId && userEmployeeType === doctorEmployeeType">
-          <a
-            mat-raised-button
-            color="primary"
-            routerLink="/treatments/employeemedicalchecks/{{employeeId}}"
-          >
-            Medical Checks
+      @if (!isLoading && employeeId && userEmployeeType === doctorEmployeeType) {
+      <div class="card-actions">
+        <a mat-raised-button color="primary" [routerLink]="['/treatments/employeemedicalchecks', employeeId]">
+          Medical Checks
         </a>
-          <a
-            mat-raised-button
-            color="primary"
-            routerLink="/treatments/employeeprescriptions/{{employeeId}}"
-          >
-            Prescriptions
-      </a>
-        </mat-card-actions>
-        <mat-card-content fxLayout="column" fxLayoutAlign="center">
-              <mat-form-field *ngIf="this.employeeId">
-                <input matInput placeholder="Name" formControlName="name"/>
-              </mat-form-field>
-              <mat-form-field *ngIf="this.employeeId">
-                <input matInput placeholder="CNP" formControlName="cnp"/>
-              </mat-form-field>
-              <mat-form-field *ngIf="this.userProfileSelectList.selectItems">
-              <mat-select placeholder="Choose User" formControlName="userProfileId" required>
-                <mat-option
-                  *ngFor="let user of userProfileSelectList.selectItems"
-                  [value]="user.value">
-                  {{ user.label }}
-                </mat-option>
-              </mat-select>
-              <mat-hint>Please choose an user</mat-hint>
-              <mat-error>Please choose an user</mat-error>
-            </mat-form-field>
-            <mat-form-field *ngIf="this.employeeTypeSelectList.selectItems">
-                <mat-select placeholder="Choose Employee Type" formControlName="employeeTypeId" (selectionChange)="employeeTypeChange($event.value)" required>
-                  <mat-option
-                    *ngFor="let employeeType of employeeTypeSelectList.selectItems"
-                    [value]="employeeType.value">
-                    {{ employeeType.label }}
-                  </mat-option>
-                </mat-select>
-                <mat-hint>Please choose an employee type</mat-hint>
-                <mat-error>Please choose an employee type</mat-error>
-              </mat-form-field>
-              <mat-form-field *ngIf="this.medicalCheckTypeSelectList.selectItems">
-                <mat-select placeholder="Choose Medical Check Type" formControlName="medicalCheckTypeId" required>
-                  <mat-option
-                    *ngFor="let medicalCheckType of medicalCheckTypeSelectList.selectItems"
-                    [value]="medicalCheckType.value">
-                    {{ medicalCheckType.label }}
-                  </mat-option>
-                </mat-select>
-                <mat-hint>Please choose a medical check type</mat-hint>
-                <mat-error>Please choose a medical check type</mat-error>
-              </mat-form-field>
-              <mat-form-field *ngIf="this.clinicSelectList.selectItems">
-                <mat-select placeholder="Choose Clinic" formControlName="clinicId" required>
-                  <mat-option
-                    *ngFor="let clinic of clinicSelectList.selectItems"
-                    [value]="clinic.value">
-                    {{ clinic.label }}
-                  </mat-option>
-                </mat-select>
-                <mat-hint>Please choose a clinic</mat-hint>
-                <mat-error>Please choose a clinic</mat-error>
-              </mat-form-field>
-              <mat-form-field *ngIf="employeeId">
-                <input matInput placeholder="TerminationDate" [matDatepicker]="terminationDatePicker" formControlName="terminationDate" readonly>
-                <mat-datepicker-toggle matSuffix [for]="terminationDatePicker"></mat-datepicker-toggle>
-                <mat-datepicker #terminationDatePicker></mat-datepicker>
-            </mat-form-field>
-            <mat-form-field *ngIf="this.hoursSelectList.selectItems">
-              <mat-select placeholder="Start Hour" formControlName="startHour" required>
-                <mat-option
-                  *ngFor="let startHours of hoursSelectList.selectItems"
-                  [value]="startHours.value">
-                  {{ startHours.label }}
-                </mat-option>
-              </mat-select>
-              <mat-hint>Please choose start hours</mat-hint>
-              <mat-error>Please choose start hours</mat-error>
-            </mat-form-field>
-            <mat-form-field *ngIf="this.minutesSelectList.selectItems">
-              <mat-select placeholder="Start Minutes" formControlName="startMinutes" required>
-                <mat-option
-                  *ngFor="let startMinutes of minutesSelectList.selectItems"
-                  [value]="startMinutes.value">
-                  {{ startMinutes.label }}
-                </mat-option>
-              </mat-select>
-              <mat-hint>Please choose start minutes</mat-hint>
-              <mat-error>Please choose start minutes</mat-error>
-            </mat-form-field>
-            <mat-form-field *ngIf="this.hoursSelectList.selectItems">
-              <mat-select placeholder="End Hour" formControlName="endHour" required>
-                <mat-option
-                  *ngFor="let endHours of hoursSelectList.selectItems"
-                  [value]="endHours.value">
-                  {{ endHours.label }}
-                </mat-option>
-              </mat-select>
-              <mat-hint>Please choose end hours</mat-hint>
-              <mat-error>Please choose end hours</mat-error>
-            </mat-form-field>
-            <mat-form-field *ngIf="this.minutesSelectList.selectItems">
-              <mat-select placeholder="End Minutes" formControlName="endMinutes" required>
-                <mat-option
-                  *ngFor="let endMinutes of minutesSelectList.selectItems"
-                  [value]="endMinutes.value">
-                  {{ endMinutes.label }}
-                </mat-option>
-              </mat-select>
-              <mat-hint>Please choose end minutes</mat-hint>
-              <mat-error>Please choose end minutes</mat-error>
-            </mat-form-field>
-          <mat-spinner *ngIf="isLoading"></mat-spinner>
-        </mat-card-content>
-        <mat-card-actions fxLayoutAlign="center" *ngIf="!isLoading">
-          <button
-          *ngIf="!isLoading"
-          type="button"
-          mat-raised-button
-          color="accent"
-          (click)="goBack()"
-        >
+        <a mat-raised-button color="primary" [routerLink]="['/treatments/employeeprescriptions', employeeId]">
+          Prescriptions
+        </a>
+      </div>
+      }
+
+      <mat-card-content>
+        <div class="form-container">
+          <!-- Employee Details -->
+          @if (employeeId) {
+          <mat-form-field appearance="outline">
+            <mat-label>Name</mat-label>
+            <input matInput formControlName="name" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>CNP</mat-label>
+            <input matInput formControlName="cnp" />
+          </mat-form-field>
+          }
+
+          <!-- User Profile Selection -->
+          @if (userProfileSelectList.selectItems?.length) {
+          <mat-form-field appearance="outline">
+            <mat-label>Choose User</mat-label>
+            <mat-select formControlName="userProfileId" required>
+              @for (user of userProfileSelectList.selectItems; track user.value) {
+              <mat-option [value]="user.value">
+                {{ user.label }}
+              </mat-option>
+              }
+            </mat-select>
+            <mat-hint>Please choose a user</mat-hint>
+            <mat-error>Please choose a user</mat-error>
+          </mat-form-field>
+          }
+
+          <!-- Employee Type Selection -->
+          @if (employeeTypeSelectList.selectItems?.length) {
+          <mat-form-field appearance="outline">
+            <mat-label>Choose Employee Type</mat-label>
+            <mat-select formControlName="employeeTypeId" (selectionChange)="employeeTypeChange($event.value)" required>
+              @for (employeeType of employeeTypeSelectList.selectItems; track employeeType.value) {
+              <mat-option [value]="employeeType.value">
+                {{ employeeType.label }}
+              </mat-option>
+              }
+            </mat-select>
+            <mat-hint>Please choose an employee type</mat-hint>
+            <mat-error>Please choose an employee type</mat-error>
+          </mat-form-field>
+          }
+
+          <!-- Medical Check Type Selection -->
+          @if (medicalCheckTypeSelectList.selectItems?.length) {
+          <mat-form-field appearance="outline">
+            <mat-label>Choose Medical Check Type</mat-label>
+            <mat-select formControlName="medicalCheckTypeId" required>
+              @for (medicalCheckType of medicalCheckTypeSelectList.selectItems; track medicalCheckType.value) {
+              <mat-option [value]="medicalCheckType.value">
+                {{ medicalCheckType.label }}
+              </mat-option>
+              }
+            </mat-select>
+            <mat-hint>Please choose a medical check type</mat-hint>
+            <mat-error>Please choose a medical check type</mat-error>
+          </mat-form-field>
+          }
+
+          <!-- Clinic Selection -->
+          @if (clinicSelectList.selectItems?.length) {
+          <mat-form-field appearance="outline">
+            <mat-label>Choose Clinic</mat-label>
+            <mat-select formControlName="clinicId" required>
+              @for (clinic of clinicSelectList.selectItems; track clinic.value) {
+              <mat-option [value]="clinic.value">
+                {{ clinic.label }}
+              </mat-option>
+              }
+            </mat-select>
+            <mat-hint>Please choose a clinic</mat-hint>
+            <mat-error>Please choose a clinic</mat-error>
+          </mat-form-field>
+          }
+
+          <!-- Termination Date -->
+          @if (employeeId) {
+          <mat-form-field appearance="outline">
+            <mat-label>Termination Date</mat-label>
+            <input matInput [matDatepicker]="terminationDatePicker" formControlName="terminationDate" readonly>
+            <mat-datepicker-toggle matIconSuffix [for]="terminationDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #terminationDatePicker></mat-datepicker>
+          </mat-form-field>
+          }
+
+          <!-- Start Hour -->
+          @if (hoursSelectList.selectItems?.length) {
+          <mat-form-field appearance="outline">
+            <mat-label>Start Hour</mat-label>
+            <mat-select formControlName="startHour" required>
+              @for (startHours of hoursSelectList.selectItems; track startHours.value) {
+              <mat-option [value]="startHours.value">
+                {{ startHours.label }}
+              </mat-option>
+              }
+            </mat-select>
+            <mat-hint>Please choose start hours</mat-hint>
+            <mat-error>Please choose start hours</mat-error>
+          </mat-form-field>
+          }
+
+          <!-- Start Minutes -->
+          @if (minutesSelectList.selectItems?.length) {
+          <mat-form-field appearance="outline">
+            <mat-label>Start Minutes</mat-label>
+            <mat-select formControlName="startMinutes" required>
+              @for (startMinutes of minutesSelectList.selectItems; track startMinutes.value) {
+              <mat-option [value]="startMinutes.value">
+                {{ startMinutes.label }}
+              </mat-option>
+              }
+            </mat-select>
+            <mat-hint>Please choose start minutes</mat-hint>
+            <mat-error>Please choose start minutes</mat-error>
+          </mat-form-field>
+          }
+
+          <!-- End Hour -->
+          @if (hoursSelectList.selectItems?.length) {
+          <mat-form-field appearance="outline">
+            <mat-label>End Hour</mat-label>
+            <mat-select formControlName="endHour" required>
+              @for (endHours of hoursSelectList.selectItems; track endHours.value) {
+              <mat-option [value]="endHours.value">
+                {{ endHours.label }}
+              </mat-option>
+              }
+            </mat-select>
+            <mat-hint>Please choose end hours</mat-hint>
+            <mat-error>Please choose end hours</mat-error>
+          </mat-form-field>
+          }
+
+          <!-- End Minutes -->
+          @if (minutesSelectList.selectItems?.length) {
+          <mat-form-field appearance="outline">
+            <mat-label>End Minutes</mat-label>
+            <mat-select formControlName="endMinutes" required>
+              @for (endMinutes of minutesSelectList.selectItems; track endMinutes.value) {
+              <mat-option [value]="endMinutes.value">
+                {{ endMinutes.label }}
+              </mat-option>
+              }
+            </mat-select>
+            <mat-hint>Please choose end minutes</mat-hint>
+            <mat-error>Please choose end minutes</mat-error>
+          </mat-form-field>
+          }
+
+          <!-- Loading Spinner -->
+          @if (isLoading) {
+          <div class="spinner-container">
+            <mat-spinner></mat-spinner>
+          </div>
+          }
+        </div>
+      </mat-card-content>
+
+      @if (!isLoading) {
+      <mat-card-actions>
+        <button type="button" mat-raised-button color="accent" (click)="goBack()">
           Back
         </button>
-          <button
-            *ngIf="!isDeleted && employeeId"
-            type="submit"
-            mat-raised-button
-            color="primary"
-            [disabled]="employeeForm.invalid"
-          >
-            Submit
-          </button>
-          <button
-            *ngIf="!isDeleted && !employeeId"
-            type="submit"
-            mat-raised-button
-            color="primary"
-            [disabled]="employeeForm.invalid"
-          >
-            Submit
-          </button>
-          <button
-            *ngIf="!isDeleted && employeeId"
-            type="button"
-            mat-raised-button
-            color="warn"
-            (click)="deleteEmployee()"
-          >
-            Delete
-          </button>
-          <button
-            *ngIf="isDeleted && employeeId"
-            type="button"
-            mat-raised-button
-            color="primary"
-            (click)="restoreEmployee()"
-          >
-            Restore
-          </button>
-        </mat-card-actions>
-      </mat-card>
-    </form>
-  </section>
-  
+
+        @if (!isDeleted && employeeId) {
+        <button type="submit" mat-raised-button color="primary" [disabled]="employeeForm.invalid">
+          Submit
+        </button>
+
+        <button type="button" mat-raised-button color="warn" (click)="deleteEmployee()">
+          Delete
+        </button>
+        }
+
+        @if (!isDeleted && !employeeId) {
+        <button type="submit" mat-raised-button color="primary" [disabled]="employeeForm.invalid">
+          Submit
+        </button>
+        }
+
+        @if (isDeleted && employeeId) {
+        <button type="button" mat-raised-button color="primary" (click)="restoreEmployee()">
+          Restore
+        </button>
+        }
+      </mat-card-actions>
+      }
+    </mat-card>
+  </form>
+</section>

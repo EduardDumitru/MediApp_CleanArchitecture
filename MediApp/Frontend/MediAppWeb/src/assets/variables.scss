@@ -1,7 +1,27 @@
-@import "~@angular/material/theming";
+// Import Angular Material theming API
+@use '@angular/material' as mat;
 
-$primaryPalette: mat-palette($mat-indigo);
-$accentPalette:  mat-palette($mat-pink, A200, A100, A400);
+// Define color palettes directly using mat namespace
+$primaryPalette: mat.m2-define-palette(mat.$m2-indigo-palette);
+$accentPalette: mat.m2-define-palette(mat.$m2-pink-palette, A200, A100, A400);
+$warnPalette: mat.m2-define-palette(mat.$m2-red-palette);
 
-// the default warn palette is red, so use that if the theme doesn't define one
-$warnPalette:    mat-palette($mat-red);
+// Add any other variables you need
+$header-height: 64px;
+$side-nav-width: 250px;
+$content-padding: 20px;
+
+// Additional customization variables
+$border-radius: 4px;
+$box-shadow: 0 2px 5px rgba(0, 0, 0, 0.26);
+$transition-speed: 0.3s;
+
+// Breakpoints
+$mobile-breakpoint: 599px;
+$tablet-breakpoint: 959px;
+$desktop-breakpoint: 1279px;
+
+// Z-index values
+$z-index-header: 100;
+$z-index-sidebar: 90;
+$z-index-overlay: 1000;

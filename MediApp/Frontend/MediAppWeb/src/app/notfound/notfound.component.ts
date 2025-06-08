@@ -1,17 +1,21 @@
-import {Component} from '@angular/core';
-import {Location} from '@angular/common';
+import { Component, inject } from '@angular/core';
+import { Location, NgIf } from '@angular/common';
+
+import { getSharedImports } from '../shared/shared.module';
 
 @Component({
   selector: 'app-notfound',
-  styleUrls: ['./notfound.component.scss'],
   templateUrl: './notfound.component.html',
+  styleUrls: ['./notfound.component.scss'],
+  standalone: true,
+  imports: [
+    ...getSharedImports(),
+  ],
 })
 export class NotFoundComponent {
+  private readonly location = inject(Location);
 
-  constructor(private _location: Location) {
-  }
-
-  goBack() {
-    this._location.back();
+  goBack(): void {
+    this.location.back();
   }
 }

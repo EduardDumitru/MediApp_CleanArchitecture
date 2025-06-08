@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Component, OnInit, inject } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { EmployeeData, EmployeeDetails, UpdateEmployeeCommand, AddEmployeeCommand, RestoreEmployeeCommand } from 'src/app/@core/data/employee';
 import { UIService } from 'src/app/shared/ui.service';
 import { ActivatedRoute } from '@angular/router';
@@ -11,222 +11,269 @@ import { MedicalCheckTypeData } from 'src/app/@core/data/medicalchecktype';
 import { ClinicData } from 'src/app/@core/data/clinic';
 import { UserProfileData } from 'src/app/@core/data/userclasses/userprofile';
 import { TimeSpan } from 'src/app/@core/data/common/timespan';
+import { finalize } from 'rxjs';
+
+import { getSharedImports } from 'src/app/shared/shared.module';
 
 @Component({
-  selector: 'app-employee',
-  templateUrl: './employee.component.html',
-  styleUrls: ['./employee.component.scss']
+    selector: 'app-employee',
+    templateUrl: './employee.component.html',
+    styleUrls: ['./employee.component.scss'],
+    standalone: true,
+    imports: [
+        ...getSharedImports(),
+    ],
 })
 export class EmployeeComponent implements OnInit {
-  isLoading = false;
-  employeeForm: FormGroup;
-  employeeId: number;
-  isDeleted = false;
-  doctorEmployeeType = 'Doctor';
-  userEmployeeType: string;
-  employeeTypeId = -1;
-  userProfileSelectList: SelectItemsList = new SelectItemsList();
-  clinicSelectList: SelectItemsList = new SelectItemsList();
-  employeeTypeSelectList: SelectItemsList = new SelectItemsList();
-  medicalCheckTypeSelectList: SelectItemsList = new SelectItemsList();
-  minutesSelectList: SelectItemsList = new TimeSpan(0, 0).minutesSelectList;
-  hoursSelectList: SelectItemsList = new TimeSpan(0, 0).hoursSelectList;
-  constructor(private employeeData: EmployeeData, private uiService: UIService,
-    private route: ActivatedRoute, private _location: Location,
-    private employeeTypeData: EmployeeTypeData, private medicalCheckTypeData: MedicalCheckTypeData,
-    private clinicData: ClinicData, private userProfileData: UserProfileData) { }
+    isLoading = false;
+    employeeForm!: FormGroup;
+    employeeId?: number;
+    isDeleted = false;
+    doctorEmployeeType = 'Doctor';
+    userEmployeeType = '';
+    employeeTypeId = -1;
+    userProfileSelectList: SelectItemsList = new SelectItemsList();
+    clinicSelectList: SelectItemsList = new SelectItemsList();
+    employeeTypeSelectList: SelectItemsList = new SelectItemsList();
+    medicalCheckTypeSelectList: SelectItemsList = new SelectItemsList();
+    minutesSelectList: SelectItemsList;
+    hoursSelectList: SelectItemsList;
 
-  ngOnInit() {
-      if (Number(this.route.snapshot.params.id)) {
-          this.employeeId = +this.route.snapshot.params.id;
-      }
-      this.initForm();
-      this.getClinicSelect();
-  }
+    // Dependency injection using inject function
+    private readonly employeeData = inject(EmployeeData);
+    private readonly uiService = inject(UIService);
+    private readonly route = inject(ActivatedRoute);
+    private readonly location = inject(Location);
+    private readonly employeeTypeData = inject(EmployeeTypeData);
+    private readonly medicalCheckTypeData = inject(MedicalCheckTypeData);
+    private readonly clinicData = inject(ClinicData);
+    private readonly userProfileData = inject(UserProfileData);
+    private readonly fb = inject(FormBuilder);
 
-  initForm() {
-      this.employeeForm = new FormGroup({
-          name: new FormControl({value: '', disabled: true}),
-          cnp: new FormControl({value: '', disabled: true}),
-          userProfileId: new FormControl(''),
-          employeeTypeId: new FormControl('', [Validators.required]),
-          medicalCheckTypeId: new FormControl(''),
-          clinicId: new FormControl('', [Validators.required]),
-          startHour: new FormControl('', [Validators.required]),
-          startMinutes: new FormControl('', [Validators.required]),
-          endHour: new FormControl('', [Validators.required]),
-          endMinutes: new FormControl('', [Validators.required]),
-          terminationDate: new FormControl(null)
-      })
-      if (this.employeeId) {
-          this.getEmployee();
-      } else {
-        this.employeeForm.get('userProfileId').setValidators(Validators.required);
-        this.getUserProfileSelect();
-      }
-  }
-
-  getEmployee() {
-      this.isLoading = true;
-      this.employeeData.GetEmployeeDetails(this.employeeId).subscribe((employee: EmployeeDetails) => {
-          this.employeeForm.patchValue({
-            name: employee.name,
-            cnp: employee.cnp,
-            employeeTypeId: employee.employeeTypeId.toString(),
-            medicalCheckTypeId: employee.medicalCheckTypeId.toString(),
-            clinicId: employee.clinicId.toString(),
-            startHour: employee.startHour.hours.toString(),
-            startMinutes: employee.startHour.minutes.toString(),
-            endHour: employee.endHour.hours.toString(),
-            endMinutes: employee.startHour.minutes.toString(),
-            terminationDate: employee.terminationDate ? new Date(employee.terminationDate) : null
-          });
-          this.employeeTypeId = employee.employeeTypeId;
-          this.isDeleted = employee.deleted;
-          if (this.isDeleted) {
-              this.employeeForm.disable();
-          }
-          if (employee.medicalCheckTypeId) {
-            this.getMedicalCheckTypeSelect();
-          }
-          this.getEmployeeTypeSelect();
-          this.isLoading = false;
-      },
-          error => {
-              this.uiService.showErrorSnackbar(error, null, 3000);
-              this.isLoading = false;
-          });
-  }
-
-  onSubmit() {
-      this.isLoading = true;
-      if (this.employeeId) {
-          this.updateEmployee();
-      } else {
-          this.addEmployee();
-      }
-  }
-
-  updateEmployee() {
-      const updateEmployeeCommand: UpdateEmployeeCommand = {
-          id: this.employeeId,
-          employeeTypeId: +this.employeeForm.value.employeeTypeId,
-          medicalCheckTypeId: +this.employeeForm.value.medicalCheckTypeId,
-          clinicId: +this.employeeForm.value.clinicId,
-          terminationDate: this.employeeForm.value.terminationDate ? new Date(this.employeeForm.value.terminationDate) : null
-      } as UpdateEmployeeCommand;
-
-      updateEmployeeCommand.startHour = new TimeSpan(+this.employeeForm.value.startHour, +this.employeeForm.value.startMinutes).toString();
-      updateEmployeeCommand.endHour =  new TimeSpan(+this.employeeForm.value.endHour, +this.employeeForm.value.endMinutes).toString();
-
-      this.employeeData.UpdateEmployee(updateEmployeeCommand).subscribe((res: Result) => {
-          this.uiService.showSuccessSnackbar(res.successMessage, null, 3000);
-          this._location.back();
-          this.isLoading = false;
-      }, error => {
-          this.isLoading = false;
-          this.uiService.showErrorSnackbar(error, null, 3000);
-      });
-  }
-
-  addEmployee() {
-      const addEmployeeCommand: AddEmployeeCommand = {
-          userProfileId: +this.employeeForm.value.userProfileId,
-          employeeTypeId: +this.employeeForm.value.employeeTypeId,
-          medicalCheckTypeId: +this.employeeForm.value.medicalCheckTypeId,
-          clinicId: +this.employeeForm.value.clinicId
-      } as AddEmployeeCommand;
-
-      addEmployeeCommand.startHour = new TimeSpan(+this.employeeForm.value.startHour, +this.employeeForm.value.startMinutes).toString();
-      addEmployeeCommand.endHour = new TimeSpan(+this.employeeForm.value.endHour, +this.employeeForm.value.endMinutes).toString();
-
-      console.log(addEmployeeCommand);
-      this.employeeData.AddEmployee(addEmployeeCommand).subscribe((res: Result) => {
-          this.uiService.showSuccessSnackbar(res.successMessage, null, 3000);
-          this._location.back();
-          this.isLoading = false;
-      }, error => {
-          this.isLoading = false;
-          this.uiService.showErrorSnackbar(error, null, 3000);
-      });
-  }
-
-  deleteEmployee() {
-      this.isLoading = true;
-      this.employeeData.DeleteEmployee(this.employeeId).subscribe((res: Result) => {
-          this.uiService.showSuccessSnackbar(res.successMessage, null, 3000);
-          this._location.back();
-          this.isLoading = false;
-      }, error => {
-          this.isLoading = false;
-          this.uiService.showErrorSnackbar(error, null, 3000);
-      })
-  }
-
-  restoreEmployee() {
-      this.isLoading = true;
-      const restoreEmployeeCommand: RestoreEmployeeCommand = {
-          id: this.employeeId
-      } as RestoreEmployeeCommand;
-
-      this.employeeData.RestoreEmployee(restoreEmployeeCommand).subscribe((res: Result) => {
-          this.uiService.showSuccessSnackbar(res.successMessage, null, 3000);
-          this._location.back();
-          this.isLoading = false;
-      }, error => {
-          this.isLoading = false;
-          this.uiService.showErrorSnackbar(error, null, 3000);
-      })
-  }
-
-  getUserProfileSelect() {
-    this.userProfileData.getUserProfilesDropdown().subscribe((userProfiles: SelectItemsList) => {
-      this.userProfileSelectList = userProfiles;
-    },
-    error => {
-        this.uiService.showErrorSnackbar(error, null, 3000);
-    });
-  }
-
-  getEmployeeTypeSelect() {
-    this.employeeTypeData.GetEmployeeTypesDropdown().subscribe((empTypes: SelectItemsList) => {
-      this.employeeTypeSelectList = empTypes;
-      this.userEmployeeType = this.employeeTypeSelectList.selectItems.find(x => x.value === this.employeeTypeId.toString()).label;
-      console.log(this.userEmployeeType);
-    },
-    error => {
-        this.uiService.showErrorSnackbar(error, null, 3000);
-    });
-  }
-
-  getMedicalCheckTypeSelect() {
-    this.medicalCheckTypeData.GetMedicalCheckTypesDropdown().subscribe((medCheckTypes: SelectItemsList) => {
-      this.medicalCheckTypeSelectList = medCheckTypes;
-    },
-    error => {
-        this.uiService.showErrorSnackbar(error, null, 3000);
-    });
-  }
-
-  getClinicSelect() {
-    this.clinicData.GetClinicsDropdown(null, null, null).subscribe((clinics: SelectItemsList) => {
-      this.clinicSelectList = clinics;
-    },
-    error => {
-        this.uiService.showErrorSnackbar(error, null, 3000);
-    });
-  }
-
-  goBack() {
-      this._location.back();
+    constructor() {
+        const timeSpan = new TimeSpan(0, 0);
+        this.minutesSelectList = timeSpan.minutesSelectList;
+        this.hoursSelectList = timeSpan.hoursSelectList;
     }
 
-  employeeTypeChange(employeeTypeId: string) {
-      this.medicalCheckTypeSelectList = new SelectItemsList();
-      this.employeeForm.patchValue({medicalCheckTypeId: ''});
-      if (employeeTypeId=== '2') {
-        this.employeeForm.get('medicalCheckTypeId').setValidators(Validators.required);
-        this.getMedicalCheckTypeSelect();
-      }
-  }
+    ngOnInit(): void {
+        const id = Number(this.route.snapshot.params['id']);
+        if (id) {
+            this.employeeId = id;
+        }
+        this.initForm();
+        this.getClinicSelect();
+    }
+
+    initForm(): void {
+        this.employeeForm = this.fb.group({
+            name: [{ value: '', disabled: true }],
+            cnp: [{ value: '', disabled: true }],
+            userProfileId: [''],
+            employeeTypeId: ['', [Validators.required]],
+            medicalCheckTypeId: [''],
+            clinicId: ['', [Validators.required]],
+            startHour: ['', [Validators.required]],
+            startMinutes: ['', [Validators.required]],
+            endHour: ['', [Validators.required]],
+            endMinutes: ['', [Validators.required]],
+            terminationDate: [null]
+        });
+
+        if (this.employeeId) {
+            this.getEmployee();
+        } else {
+            this.employeeForm.get('userProfileId')?.setValidators(Validators.required);
+            this.getUserProfileSelect();
+        }
+    }
+
+    getEmployee(): void {
+        this.isLoading = true;
+        this.employeeData.GetEmployeeDetails(this.employeeId!)
+            .pipe(
+                finalize(() => this.isLoading = false)
+            )
+            .subscribe((employee: EmployeeDetails) => {
+                if (!employee) return;
+
+                this.employeeForm.patchValue({
+                    name: employee.name,
+                    cnp: employee.cnp,
+                    employeeTypeId: employee.employeeTypeId.toString(),
+                    medicalCheckTypeId: employee.medicalCheckTypeId?.toString(),
+                    clinicId: employee.clinicId.toString(),
+                    startHour: employee.startHour.hours.toString(),
+                    startMinutes: employee.startHour.minutes.toString(),
+                    endHour: employee.endHour.hours.toString(),
+                    endMinutes: employee.endHour.minutes.toString(),
+                    terminationDate: employee.terminationDate ? new Date(employee.terminationDate) : null
+                });
+
+                this.employeeTypeId = employee.employeeTypeId;
+                this.isDeleted = !!employee.deleted;
+
+                if (this.isDeleted) {
+                    this.employeeForm.disable();
+                }
+
+                if (employee.medicalCheckTypeId) {
+                    this.getMedicalCheckTypeSelect();
+                }
+
+                this.getEmployeeTypeSelect();
+            });
+    }
+
+    onSubmit(): void {
+        if (this.employeeForm.invalid) {
+            return;
+        }
+
+        this.isLoading = true;
+
+        if (this.employeeId) {
+            this.updateEmployee();
+        } else {
+            this.addEmployee();
+        }
+    }
+
+    updateEmployee(): void {
+        const formValues = this.employeeForm.getRawValue();
+
+        const updateEmployeeCommand: UpdateEmployeeCommand = {
+            id: this.employeeId!,
+            employeeTypeId: +formValues.employeeTypeId,
+            medicalCheckTypeId: +formValues.medicalCheckTypeId,
+            clinicId: +formValues.clinicId,
+            terminationDate: formValues.terminationDate ? new Date(formValues.terminationDate) : undefined,
+            startHour: new TimeSpan(+formValues.startHour, +formValues.startMinutes).toString(),
+            endHour: new TimeSpan(+formValues.endHour, +formValues.endMinutes).toString()
+        };
+
+        this.employeeData.UpdateEmployee(updateEmployeeCommand)
+            .pipe(
+                finalize(() => this.isLoading = false)
+            )
+            .subscribe((res: Result | null) => {
+                if (!res) return;
+
+                this.uiService.showSuccessSnackbar(res.successMessage, undefined, 3000);
+                this.location.back();
+            });
+    }
+
+    addEmployee(): void {
+        const formValues = this.employeeForm.getRawValue();
+
+        const addEmployeeCommand: AddEmployeeCommand = {
+            userProfileId: +formValues.userProfileId,
+            employeeTypeId: +formValues.employeeTypeId,
+            medicalCheckTypeId: +formValues.medicalCheckTypeId,
+            clinicId: +formValues.clinicId,
+            startHour: new TimeSpan(+formValues.startHour, +formValues.startMinutes).toString(),
+            endHour: new TimeSpan(+formValues.endHour, +formValues.endMinutes).toString()
+        };
+
+        this.employeeData.AddEmployee(addEmployeeCommand)
+            .pipe(
+                finalize(() => this.isLoading = false)
+            )
+            .subscribe((res: Result | null) => {
+                if (!res) return;
+
+                this.uiService.showSuccessSnackbar(res.successMessage, undefined, 3000);
+                this.location.back();
+            });
+    }
+
+    deleteEmployee(): void {
+        this.isLoading = true;
+
+        this.employeeData.DeleteEmployee(this.employeeId!)
+            .pipe(
+                finalize(() => this.isLoading = false)
+            )
+            .subscribe((res: Result | null) => {
+                if (!res) return;
+
+                this.uiService.showSuccessSnackbar(res.successMessage, undefined, 3000);
+                this.location.back();
+            });
+    }
+
+    restoreEmployee(): void {
+        this.isLoading = true;
+
+        const restoreEmployeeCommand: RestoreEmployeeCommand = {
+            id: this.employeeId!
+        };
+
+        this.employeeData.RestoreEmployee(restoreEmployeeCommand)
+            .pipe(
+                finalize(() => this.isLoading = false)
+            )
+            .subscribe((res: Result | null) => {
+                if (!res) return;
+
+                this.uiService.showSuccessSnackbar(res.successMessage, undefined, 3000);
+                this.location.back();
+            });
+    }
+
+    getUserProfileSelect(): void {
+        this.userProfileData.getUserProfilesDropdown()
+            .subscribe((userProfiles: SelectItemsList) => {
+                this.userProfileSelectList = userProfiles;
+            });
+    }
+
+    getEmployeeTypeSelect(): void {
+        this.employeeTypeData.GetEmployeeTypesDropdown()
+            .subscribe((empTypes: SelectItemsList) => {
+                this.employeeTypeSelectList = empTypes;
+
+                if (this.employeeTypeId >= 0) {
+                    const foundType = this.employeeTypeSelectList.selectItems
+                        .find(x => x.value === this.employeeTypeId.toString());
+
+                    if (foundType) {
+                        this.userEmployeeType = foundType.label;
+                    }
+                }
+            });
+    }
+
+    getMedicalCheckTypeSelect(): void {
+        this.medicalCheckTypeData.GetMedicalCheckTypesDropdown()
+            .subscribe((medCheckTypes: SelectItemsList) => {
+                this.medicalCheckTypeSelectList = medCheckTypes;
+            });
+    }
+
+    getClinicSelect(): void {
+        this.clinicData.GetClinicsDropdown(undefined, undefined, undefined)
+            .subscribe((clinics: SelectItemsList) => {
+                this.clinicSelectList = clinics;
+            });
+    }
+
+    goBack(): void {
+        this.location.back();
+    }
+
+    employeeTypeChange(employeeTypeId: string): void {
+        this.medicalCheckTypeSelectList = new SelectItemsList();
+        this.employeeForm.patchValue({ medicalCheckTypeId: '' });
+
+        if (employeeTypeId === '2') {
+            this.employeeForm.get('medicalCheckTypeId')?.setValidators(Validators.required);
+            this.getMedicalCheckTypeSelect();
+        } else {
+            this.employeeForm.get('medicalCheckTypeId')?.clearValidators();
+        }
+
+        this.employeeForm.get('medicalCheckTypeId')?.updateValueAndValidity();
+    }
 }

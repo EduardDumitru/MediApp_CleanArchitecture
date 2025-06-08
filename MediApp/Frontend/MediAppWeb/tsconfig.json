@@ -6,17 +6,32 @@
     "sourceMap": true,
     "declaration": false,
     "module": "esnext",
-    "moduleResolution": "node",
-    "emitDecoratorMetadata": true,
+    "moduleResolution": "bundler",
     "experimentalDecorators": true,
     "importHelpers": true,
-    "target": "es2015",
+    "target": "es2022",
+    "strict": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
     "typeRoots": [
       "node_modules/@types"
     ],
+    "types": [], // Explicitly empty to prevent automatic inclusion
     "lib": [
-      "es2018",
+      "es2022",
       "dom"
-    ]
+    ],
+    "useDefineForClassFields": false,
+    "forceConsistentCasingInFileNames": true
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true,
+    "disableTypeScriptVersionCheck": true
   }
 }

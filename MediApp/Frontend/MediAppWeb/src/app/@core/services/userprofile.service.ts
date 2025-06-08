@@ -1,74 +1,84 @@
-import { of as observableOf,  Observable, throwError, pipe } from 'rxjs';
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { UserProfileData, UserProfileDetail, UpdateUserProfileCommand, UserProfilesList } from '../data/userclasses/userprofile';
-import { environment } from 'src/environments/environment';
-import { retry, catchError } from 'rxjs/operators';
-import { Result } from '../data/common/result';
-import { map } from 'rxjs/operators';
-import { ErrorService } from 'src/app/shared/error.service';
-import { AuthService } from 'src/app/auth/auth.service';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { catchError, retry } from 'rxjs/operators';
+
+import {
+    UserProfileData,
+    UserProfileDetail,
+    UpdateUserProfileCommand,
+    UserProfilesList
+} from '../data/userclasses/userprofile';
 import { SelectItemsList } from '../data/common/selectitem';
-@Injectable()
+import { Result } from '../data/common/result';
+import { environment } from 'src/environments/environment';
+import { ErrorService } from 'src/app/shared/error.service';
+import { ApiHelper } from './api.helper';
+
+@Injectable({
+    providedIn: 'root'
+})
 export class UserProfileService extends UserProfileData {
-    baseUrl = environment.baseURL + 'UserProfile';
+    private readonly baseUrl = `${environment.baseURL}UserProfile`;
 
-    constructor(private http: HttpClient, private errService: ErrorService, private authService: AuthService) {
-        super();
+    // Modern dependency injection using inject function
+    private readonly http = inject(HttpClient);
+    private readonly errorService = inject(ErrorService);
+    private readonly apiHelper = inject(ApiHelper);
+
+    /**
+     * Get all user profiles
+     * @returns Observable with list of user profiles
+     */
+    override getUserProfiles(): Observable<UserProfilesList> {
+        return this.http.get<UserProfilesList>(
+            this.baseUrl,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<UserProfilesList>('getUserProfiles', error, {} as UserProfilesList))
+        );
     }
 
+    /**
+     * Get details for a specific user profile
+     * @param id User profile ID
+     * @returns Observable with user profile details
+     */
+    override getUserProfile(id: number): Observable<UserProfileDetail> {
+        return this.http.get<UserProfileDetail>(
+            `${this.baseUrl}/${id}`,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<UserProfileDetail>('getUserProfile', error, {} as UserProfileDetail))
+        );
+    }
 
-    getUserProfiles(): Observable<UserProfilesList> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.get<UserProfilesList>(this.baseUrl, httpOptions)
-            .pipe(
-                map((response: any) => response),
-                catchError(this.errService.errorHandl)
-            );
+    /**
+     * Update an existing user profile
+     * @param userProfile User profile data to update
+     * @returns Observable with result
+     */
+    override updateUserProfile(userProfile: UpdateUserProfileCommand): Observable<Result> {
+        return this.http.put<Result>(
+            this.baseUrl,
+            userProfile, // No need for JSON.stringify - Angular's HttpClient handles this
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<Result>('updateUserProfile', error, {} as Result))
+        );
     }
-    getUserProfile(id: number): Observable<UserProfileDetail> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.get<UserProfileDetail>(this.baseUrl + '/' + id, httpOptions)
-            .pipe(
-                map((response: any) => response),
-                catchError(this.errService.errorHandl)
-            );
-    }
-    updateUserProfile(userProfile: UpdateUserProfileCommand): Observable<Result> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.put<Result>(this.baseUrl, JSON.stringify(userProfile), httpOptions)
-            .pipe(
-                map((response: any) => response),
-                catchError(this.errService.errorHandl)
-            );
-    }
-    getUserProfilesDropdown(): Observable<SelectItemsList> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.get<SelectItemsList>(this.baseUrl + '/usersdropdown', httpOptions)
-        .pipe(
-            map((response: any) => response),
+
+    /**
+     * Get user profiles for dropdown selection
+     * @returns Observable with list of select items
+     */
+    override getUserProfilesDropdown(): Observable<SelectItemsList> {
+        return this.http.get<SelectItemsList>(
+            `${this.baseUrl}/usersdropdown`,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
             retry(1),
-            catchError(this.errService.errorHandl)
+            catchError(error => this.errorService.handleError<SelectItemsList>('getUserProfilesDropdown', error, { selectItems: [] }))
         );
     }
 }

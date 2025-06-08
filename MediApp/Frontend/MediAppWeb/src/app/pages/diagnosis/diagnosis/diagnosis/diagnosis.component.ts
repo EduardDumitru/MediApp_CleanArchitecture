@@ -1,126 +1,155 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Location } from '@angular/common';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DiagnosisData, DiagnosisDetails, UpdateDiagnosisCommand, AddDiagnosisCommand, RestoreDiagnosisCommand } from 'src/app/@core/data/diagnosis';
 import { UIService } from 'src/app/shared/ui.service';
 import { ActivatedRoute } from '@angular/router';
 import { Result } from 'src/app/@core/data/common/result';
+import { finalize } from 'rxjs';
+import { getSharedImports } from 'src/app/shared/shared.module';
 
 @Component({
-  selector: 'app-diagnosis',
-  templateUrl: './diagnosis.component.html',
-  styleUrls: ['./diagnosis.component.scss']
+    selector: 'app-diagnosis',
+    templateUrl: './diagnosis.component.html',
+    styleUrls: ['./diagnosis.component.scss'],
+    standalone: true,
+    imports: [
+        ...getSharedImports(),
+    ],
 })
 export class DiagnosisComponent implements OnInit {
-  isLoading = false;
-  diagnosisForm: FormGroup;
-  diagnosisId: number;
-  isDeleted = false;
-  constructor(private diagnosisData: DiagnosisData, private uiService: UIService,
-    private route: ActivatedRoute, private _location: Location) { }
+    isLoading = false;
+    diagnosisForm!: FormGroup;
+    diagnosisId?: number;
+    isDeleted = false;
 
-  ngOnInit() {
-      if (Number(this.route.snapshot.params.id)) {
-          this.diagnosisId = +this.route.snapshot.params.id;
-      }
-      this.initForm();
-  }
+    // Dependency injection using inject function
+    private readonly diagnosisData = inject(DiagnosisData);
+    private readonly uiService = inject(UIService);
+    private readonly route = inject(ActivatedRoute);
+    private readonly location = inject(Location);
+    private readonly fb = inject(FormBuilder);
 
-  initForm() {
-      this.diagnosisForm = new FormGroup({
-          name: new FormControl('', [Validators.required])
-      })
-      if (this.diagnosisId) {
-          this.getDiagnosis();
-      }
-  }
-
-  getDiagnosis() {
-      this.isLoading = true;
-      this.diagnosisData.GetDiagnosisDetails(this.diagnosisId).subscribe((diagnosis: DiagnosisDetails) => {
-          this.diagnosisForm.setValue({name: diagnosis.name});
-          this.isDeleted = diagnosis.deleted;
-          if (this.isDeleted) {
-              this.diagnosisForm.disable();
-          }
-          this.isLoading = false;
-      },
-          error => {
-              this.uiService.showErrorSnackbar(error, null, 3000);
-              this.isLoading = false;
-          });
-  }
-
-  onSubmit() {
-      this.isLoading = true;
-      if (this.diagnosisId) {
-          this.updateDiagnosis();
-      } else {
-          this.addDiagnosis();
-      }
-  }
-
-  updateDiagnosis() {
-      const updateDiagnosisCommand: UpdateDiagnosisCommand = {
-          id: this.diagnosisId,
-          name: this.diagnosisForm.value.name
-      } as UpdateDiagnosisCommand;
-
-      this.diagnosisData.UpdateDiagnosis(updateDiagnosisCommand).subscribe((res: Result) => {
-          this.uiService.showSuccessSnackbar(res.successMessage, null, 3000);
-          this._location.back();
-          this.isLoading = false;
-      }, error => {
-          this.isLoading = false;
-          this.uiService.showErrorSnackbar(error, null, 3000);
-      });
-  }
-
-  addDiagnosis() {
-      const addDiagnosisCommand: AddDiagnosisCommand = {
-          name: this.diagnosisForm.value.name
-      } as AddDiagnosisCommand;
-
-      this.diagnosisData.AddDiagnosis(addDiagnosisCommand).subscribe((res: Result) => {
-          this.uiService.showSuccessSnackbar(res.successMessage, null, 3000);
-          this._location.back();
-          this.isLoading = false;
-      }, error => {
-          this.isLoading = false;
-          this.uiService.showErrorSnackbar(error, null, 3000);
-      });
-  }
-
-  deleteDiagnosis() {
-      this.isLoading = true;
-      this.diagnosisData.DeleteDiagnosis(this.diagnosisId).subscribe((res: Result) => {
-          this.uiService.showSuccessSnackbar(res.successMessage, null, 3000);
-          this._location.back();
-          this.isLoading = false;
-      }, error => {
-          this.isLoading = false;
-          this.uiService.showErrorSnackbar(error, null, 3000);
-      })
-  }
-
-  restoreDiagnosis() {
-      this.isLoading = true;
-      const restoreDiagnosisCommand: RestoreDiagnosisCommand = {
-          id: this.diagnosisId
-      } as RestoreDiagnosisCommand;
-
-      this.diagnosisData.RestoreDiagnosis(restoreDiagnosisCommand).subscribe((res: Result) => {
-          this.uiService.showSuccessSnackbar(res.successMessage, null, 3000);
-          this._location.back();
-          this.isLoading = false;
-      }, error => {
-          this.isLoading = false;
-          this.uiService.showErrorSnackbar(error, null, 3000);
-      })
-  }
-
-  goBack() {
-      this._location.back();
+    ngOnInit(): void {
+        const id = Number(this.route.snapshot.params['id']);
+        if (id) {
+            this.diagnosisId = id;
+        }
+        this.initForm();
     }
 
+    initForm(): void {
+        this.diagnosisForm = this.fb.group({
+            name: ['', [Validators.required]]
+        });
+
+        if (this.diagnosisId) {
+            this.getDiagnosis();
+        }
+    }
+
+    getDiagnosis(): void {
+        this.isLoading = true;
+        this.diagnosisData.GetDiagnosisDetails(this.diagnosisId!)
+            .pipe(
+                finalize(() => this.isLoading = false)
+            )
+            .subscribe((diagnosis: DiagnosisDetails) => {
+                if (!diagnosis) return;
+
+                this.diagnosisForm.setValue({ name: diagnosis.name });
+                this.isDeleted = !!diagnosis.deleted;
+
+                if (this.isDeleted) {
+                    this.diagnosisForm.disable();
+                }
+            });
+    }
+
+    onSubmit(): void {
+        if (this.diagnosisForm.invalid) {
+            return;
+        }
+
+        this.isLoading = true;
+
+        if (this.diagnosisId) {
+            this.updateDiagnosis();
+        } else {
+            this.addDiagnosis();
+        }
+    }
+
+    updateDiagnosis(): void {
+        const updateDiagnosisCommand: UpdateDiagnosisCommand = {
+            id: this.diagnosisId!,
+            name: this.diagnosisForm.value.name
+        };
+
+        this.diagnosisData.UpdateDiagnosis(updateDiagnosisCommand)
+            .pipe(
+                finalize(() => this.isLoading = false)
+            )
+            .subscribe((res: Result | null) => {
+                if (!res) return;
+
+                this.uiService.showSuccessSnackbar(res.successMessage, undefined, 3000);
+                this.location.back();
+            });
+    }
+
+    addDiagnosis(): void {
+        const addDiagnosisCommand: AddDiagnosisCommand = {
+            name: this.diagnosisForm.value.name
+        };
+
+        this.diagnosisData.AddDiagnosis(addDiagnosisCommand)
+            .pipe(
+                finalize(() => this.isLoading = false)
+            )
+            .subscribe((res: Result | null) => {
+                if (!res) return;
+
+                this.uiService.showSuccessSnackbar(res.successMessage, undefined, 3000);
+                this.location.back();
+            });
+    }
+
+    deleteDiagnosis(): void {
+        this.isLoading = true;
+
+        this.diagnosisData.DeleteDiagnosis(this.diagnosisId!)
+            .pipe(
+                finalize(() => this.isLoading = false)
+            )
+            .subscribe((res: Result | null) => {
+                if (!res) return;
+
+                this.uiService.showSuccessSnackbar(res.successMessage, undefined, 3000);
+                this.location.back();
+            });
+    }
+
+    restoreDiagnosis(): void {
+        this.isLoading = true;
+
+        const restoreDiagnosisCommand: RestoreDiagnosisCommand = {
+            id: this.diagnosisId!
+        };
+
+        this.diagnosisData.RestoreDiagnosis(restoreDiagnosisCommand)
+            .pipe(
+                finalize(() => this.isLoading = false)
+            )
+            .subscribe((res: Result | null) => {
+                if (!res) return;
+
+                this.uiService.showSuccessSnackbar(res.successMessage, undefined, 3000);
+                this.location.back();
+            });
+    }
+
+    goBack(): void {
+        this.location.back();
+    }
 }

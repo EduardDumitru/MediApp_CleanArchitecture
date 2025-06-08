@@ -1,36 +1,24 @@
-﻿using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
-using Application.Common.Interfaces;
+﻿using Application.Common.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Application.Common.Behaviours
 {
-    public class RequestPerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+    public class RequestPerformanceBehaviour<TRequest, TResponse>(
+        ILogger<TRequest> logger,
+        ICurrentUserService currentUserService,
+        IIdentityService identityService) : IPipelineBehavior<TRequest, TResponse>
     {
-        private readonly ICurrentUserService _currentUserService;
-        private readonly IIdentityService _identityService;
-        private readonly ILogger<TRequest> _logger;
-        private readonly Stopwatch _timer;
+        private readonly Stopwatch _timer = new();
 
-        public RequestPerformanceBehaviour(
-            ILogger<TRequest> logger,
-            ICurrentUserService currentUserService,
-            IIdentityService identityService)
-        {
-            _timer = new Stopwatch();
-            _logger = logger;
-            _currentUserService = currentUserService;
-            _identityService = identityService;
-        }
-
-        public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken,
-            RequestHandlerDelegate<TResponse> next)
+        public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
             _timer.Start();
 
-            var response = await next();
+            var response = await next(cancellationToken);
 
             _timer.Stop();
 
@@ -38,14 +26,20 @@ namespace Application.Common.Behaviours
 
             if (elapsedMilliseconds > 500)
             {
-                var requestName = typeof(TRequest).Name;
-                var userId = _currentUserService.UserId;
-                var userName = string.Empty;
-                if (userId.HasValue) userName = await _identityService.GetUserNameAsync(userId.Value);
+                if (logger.IsEnabled(LogLevel.Warning)) // Check if logging is enabled
+                {
+                    var requestName = typeof(TRequest).Name;
+                    var userId = currentUserService.UserId;
+                    var userName = string.Empty;
+                    if (userId.HasValue)
+                    {
+                        userName = await identityService.GetUserNameAsync(userId.Value);
+                    }
 
-                _logger.LogWarning(
-                    "MediApp Long Running Request: {Name} ({ElapsedMilliseconds} milliseconds) {@UserId} {@Request}",
-                    requestName, elapsedMilliseconds, userId, userName, request);
+                    logger.LogWarning(
+                        "MediApp Long Running Request: {Name} ({ElapsedMilliseconds} milliseconds) {@UserId} {@UserName} {@Request}",
+                        requestName, elapsedMilliseconds, userId, userName, request);
+                }
             }
 
             return response;

@@ -9,16 +9,25 @@ import { HolidayintervalsComponent } from './holidayinterval/holidayintervals/ho
 import { MedicalchecktypeComponent } from './medicalchecktype/medicalchecktype/medicalchecktype.component';
 import { MedicalchecktypesComponent } from './medicalchecktype/medicalchecktypes/medicalchecktypes.component';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { EMPLOYEEROUTES } from './employee-routes';
+import { EmployeeRoutingModule } from './employee-routes';
 
 
 
 @NgModule({
-  declarations: [EmployeetypeComponent, EmployeetypesComponent,
-    EmployeeComponent, EmployeesComponent, HolidayintervalComponent,
-    HolidayintervalsComponent, MedicalchecktypeComponent, MedicalchecktypesComponent],
+  declarations: [
+  ],
   imports: [
-    CommonModule, SharedModule, EMPLOYEEROUTES
+    CommonModule,
+    SharedModule,
+    EmployeeRoutingModule,
+    EmployeetypeComponent,
+    EmployeetypesComponent,
+    EmployeeComponent,
+    EmployeesComponent,
+    HolidayintervalComponent,
+    HolidayintervalsComponent,
+    MedicalchecktypeComponent,
+    MedicalchecktypesComponent
   ]
 })
 export class EmployeeModule { }

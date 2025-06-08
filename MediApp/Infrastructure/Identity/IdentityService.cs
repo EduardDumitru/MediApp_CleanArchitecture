@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Application.CommandsAndQueries;
+﻿using Application.CommandsAndQueries;
 using Application.Common.Constants;
 using Application.Common.Interfaces;
 using Application.Common.Models;
@@ -15,6 +7,14 @@ using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Security.Claims;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Infrastructure.Identity
 {
@@ -88,7 +88,11 @@ namespace Infrastructure.Identity
                 var user = new ApplicationUser
                 {
                     UserName = userToAdd.Email,
-                    Email = userToAdd.Email
+                    Email = userToAdd.Email,
+                    PhoneNumber = userToAdd.PhoneNumber,
+                    IsActive = true,
+                    EmailConfirmed = true,
+                    PhoneNumberConfirmed = true,
                 };
 
                 var result = await _userManager.CreateAsync(user, userToAdd.Password);
@@ -138,7 +142,7 @@ namespace Infrastructure.Identity
             if (existingUser != null)
                 return new AuthenticationResult
                 {
-                    Errors = new[] {"User with this email address already exists"}
+                    Errors = new[] { "User with this email address already exists" }
                 };
 
             await using var transaction = await _context.Database.BeginTransactionAsync();
@@ -203,7 +207,7 @@ namespace Infrastructure.Identity
             if (user == null)
                 return new AuthenticationResult
                 {
-                    Errors = new[] {"User does not exist"}
+                    Errors = new[] { "User does not exist" }
                 };
 
             var userHasValidPassword = await _userManager.CheckPasswordAsync(user, loginUser.Password);
@@ -211,7 +215,7 @@ namespace Infrastructure.Identity
             if (!userHasValidPassword)
                 return new AuthenticationResult
                 {
-                    Errors = new[] {"User/password combination is wrong"}
+                    Errors = new[] { "User/password combination is wrong" }
                 };
 
             return await GenerateAuthenticationResultForUserAsync(user);
@@ -222,7 +226,7 @@ namespace Infrastructure.Identity
             var vm = new SelectItemVm
             {
                 SelectItems = await _roleManager.Roles
-                    .Select(x => new SelectItemDto {Label = x.Name, Value = x.Id.ToString()})
+                    .Select(x => new SelectItemDto { Label = x.Name, Value = x.Id.ToString() })
                     .ToListAsync(cancellationToken)
             };
 
@@ -239,8 +243,8 @@ namespace Infrastructure.Identity
             await _userManager.RemoveFromRolesAsync(user, existingRoleNames);
 
             var rolesToAdd = (from roleId in roleIds
-                let role = roles.FirstOrDefault(x => x.Id == roleId)
-                select role.Name).ToList();
+                              let role = roles.FirstOrDefault(x => x.Id == roleId)
+                              select role.Name).ToList();
 
             await _userManager.AddToRolesAsync(user, rolesToAdd);
         }

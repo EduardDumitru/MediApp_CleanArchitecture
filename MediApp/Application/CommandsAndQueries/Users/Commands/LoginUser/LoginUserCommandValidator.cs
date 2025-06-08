@@ -7,12 +7,12 @@ namespace Application.CommandsAndQueries
         public LoginUserCommandValidator()
         {
             RuleFor(x => x.Email)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Email is required.")
                 .EmailAddress().WithMessage("The specified email is not valid.");
 
             RuleFor(x => x.Password)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Password is required");
         }
     }

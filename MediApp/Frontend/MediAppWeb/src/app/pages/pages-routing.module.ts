@@ -1,6 +1,7 @@
+import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { RoleGuardService as RoleGuard } from '../auth/role-guard.service';
-import { AuthGuardService as AuthGuard } from '../auth/auth-guard.service';
+import { authGuard } from '../auth/auth-guard.service';
+import { roleGuard } from '../auth/role-guard.service';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { NotFoundComponent } from '../notfound/notfound.component';
 
@@ -8,27 +9,35 @@ const routes: Routes = [
   {
     path: '',
     component: DashboardComponent,
-    canLoad: [AuthGuard]
+    canActivate: [authGuard]  // Updated from canLoad to canActivate
   },
   {
     path: 'location',
-    loadChildren: './location/location.module#LocationModule', canLoad: [RoleGuard], data: { expectedRoles: ['Admin'] }
+    loadChildren: () => import('./location/location.module').then(m => m.LocationModule),
+    canActivate: [roleGuard(['Admin'])],  // Updated to functional role guard
+    data: { expectedRoles: ['Admin'] }
   },
   {
     path: 'user',
-    loadChildren: './user/user.module#UserModule', canLoad: [AuthGuard]
+    loadChildren: () => import('./user/user.module').then(m => m.UserModule),
+    canActivate: [authGuard]  // Updated from canLoad to canActivate
   },
   {
     path: 'employees',
-    loadChildren: './employee/employee.module#EmployeeModule', canLoad: [RoleGuard], data: { expectedRoles: ['Admin', 'Doctor', 'Nurse'] }
+    loadChildren: () => import('./employee/employee.module').then(m => m.EmployeeModule),
+    canActivate: [roleGuard(['Admin', 'Doctor', 'Nurse'])],  // Updated to functional role guard
+    data: { expectedRoles: ['Admin', 'Doctor', 'Nurse'] }
   },
   {
     path: 'diagnoses',
-    loadChildren: './diagnosis/diagnosis.module#DiagnosisModule', canLoad: [RoleGuard], data: { expectedRoles: ['Admin'] }
+    loadChildren: () => import('./diagnosis/diagnosis.module').then(m => m.DiagnosisModule),
+    canActivate: [roleGuard(['Admin'])],  // Updated to functional role guard
+    data: { expectedRoles: ['Admin'] }
   },
   {
     path: 'treatments',
-    loadChildren: './treatment/treatment.module#TreatmentModule', canLoad: [AuthGuard]
+    loadChildren: () => import('./treatment/treatment.module').then(m => m.TreatmentModule),
+    canActivate: [authGuard]  // Updated from canLoad to canActivate
   },
   {
     path: '**',
@@ -36,6 +45,8 @@ const routes: Routes = [
   }
 ];
 
-
-export const PAGESROUTES = RouterModule.forChild(routes);
-
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
+})
+export class PagesRoutingModule { }

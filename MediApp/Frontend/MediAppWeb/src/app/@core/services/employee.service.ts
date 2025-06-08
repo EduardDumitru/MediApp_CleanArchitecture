@@ -1,148 +1,157 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { EmployeeData, EmployeeDetails, EmployeesList,
-    AddEmployeeCommand, UpdateEmployeeCommand, RestoreEmployeeCommand, EmployeeDropdownQuery } from '../data/employee';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import {
+    EmployeeData,
+    EmployeeDetails,
+    EmployeesList,
+    AddEmployeeCommand,
+    UpdateEmployeeCommand,
+    RestoreEmployeeCommand,
+    EmployeeDropdownQuery
+} from '../data/employee';
 import { environment } from 'src/environments/environment';
-import { Observable, throwError } from 'rxjs';
-import { retry, catchError, map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { SelectItemsList } from '../data/common/selectitem';
 import { Result } from '../data/common/result';
 import { ErrorService } from 'src/app/shared/error.service';
-import { AuthService } from 'src/app/auth/auth.service';
+import { ApiHelper } from './api.helper';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class EmployeeService extends EmployeeData {
-    baseUrl = environment.baseURL + 'Employee';
+    private readonly baseUrl = `${environment.baseURL}Employee`;
 
-    constructor(private http: HttpClient, private errService: ErrorService, private authService: AuthService) {
-        super();
-    }
+    // Modern dependency injection using inject function
+    private readonly http = inject(HttpClient);
+    private readonly errorService = inject(ErrorService);
+    private readonly apiHelper = inject(ApiHelper);
 
-
-    GetEmployeeDetails(id: number): Observable<EmployeeDetails> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.get<EmployeeDetails>(this.baseUrl + '/' + id, httpOptions)
-            .pipe(
-                map((response: any) => response),
-                retry(1),
-                catchError(this.errService.errorHandl)
-            );
-    }
-    GetEmployeeDetailsByCurrentUser(): Observable<EmployeeDetails> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.get<EmployeeDetails>(this.baseUrl + '/bycurrentuser', httpOptions)
-            .pipe(
-                map((response: any) => response),
-                retry(1),
-                catchError(this.errService.errorHandl)
-            );
-    }
-    GetEmployees(): Observable<EmployeesList> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.get<EmployeesList>(this.baseUrl, httpOptions)
-            .pipe(
-                map((response: any) => response),
-                retry(1),
-                catchError(this.errService.errorHandl)
-            );
-    }
-    GetEmployeesDropdown(employeeDropdownQuery: EmployeeDropdownQuery): Observable<SelectItemsList> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.post<SelectItemsList>(this.baseUrl + '/employeesdropdown', JSON.stringify(employeeDropdownQuery), httpOptions)
-            .pipe(
-                map((response: any) => response),
-                retry(1),
-                catchError(this.errService.errorHandl)
-            );
-    }
-    GetAllEmployeesDropdown(): Observable<SelectItemsList> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.get<SelectItemsList>(this.baseUrl + '/employeesdropdown', httpOptions)
-            .pipe(
-                map((response: any) => response),
-                retry(1),
-                catchError(this.errService.errorHandl)
-            );
-    }
-    AddEmployee(addEmployeeCommand: AddEmployeeCommand): Observable<Result> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.post<Result>(this.baseUrl, JSON.stringify(addEmployeeCommand), httpOptions)
-            .pipe(
-                map((response: any) => response),
-                retry(1),
-                catchError(this.errService.errorHandl)
-            );
-    }
-    UpdateEmployee(updateEmployeeCommand: UpdateEmployeeCommand): Observable<Result> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.put<Result>(this.baseUrl, JSON.stringify(updateEmployeeCommand), httpOptions)
-        .pipe(
-            map((response: any) => response),
-            retry(1),
-            catchError(this.errService.errorHandl)
+    /**
+     * Get details for a specific employee
+     * @param id Employee ID
+     * @returns Observable with employee details
+     */
+    override GetEmployeeDetails(id: number): Observable<EmployeeDetails> {
+        return this.http.get<EmployeeDetails>(
+            `${this.baseUrl}/${id}`,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<EmployeeDetails>('GetEmployeeDetails', error, {} as EmployeeDetails))
         );
     }
-    DeleteEmployee(id: number): Observable<Result> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.delete<Result>(this.baseUrl + '/' + id, httpOptions)
-        .pipe(
-            map((response: any) => response),
-            retry(1),
-            catchError(this.errService.errorHandl)
+
+    /**
+     * Get employee details for the current user
+     * @returns Observable with employee details
+     */
+    override GetEmployeeDetailsByCurrentUser(): Observable<EmployeeDetails> {
+        return this.http.get<EmployeeDetails>(
+            `${this.baseUrl}/bycurrentuser`,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<EmployeeDetails>('GetEmployeeDetailsByCurrentUser', error, {} as EmployeeDetails))
         );
     }
-    RestoreEmployee(restoreEmployeeCommand: RestoreEmployeeCommand): Observable<Result> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.put<Result>(this.baseUrl + '/restore', JSON.stringify(restoreEmployeeCommand), httpOptions)
-        .pipe(
-            map((response: any) => response),
-            retry(1),
-            catchError(this.errService.errorHandl)
+
+    /**
+     * Get all employees
+     * @returns Observable with list of employees
+     */
+    override GetEmployees(): Observable<EmployeesList> {
+        return this.http.get<EmployeesList>(
+            this.baseUrl,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<EmployeesList>('GetEmployees', error, new EmployeesList()))
+        );
+    }
+
+    /**
+     * Get filtered employees for dropdown
+     * @param employeeDropdownQuery Query parameters
+     * @returns Observable with select items list
+     */
+    override GetEmployeesDropdown(employeeDropdownQuery: EmployeeDropdownQuery): Observable<SelectItemsList> {
+        return this.http.post<SelectItemsList>(
+            `${this.baseUrl}/employeesdropdown`,
+            employeeDropdownQuery,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<SelectItemsList>('GetEmployeesDropdown', error, new SelectItemsList()))
+        );
+    }
+
+    /**
+     * Get all employees for dropdown
+     * @returns Observable with select items list
+     */
+    override GetAllEmployeesDropdown(): Observable<SelectItemsList> {
+        return this.http.get<SelectItemsList>(
+            `${this.baseUrl}/employeesdropdown`,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<SelectItemsList>('GetAllEmployeesDropdown', error, new SelectItemsList()))
+        );
+    }
+
+    /**
+     * Add a new employee
+     * @param addEmployeeCommand Employee data
+     * @returns Observable with result
+     */
+    override AddEmployee(addEmployeeCommand: AddEmployeeCommand): Observable<Result | null> {
+        return this.http.post<Result>(
+            this.baseUrl,
+            addEmployeeCommand,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<Result | null>('AddEmployee', error, null))
+        );
+    }
+
+    /**
+     * Update an existing employee
+     * @param updateEmployeeCommand Employee data
+     * @returns Observable with result
+     */
+    override UpdateEmployee(updateEmployeeCommand: UpdateEmployeeCommand): Observable<Result | null> {
+        return this.http.put<Result>(
+            this.baseUrl,
+            updateEmployeeCommand,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<Result | null>('UpdateEmployee', error, null))
+        );
+    }
+
+    /**
+     * Delete an employee
+     * @param id Employee ID
+     * @returns Observable with result
+     */
+    override DeleteEmployee(id: number): Observable<Result | null> {
+        return this.http.delete<Result>(
+            `${this.baseUrl}/${id}`,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<Result | null>('DeleteEmployee', error, null))
+        );
+    }
+
+    /**
+     * Restore a previously deleted employee
+     * @param restoreEmployeeCommand Employee restore command
+     * @returns Observable with result
+     */
+    override RestoreEmployee(restoreEmployeeCommand: RestoreEmployeeCommand): Observable<Result | null> {
+        return this.http.put<Result>(
+            `${this.baseUrl}/restore`,
+            restoreEmployeeCommand,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<Result | null>('RestoreEmployee', error, null))
         );
     }
 }

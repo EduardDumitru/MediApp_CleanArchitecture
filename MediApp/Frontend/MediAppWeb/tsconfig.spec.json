@@ -5,14 +5,13 @@
     "types": [
       "jasmine",
       "node"
-    ]
+    ],
+    "target": "ES2022",
+    "useDefineForClassFields": false
   },
-  "files": [
-    "src/test.ts",
-    "src/polyfills.ts"
-  ],
   "include": [
     "src/**/*.spec.ts",
-    "src/**/*.d.ts"
+    "src/**/*.d.ts",
+    "src/**/*.test.ts"
   ]
 }

@@ -1,3 +1,69 @@
+.medical-check-container {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
 .medical-check-card {
-    padding: 60px;
+    width: 100%;
+    max-width: 600px;
+}
+
+.card-title {
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.actions-row {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.action-button {
+    min-width: 200px;
+}
+
+.card-content {
+    display: flex;
+    flex-direction: column;
+    padding: 16px 0;
+}
+
+.form-field {
+    width: 100%;
+    margin-bottom: 16px;
+}
+
+.card-actions {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    padding: 16px;
+}
+
+.spinner-container {
+    display: flex;
+    justify-content: center;
+    margin: 16px 0;
+}
+
+@media (max-width: 599px) {
+    .medical-check-container {
+        padding: 10px;
+    }
+
+    .action-button {
+        width: 100%;
+    }
+
+    .card-actions {
+        flex-direction: column;
+    }
+
+    .card-actions button {
+        margin: 4px 0;
+    }
 }

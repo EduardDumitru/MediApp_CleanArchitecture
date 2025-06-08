@@ -1,202 +1,244 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { AsyncPipe, Location } from '@angular/common';
+import { catchError, finalize } from 'rxjs/operators';
+import { of } from 'rxjs';
+
 import { SelectItemsList } from 'src/app/@core/data/common/selectitem';
-import { Location } from '@angular/common'
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Result } from 'src/app/@core/data/common/result';
 import { ClinicData, ClinicDetails, UpdateClinicCommand, AddClinicCommand, RestoreClinicCommand } from 'src/app/@core/data/clinic';
 import { CountryData } from 'src/app/@core/data/country';
 import { CountyData } from 'src/app/@core/data/county';
-import { UIService } from 'src/app/shared/ui.service';
-import { ActivatedRoute } from '@angular/router';
-import { Result } from 'src/app/@core/data/common/result';
 import { CityData } from 'src/app/@core/data/city';
+import { UIService } from 'src/app/shared/ui.service';
+import { getSharedImports } from 'src/app/shared/shared.module';
+
 @Component({
-  selector: 'app-clinic',
-  templateUrl: './clinic.component.html',
-  styleUrls: ['./clinic.component.scss']
+    selector: 'app-clinic',
+    standalone: true,
+    imports: [
+        ...getSharedImports(),
+    ],
+    templateUrl: './clinic.component.html',
+    styleUrls: ['./clinic.component.scss'],
 })
 export class ClinicComponent implements OnInit {
-  citySelectList: SelectItemsList = new SelectItemsList();
-  countrySelectList: SelectItemsList = new SelectItemsList();
-  countySelectList: SelectItemsList = new SelectItemsList();
-  isLoading = false;
-  clinicForm: FormGroup;
-  clinicId: number;
-  isDeleted = false;
-  constructor(private clinicData: ClinicData, private countryData: CountryData, private countyData: CountyData,
-      private uiService: UIService, private route: ActivatedRoute, private _location: Location, private cityData: CityData) { }
+    // Properties
+    citySelectList: SelectItemsList = new SelectItemsList();
+    countrySelectList: SelectItemsList = new SelectItemsList();
+    countySelectList: SelectItemsList = new SelectItemsList();
+    isLoading = false;
+    clinicForm!: FormGroup;
+    clinicId?: number;
+    isDeleted?: boolean = false;
 
-  ngOnInit() {
-      if (Number(this.route.snapshot.params.id)) {
-          this.clinicId = +this.route.snapshot.params.id;
-      }
-      this.initForm();
-      this.getCountriesSelect();
-  }
+    // Dependency injection using inject() function
+    private clinicData = inject(ClinicData);
+    private countryData = inject(CountryData);
+    private countyData = inject(CountyData);
+    private cityData = inject(CityData);
+    private uiService = inject(UIService);
+    private route = inject(ActivatedRoute);
+    private location = inject(Location);
+    private fb = inject(FormBuilder);
 
-  initForm() {
-      this.clinicForm = new FormGroup({
-          name: new FormControl('', [Validators.required]),
-          countryId: new FormControl('', [Validators.required]),
-          countyId: new FormControl('', [Validators.required]),
-          cityId: new FormControl('', [Validators.required]),
-          address: new FormControl(''),
-          streetName: new FormControl(''),
-          streetNo: new FormControl('', [Validators.required]),
-          email: new FormControl('', [Validators.required, Validators.email]),
-          phoneNumber: new FormControl('', [Validators.required, Validators.pattern('^(07[0-8]{1}[0-9]{1}|02[0-9]{2}|03[0-9]{2}){1}?([0-9]{3}){2}$')])
-      })
-      if (this.clinicId) {
-          this.getClinic();
-      }
-  }
+    ngOnInit(): void {
+        // Get clinic ID from route params
+        const id = this.route.snapshot.params['id'];
+        if (id && !isNaN(+id)) {
+            this.clinicId = +id;
+        }
 
-  getClinic() {
-      this.isLoading = true;
-      this.clinicData.GetClinicDetails(this.clinicId).subscribe((clinic: ClinicDetails) => {
-          this.clinicForm.setValue({
-          name: clinic.name,
-          countryId: clinic.countryId.toString(),
-          countyId: clinic.countyId.toString(),
-          cityId: clinic.cityId.toString(),
-          address: clinic.address,
-          streetName: clinic.streetName,
-          streetNo: clinic.streetNo,
-          phoneNumber: clinic.phoneNumber,
-          email: clinic.email
-          });
-          this.getCountiesSelect(clinic.countryId.toString());
-          this.getCitiesSelect(clinic.countyId.toString());
-          this.isDeleted = clinic.deleted;
-          if (this.isDeleted) {
-              this.clinicForm.disable();
-          }
-          this.isLoading = false;
-      },
-          error => {
-              this.uiService.showErrorSnackbar(error, null, 3000);
-              this.isLoading = false;
-          });
-  }
+        this.initForm();
+        this.getCountriesSelect();
+    }
 
-  getCountriesSelect() {
-    this.countryData.GetCountriesDropdown().subscribe((countries: SelectItemsList) => {
-      this.countrySelectList = countries;
-    },
-    error => {
-        this.uiService.showErrorSnackbar(error, null, 3000);
-    })
-  }
+    initForm(): void {
+        this.clinicForm = this.fb.group({
+            name: ['', Validators.required],
+            countryId: ['', Validators.required],
+            countyId: ['', Validators.required],
+            cityId: ['', Validators.required],
+            address: [''],
+            streetName: [''],
+            streetNo: ['', Validators.required],
+            email: ['', [Validators.required, Validators.email]],
+            phoneNumber: ['', [
+                Validators.required,
+                Validators.pattern('^(07[0-8]{1}[0-9]{1}|02[0-9]{2}|03[0-9]{2}){1}?([0-9]{3}){2}$')
+            ]]
+        });
 
-  getCountiesSelect(countryId: string) {
-    this.countyData.GetCountiesByCountryDropdown(+countryId).subscribe((counties: SelectItemsList) => {
-      this.countySelectList = counties;
-    },
-    error => {
-        this.uiService.showErrorSnackbar(error, null, 3000);
-    })
-  }
+        if (this.clinicId) {
+            this.getClinic();
+        }
+    }
 
-  getCitiesSelect(countyId: string) {
-    this.cityData.GetCitiesByCountyDropdown(+countyId).subscribe((cities: SelectItemsList) => {
-      this.citySelectList = cities;
-    },
-    error => {
-        this.uiService.showErrorSnackbar(error, null, 3000);
-    })
-  }
+    getClinic(): void {
+        this.isLoading = true;
 
-  getCountiesSelectOnChange(countryId: string) {
-      this.countySelectList = new SelectItemsList();
-      this.citySelectList = new SelectItemsList();
-      this.clinicForm.patchValue({countyId: '', cityId: ''}) ;
-      this.getCountiesSelect(countryId);
-  }
+        this.clinicData.GetClinicDetails(this.clinicId!)
+            .pipe(
+                finalize(() => this.isLoading = false)
+            )
+            .subscribe((clinic: ClinicDetails) => {
+                if (!clinic || !clinic.name) return;
 
-  onSubmit() {
-      this.isLoading = true;
-      if (this.clinicId) {
-          this.updateClinic();
-      } else {
-          this.addClinic();
-      }
-  }
+                this.clinicForm.setValue({
+                    name: clinic.name,
+                    countryId: clinic.countryId.toString(),
+                    countyId: clinic.countyId.toString(),
+                    cityId: clinic.cityId.toString(),
+                    address: clinic.address,
+                    streetName: clinic.streetName,
+                    streetNo: clinic.streetNo,
+                    phoneNumber: clinic.phoneNumber,
+                    email: clinic.email
+                });
 
-  updateClinic() {
-      const updateClinicCommand: UpdateClinicCommand = {
-          id: this.clinicId,
-          countyId: +this.clinicForm.value.countyId,
-          countryId: +this.clinicForm.value.countryId,
-          cityId: +this.clinicForm.value.cityId,
-          address: this.clinicForm.value.address,
-          streetName: this.clinicForm.value.streetName,
-          streetNo: this.clinicForm.value.streetNo,
-          phoneNumber: this.clinicForm.value.phoneNumber,
-          email: this.clinicForm.value.email,
-          name: this.clinicForm.value.name
-      } as UpdateClinicCommand;
-      console.log(updateClinicCommand);
-      this.clinicData.UpdateClinic(updateClinicCommand).subscribe((res: Result) => {
-          this.uiService.showSuccessSnackbar(res.successMessage, null, 3000);
-          this._location.back();
-          this.isLoading = false;
-      }, error => {
-          this.isLoading = false;
-          this.uiService.showErrorSnackbar(error, null, 3000);
-      });
-  }
+                this.getCountiesSelect(clinic.countryId.toString());
+                this.getCitiesSelect(clinic.countyId.toString());
+                this.isDeleted = clinic.deleted;
 
-  addClinic() {
-      const addClinicCommand: AddClinicCommand = {
-          countyId: +this.clinicForm.value.countyId,
-          countryId: +this.clinicForm.value.countryId,
-          cityId: +this.clinicForm.value.cityId,
-          address: this.clinicForm.value.address,
-          streetName: this.clinicForm.value.streetName,
-          streetNo: this.clinicForm.value.streetNo,
-          phoneNumber: this.clinicForm.value.phoneNumber,
-          email: this.clinicForm.value.email,
-          name: this.clinicForm.value.name
-      } as AddClinicCommand;
+                if (this.isDeleted) {
+                    this.clinicForm.disable();
+                }
+            });
+    }
 
-      this.clinicData.AddClinic(addClinicCommand).subscribe((res: Result) => {
-          this.uiService.showSuccessSnackbar(res.successMessage, null, 3000);
-          this._location.back();
-          this.isLoading = false;
-      }, error => {
-          this.isLoading = false;
-          this.uiService.showErrorSnackbar(error, null, 3000);
-      });
-  }
+    getCountriesSelect(): void {
+        this.countryData.GetCountriesDropdown()
+            .subscribe(countries => this.countrySelectList = countries);
+    }
 
-  deleteClinic() {
-      this.isLoading = true;
-      this.clinicData.DeleteClinic(this.clinicId).subscribe((res: Result) => {
-          this.uiService.showSuccessSnackbar(res.successMessage, null, 3000);
-          this._location.back();
-          this.isLoading = false;
-      }, error => {
-          this.isLoading = false;
-          this.uiService.showErrorSnackbar(error, null, 3000);
-      })
-  }
+    getCountiesSelect(countryId: string): void {
+        this.countyData.GetCountiesByCountryDropdown(+countryId)
+            .subscribe(counties => this.countySelectList = counties);
+    }
 
-  restoreClinic() {
-      this.isLoading = true;
-      const restoreClinicCommand: RestoreClinicCommand = {
-          id: this.clinicId
-      } as RestoreClinicCommand;
+    getCitiesSelect(countyId: string): void {
+        this.cityData.GetCitiesByCountyDropdown(+countyId)
+            .pipe(
+                catchError(error => {
+                    this.uiService.showErrorSnackbar(error, undefined, 3000);
+                    return of(new SelectItemsList());
+                })
+            )
+            .subscribe(cities => this.citySelectList = cities);
+    }
 
-      this.clinicData.RestoreClinic(restoreClinicCommand).subscribe((res: Result) => {
-          this.uiService.showSuccessSnackbar(res.successMessage, null, 3000);
-          this._location.back();
-          this.isLoading = false;
-      }, error => {
-          this.isLoading = false;
-          this.uiService.showErrorSnackbar(error, null, 3000);
-      })
-  }
+    getCountiesSelectOnChange(countryId: string): void {
+        this.countySelectList = new SelectItemsList();
+        this.citySelectList = new SelectItemsList();
+        this.clinicForm.patchValue({ countyId: '', cityId: '' });
+        this.getCountiesSelect(countryId);
+    }
 
-  goBack() {
-      this._location.back();
+    onSubmit(): void {
+        if (this.clinicForm.invalid) return;
+
+        this.isLoading = true;
+
+        if (this.clinicId) {
+            this.updateClinic();
+        } else {
+            this.addClinic();
+        }
+    }
+
+    updateClinic(): void {
+        const formValue = this.clinicForm.value;
+        const updateClinicCommand: UpdateClinicCommand = {
+            id: this.clinicId!,
+            countyId: +formValue.countyId,
+            countryId: +formValue.countryId,
+            cityId: +formValue.cityId,
+            address: formValue.address,
+            streetName: formValue.streetName,
+            streetNo: formValue.streetNo,
+            phoneNumber: formValue.phoneNumber,
+            email: formValue.email,
+            name: formValue.name
+        };
+
+        this.clinicData.UpdateClinic(updateClinicCommand)
+            .pipe(
+                finalize(() => this.isLoading = false)
+            )
+            .subscribe((res: Result | null) => {
+                if (!res) return;
+
+                this.uiService.showSuccessSnackbar(res.successMessage, undefined, 3000);
+                this.location.back();
+            });
+    }
+
+    addClinic(): void {
+        const formValue = this.clinicForm.value;
+        const addClinicCommand: AddClinicCommand = {
+            countyId: +formValue.countyId,
+            countryId: +formValue.countryId,
+            cityId: +formValue.cityId,
+            address: formValue.address,
+            streetName: formValue.streetName,
+            streetNo: formValue.streetNo,
+            phoneNumber: formValue.phoneNumber,
+            email: formValue.email,
+            name: formValue.name
+        };
+
+        this.clinicData.AddClinic(addClinicCommand)
+            .pipe(
+                catchError(error => {
+                    this.uiService.showErrorSnackbar(error, undefined, 3000);
+                    return of(null);
+                }),
+                finalize(() => this.isLoading = false)
+            )
+            .subscribe((res: Result | null) => {
+                if (!res) return;
+
+                this.uiService.showSuccessSnackbar(res.successMessage, undefined, 3000);
+                this.location.back();
+            });
+    }
+
+    deleteClinic(): void {
+        this.isLoading = true;
+
+        this.clinicData.DeleteClinic(this.clinicId!)
+            .pipe(
+                finalize(() => this.isLoading = false)
+            )
+            .subscribe((res: Result | null) => {
+                if (!res) return;
+
+                this.uiService.showSuccessSnackbar(res.successMessage, undefined, 3000);
+                this.location.back();
+            });
+    }
+
+    restoreClinic(): void {
+        this.isLoading = true;
+
+        const restoreClinicCommand: RestoreClinicCommand = {
+            id: this.clinicId!
+        };
+
+        this.clinicData.RestoreClinic(restoreClinicCommand)
+            .pipe(
+                finalize(() => this.isLoading = false)
+            )
+            .subscribe((res: Result | null) => {
+                if (!res) return;
+
+                this.uiService.showSuccessSnackbar(res.successMessage, undefined, 3000);
+                this.location.back();
+            });
+    }
+
+    goBack(): void {
+        this.location.back();
     }
 }

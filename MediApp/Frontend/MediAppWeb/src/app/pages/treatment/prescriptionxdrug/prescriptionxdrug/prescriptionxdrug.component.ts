@@ -1,13 +1,20 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, inject, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormGroup } from '@angular/forms';
 import { SelectItemsList } from 'src/app/@core/data/common/selectitem';
 import { TimeSpan } from 'src/app/@core/data/common/timespan';
 import { DrugData } from 'src/app/@core/data/drug';
 import { UIService } from 'src/app/shared/ui.service';
+import { catchError, finalize } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { getSharedImports } from 'src/app/shared/shared.module';
 
 @Component({
   selector: 'app-prescriptionxdrug',
+  standalone: true,
+  imports: [
+    ...getSharedImports(),
+  ],
   templateUrl: './prescriptionxdrug.component.html',
   styleUrls: ['./prescriptionxdrug.component.scss']
 })
@@ -16,20 +23,39 @@ export class PrescriptionXDrugComponent implements OnInit {
   hoursSelectList: SelectItemsList = new TimeSpan(0, 0).hoursSelectList;
   drugSelectList: SelectItemsList = new SelectItemsList();
   isLoading = true;
-  constructor(@Inject(MAT_DIALOG_DATA) public prescriptionXDrugForm: FormGroup,
-  private drugData: DrugData, private uiService: UIService) { }
+
+  // Modern dependency injection
+  private drugData = inject(DrugData);
+  private uiService = inject(UIService);
+
+  constructor(@Inject(MAT_DIALOG_DATA) public prescriptionXDrugForm: FormGroup) { }
 
   ngOnInit(): void {
     this.getDrugs();
   }
 
-  getDrugs() {
-    this.drugData.GetDrugsDropdown().subscribe((result: SelectItemsList) => {
-      this.drugSelectList = result;
-      this.isLoading = false;
-    }, error => {
-        this.isLoading = false;
-        this.uiService.showErrorSnackbar(error, null, 3000);
-       });
+  getDrugs(): void {
+    this.isLoading = true;
+    this.drugData.GetDrugsDropdown()
+      .pipe(
+        catchError(error => {
+          this.uiService.showErrorSnackbar(error, undefined, 3000);
+          return of(new SelectItemsList());
+        }),
+        finalize(() => this.isLoading = false)
+      )
+      .subscribe((result: SelectItemsList) => {
+        this.drugSelectList = result;
+      });
+  }
+
+  handleNegativeValue(event: Event, controlName: string): void {
+    const input = event.target as HTMLInputElement;
+    const value = Number(input.value);
+
+    if (value < 0) {
+      input.value = '1';
+      this.prescriptionXDrugForm.get(controlName)?.setValue(1);
+    }
   }
 }

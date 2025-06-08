@@ -1,3 +1,67 @@
 .register-card {
-    padding: 60px;
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+
+    form {
+        width: 100%;
+        max-width: 800px;
+    }
+
+    mat-card {
+        width: 100%;
+    }
+
+    mat-card-header {
+        justify-content: center;
+        margin-bottom: 1rem;
+    }
+
+    mat-card-content {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .form-field-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1rem;
+    }
+
+    mat-form-field {
+        width: 100%;
+    }
+
+    .spinner-container {
+        display: flex;
+        justify-content: center;
+        padding: 2rem 0;
+    }
+
+    mat-card-actions {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .register-card {
+        padding: 1rem;
+
+        .form-field-container {
+            grid-template-columns: 1fr;
+        }
+
+        mat-card-actions {
+            flex-direction: column;
+            align-items: stretch;
+
+            button {
+                margin-top: 0.5rem;
+            }
+        }
+    }
 }

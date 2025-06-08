@@ -1,13 +1,14 @@
 import { Observable } from 'rxjs';
 import { Result } from '../common/result';
 import { SelectItemsList } from '../common/selectitem';
+import { Injectable } from '@angular/core';
 
-export class UserProfileDetail {
+export interface UserProfileDetail {
     firstName: string;
-    middleName: string;
+    middleName?: string | null;
     lastName: string;
-    address: string;
-    streetName: string;
+    address?: string | null;
+    streetName?: string | null;
     streetNo: string;
     phoneNumber: string;
     emailAddress: string;
@@ -20,13 +21,13 @@ export class UserProfileDetail {
     deleted?: boolean;
 }
 
-export class UserProfileLookup {
+export interface UserProfileLookup {
     id: number;
     name: string;
-    address: string;
-    streetName: string;
-    streetNo: string;
-    phoneNumber: string;
+    address?: string | null;
+    streetName?: string | null;
+    streetNo?: string | null;
+    phoneNumber?: string | null;
     emailAddress: string;
     cnp: string;
     countryName: string;
@@ -36,28 +37,30 @@ export class UserProfileLookup {
     deleted?: boolean;
 }
 
-export class UserProfilesList {
+export interface UserProfilesList {
     userProfiles: UserProfileLookup[];
 }
 
-export class UpdateUserProfileCommand {
+export interface UpdateUserProfileCommand {
     id: number;
     firstName: string;
-    middleName?: string;
+    middleName?: string | null;
     lastName: string;
-    address: string;
-    streetName: string;
+    address?: string | null;
+    streetName?: string | null;
     streetNo: string;
     phoneNumber: string;
-    emailAddress: string;
     cnp: string;
     countryId: number;
     countyId: number;
     cityId: number;
     genderId: number;
     roleIds: number[];
-    deleted?: boolean
 }
+
+@Injectable({
+    providedIn: 'root'
+})
 
 export abstract class UserProfileData {
     abstract getUserProfiles(): Observable<UserProfilesList>;

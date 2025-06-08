@@ -1,56 +1,58 @@
+<section class="diagnosis-card">
+  <form [formGroup]="diagnosisForm" (ngSubmit)="onSubmit()">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>
+          @if (!diagnosisId) {
+          Add Diagnosis
+          } @else {
+          Update Diagnosis
+          }
+        </mat-card-title>
+      </mat-card-header>
 
-<section fxLayout fxLayoutAlign="center" class="diagnosis-card">
-    <form [formGroup]="diagnosisForm" (ngSubmit)="onSubmit()">
-      <mat-card fxFlex.xs="100%" fxFlex="600px">
-        <mat-card-title fxLayoutAlign="center" *ngIf="!diagnosisId">Add Diagnosis</mat-card-title>
-        <mat-card-title fxLayoutAlign="center" *ngIf="diagnosisId">Update Diagnosis</mat-card-title>
-        <mat-card-content fxLayout="column" fxLayoutAlign="center">
-          <mat-form-field>
-            <input matInput placeholder="Name" formControlName="name" required />
+      <mat-card-content>
+        <div class="form-container">
+          <mat-form-field appearance="outline">
+            <mat-label>Name</mat-label>
+            <input matInput formControlName="name" required />
             <mat-hint>Please enter a name.</mat-hint>
             <mat-error>Name is required</mat-error>
           </mat-form-field>
-          <mat-spinner *ngIf="isLoading"></mat-spinner>
-        </mat-card-content>
-        <mat-card-actions fxLayoutAlign="center" *ngIf="!isLoading">
-          <button
-          *ngIf="!isLoading"
-          type="button"
-          mat-raised-button
-          color="accent"
-          (click)="goBack()"
-        >
+
+          @if (isLoading) {
+          <div class="spinner-container">
+            <mat-spinner></mat-spinner>
+          </div>
+          }
+        </div>
+      </mat-card-content>
+
+      @if (!isLoading) {
+      <mat-card-actions>
+        <button type="button" mat-raised-button color="accent" (click)="goBack()">
           Back
         </button>
-          <button
-            *ngIf="!isDeleted"
-            type="submit"
-            mat-raised-button
-            color="primary"
-            [disabled]="diagnosisForm.invalid"
-          >
-            Submit
-          </button>
-          <button
-            *ngIf="!isDeleted && diagnosisId"
-            type="button"
-            mat-raised-button
-            color="warn"
-            (click)="deleteDiagnosis()"
-          >
-            Delete
-          </button>
-          <button
-            *ngIf="isDeleted && diagnosisId"
-            type="button"
-            mat-raised-button
-            color="primary"
-            (click)="restoreDiagnosis()"
-          >
-            Restore
-          </button>
-        </mat-card-actions>
-      </mat-card>
-    </form>
-  </section>
-  
+
+        @if (!isDeleted) {
+        <button type="submit" mat-raised-button color="primary" [disabled]="diagnosisForm.invalid">
+          Submit
+        </button>
+        }
+
+        @if (!isDeleted && diagnosisId) {
+        <button type="button" mat-raised-button color="warn" (click)="deleteDiagnosis()">
+          Delete
+        </button>
+        }
+
+        @if (isDeleted && diagnosisId) {
+        <button type="button" mat-raised-button color="primary" (click)="restoreDiagnosis()">
+          Restore
+        </button>
+        }
+      </mat-card-actions>
+      }
+    </mat-card>
+  </form>
+</section>

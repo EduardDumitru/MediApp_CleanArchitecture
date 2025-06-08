@@ -1,41 +1,46 @@
 import { Observable } from 'rxjs';
 import { SelectItemsList } from './common/selectitem';
 import { Result } from './common/result';
+import { Injectable } from '@angular/core';
 
-export class DiagnosisDetails {
+export interface DiagnosisDetails {
     name: string;
     deleted?: boolean;
 }
 
-export class DiagnosisLookup {
+export interface DiagnosisLookup {
     id: number;
     name: string;
     deleted?: boolean;
 }
 
 export class DiagnosesList {
-    diagnoses: DiagnosisLookup[];
+    diagnoses: DiagnosisLookup[] = [];
 }
 
-export class AddDiagnosisCommand {
+export interface AddDiagnosisCommand {
     name: string;
 }
 
-export class UpdateDiagnosisCommand {
+export interface UpdateDiagnosisCommand {
     id: number;
     name: string;
 }
 
-export class RestoreDiagnosisCommand {
+export interface RestoreDiagnosisCommand {
     id: number;
 }
+
+@Injectable({
+    providedIn: 'root'
+})
 
 export abstract class DiagnosisData {
     abstract GetDiagnosisDetails(id: number): Observable<DiagnosisDetails>;
     abstract GetDiagnoses(): Observable<DiagnosesList>;
     abstract GetDiagnosesDropdown(): Observable<SelectItemsList>;
-    abstract AddDiagnosis(addDiagnosisCommand: AddDiagnosisCommand): Observable<Result>;
-    abstract UpdateDiagnosis(updateDiagnosisCommand: UpdateDiagnosisCommand): Observable<Result>;
-    abstract DeleteDiagnosis(id: number): Observable<Result>;
-    abstract RestoreDiagnosis(restoreDiagnosisCommand: RestoreDiagnosisCommand): Observable<Result>;
+    abstract AddDiagnosis(addDiagnosisCommand: AddDiagnosisCommand): Observable<Result | null>;
+    abstract UpdateDiagnosis(updateDiagnosisCommand: UpdateDiagnosisCommand): Observable<Result | null>;
+    abstract DeleteDiagnosis(id: number): Observable<Result | null>;
+    abstract RestoreDiagnosis(restoreDiagnosisCommand: RestoreDiagnosisCommand): Observable<Result | null>;
 }

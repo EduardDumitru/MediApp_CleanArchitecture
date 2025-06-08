@@ -5,10 +5,12 @@ import { RegisterComponent } from './register/register.component'
 import { SharedModule } from '../shared/shared.module';
 @NgModule({
     imports: [
-        SharedModule
+        SharedModule,
+        LoginComponent,
+        RegisterComponent,
     ],
     exports: [],
-    declarations: [LoginComponent, RegisterComponent],
+    declarations: [],
     providers: [],
 })
 export class AuthModule { }

@@ -41,21 +41,21 @@ import { RoleService } from './services/role.service';
 const DATA_SERVICES = [
   { provide: UserData, useClass: UserService },
   { provide: UserProfileData, useClass: UserProfileService },
-  { provide: CityData, useClass: CityService},
-  { provide: CountryData, useClass: CountryService},
-  { provide: CountyData, useClass: CountyService},
-  { provide: ClinicData, useClass: ClinicService},
-  { provide: DiagnosisData, useClass: DiagnosisService},
-  { provide: DiagnosisXDrugData, useClass: DiagnosisXDrugService},
-  { provide: DrugData, useClass: DrugService},
-  { provide: EmployeeData, useClass: EmployeeService},
-  { provide: EmployeeTypeData, useClass: EmployeeTypeService},
-  { provide: GenderData, useClass: GenderService},
-  { provide: HolidayIntervalData, useClass: HolidayIntervalService},
-  { provide: MedicalCheckData, useClass: MedicalCheckService},
-  { provide: MedicalCheckTypeData, useClass: MedicalCheckTypeService},
-  { provide: PrescriptionData, useClass: PrescriptionService},
-  { provide: PrescriptionXDrugData, useClass: PrescriptionXDrugService},
+  { provide: CityData, useClass: CityService },
+  { provide: CountryData, useClass: CountryService },
+  { provide: CountyData, useClass: CountyService },
+  { provide: ClinicData, useClass: ClinicService },
+  { provide: DiagnosisData, useClass: DiagnosisService },
+  { provide: DiagnosisXDrugData, useClass: DiagnosisXDrugService },
+  { provide: DrugData, useClass: DrugService },
+  { provide: EmployeeData, useClass: EmployeeService },
+  { provide: EmployeeTypeData, useClass: EmployeeTypeService },
+  { provide: GenderData, useClass: GenderService },
+  { provide: HolidayIntervalData, useClass: HolidayIntervalService },
+  { provide: MedicalCheckData, useClass: MedicalCheckService },
+  { provide: MedicalCheckTypeData, useClass: MedicalCheckTypeService },
+  { provide: PrescriptionData, useClass: PrescriptionService },
+  { provide: PrescriptionXDrugData, useClass: PrescriptionXDrugService },
   { provide: RoleData, useClass: RoleService }
 ];
 
@@ -76,12 +76,12 @@ export class CoreModule {
     throwIfAlreadyLoaded(parentModule, 'CoreModule');
   }
 
-  static forRoot(): ModuleWithProviders {
-    return  {
+  static forRoot(): ModuleWithProviders<CoreModule> {
+    return {
       ngModule: CoreModule,
       providers: [
         ...NB_CORE_PROVIDERS,
       ],
-    } as ModuleWithProviders;
+    };
   }
 }

@@ -1,11 +1,10 @@
-﻿using System;
+﻿using Application.Common.Interfaces;
+using FluentValidation;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Application.Common.Interfaces;
-using FluentValidation;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Application.CommandsAndQueries
 {
@@ -19,20 +18,20 @@ namespace Application.CommandsAndQueries
             _context = context;
             _dateTime = dateTime;
             RuleFor(x => x.Id)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Id is required");
             RuleFor(x => x.StartDate)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Start date is required")
                 .MustAsync(IsHigherThanCurrentDate).WithMessage("Start date must be after current date");
             RuleFor(x => x.EndDate)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("End date is required")
                 .MustAsync(IsSmallerThanEndDate).WithMessage("Start date must be before end date or equal")
                 .MustAsync(NoHolidayIntervalsInThisPeriodForThisEmployee)
                 .WithMessage("Employee has other holiday intervals in this period");
             RuleFor(x => x.EmployeeId)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Employee is required")
                 .MustAsync(ExistsEmployee).WithMessage("Employee is not valid")
                 .MustAsync(NoMedicalChecksInThisPeriod).WithMessage("Employee has medical checks in this period");
@@ -45,8 +44,8 @@ namespace Application.CommandsAndQueries
             var localEndDate = holidayIntervalCommand.EndDate.ToLocalTime().Date;
 
             return !await _context.MedicalChecks.AnyAsync(x => x.EmployeeId == employeeId &&
-                                                               x.Appointment.Date >= startDate 
-                                                               && x.Appointment.Date <= localEndDate 
+                                                               x.Appointment.Date >= startDate
+                                                               && x.Appointment.Date <= localEndDate
                                                                && !x.Deleted, cancellationToken);
         }
 
@@ -56,9 +55,9 @@ namespace Application.CommandsAndQueries
             var startDate = holidayIntervalCommand.StartDate.ToLocalTime().Date;
             var localEndDate = endDate.ToLocalTime().Date;
             var res = !await _context.HolidayIntervals.AnyAsync(x =>
-                x.StartDate.Date >= startDate 
+                x.StartDate.Date >= startDate
                 && x.EndDate.Date <= localEndDate
-                && !x.Deleted 
+                && !x.Deleted
                 && x.EmployeeId == holidayIntervalCommand.EmployeeId
                 , cancellationToken);
             return res;

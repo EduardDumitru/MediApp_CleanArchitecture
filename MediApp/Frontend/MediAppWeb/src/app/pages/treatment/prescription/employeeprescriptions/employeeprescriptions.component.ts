@@ -1,15 +1,20 @@
-import { Component, OnInit, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, OnDestroy, inject } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { PrescriptionData, EmployeePrescriptionLookup, EmployeePrescriptionsList } from 'src/app/@core/data/prescription';
 import { UIService } from 'src/app/shared/ui.service';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subscription, catchError, finalize, of } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
+import { getSharedImports } from 'src/app/shared/shared.module';
 
 @Component({
   selector: 'app-employeeprescriptions',
+  standalone: true,
+  imports: [
+    ...getSharedImports(),
+  ],
   templateUrl: './employeeprescriptions.component.html',
   styleUrls: ['./employeeprescriptions.component.scss']
 })
@@ -19,53 +24,69 @@ export class EmployeePrescriptionsComponent implements OnInit, AfterViewInit, On
   employeeId = -1;
   currentUserId = -1;
   isAdmin = false;
-  currentUserIdSubscription: Subscription;
-  adminSubscription: Subscription;
-  dataSource = new MatTableDataSource<EmployeePrescriptionLookup>();
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private employeePrescriptionData: PrescriptionData, private uiService: UIService, private route: ActivatedRoute,
-    private authService: AuthService) { }
+  private currentUserIdSubscription?: Subscription;
+  private adminSubscription?: Subscription;
+
+  dataSource = new MatTableDataSource<EmployeePrescriptionLookup>();
+
+  @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  // Modern dependency injection
+  private employeePrescriptionData = inject(PrescriptionData);
+  private uiService = inject(UIService);
+  private route = inject(ActivatedRoute);
+  private authService = inject(AuthService);
 
   ngOnInit(): void {
-    if (Number(this.route.snapshot.params.id)) {
-      this.employeeId = +this.route.snapshot.params.id;
+    if (Number(this.route.snapshot.params['id'])) {
+      this.employeeId = +this.route.snapshot.params['id'];
     }
+
     this.currentUserIdSubscription = this.authService.currentUserId.subscribe(userId => {
       this.currentUserId = userId;
-    })
+    });
+
     this.adminSubscription = this.authService.isAdmin.subscribe(isAdmin => {
       this.isAdmin = isAdmin;
-    })
+    });
   }
 
-  getPrescriptions() {
-      this.employeePrescriptionData.GetEmployeePrescriptions(this.employeeId)
+  getPrescriptions(): void {
+    this.isLoading = true;
+    this.employeePrescriptionData.GetEmployeePrescriptions(this.employeeId)
+      .pipe(
+        catchError(error => {
+          this.uiService.showErrorSnackbar(error, undefined, 3000);
+          return of({ employeePrescriptions: [] } as EmployeePrescriptionsList);
+        }),
+        finalize(() => this.isLoading = false)
+      )
       .subscribe((employeePrescriptionsList: EmployeePrescriptionsList) => {
-          this.isLoading = false;
-          this.dataSource.data = employeePrescriptionsList.employeePrescriptions;
-      }, error => {
-        this.isLoading = false;
-        this.uiService.showErrorSnackbar(error, null, 3000);
+        this.dataSource.data = employeePrescriptionsList.employeePrescriptions;
       });
   }
 
   ngAfterViewInit(): void {
-    if (this.isAdmin || this.employeeId === this.currentUserId) {
-      this.getPrescriptions();
-    }
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
+
+    // Delayed to avoid ExpressionChangedAfterItHasBeenCheckedError
+    setTimeout(() => {
+      if (this.isAdmin || this.employeeId === this.currentUserId) {
+        this.getPrescriptions();
+      }
+    });
   }
 
   ngOnDestroy(): void {
-    this.currentUserIdSubscription.unsubscribe();
-    this.adminSubscription.unsubscribe();
+    this.currentUserIdSubscription?.unsubscribe();
+    this.adminSubscription?.unsubscribe();
   }
 
-  doFilter(filterValue: string) {
+  doFilter(event: Event): void {
+    const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
-
 }

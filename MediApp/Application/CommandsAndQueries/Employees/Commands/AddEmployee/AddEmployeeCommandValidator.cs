@@ -18,28 +18,28 @@ namespace Application.CommandsAndQueries
         {
             _context = context;
             RuleFor(x => x.UserProfileId)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("User is required")
                 .MustAsync(BeUniqueUserProfile).WithMessage("User is already an employee")
                 .MustAsync(ExistsUserProfile).WithMessage("User is not valid");
             RuleFor(x => x.ClinicId)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Clinic is required")
                 .MustAsync(ExistsClinic).WithMessage("Clinic is not valid");
             RuleFor(x => x.EmployeeTypeId)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Employee Type is required")
                 .MustAsync(ExistsEmployeeType).WithMessage("Employee Type is not valid")
                 .MustAsync(HaveNoMedicalCheckTypeIfNotDoctor).WithMessage("Only doctors can have medical check type")
                 .MustAsync(HaveMedicalCheckTypeIfDoctor).WithMessage("Medical Check Type is required for doctor");
             RuleFor(x => x.StartHour)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Start Hour is required")
                 .MustAsync(BeValidTimeSpan).WithMessage("Start Hour is not valid")
                 .MustAsync(BeFromHalfToHalfHours)
                 .WithMessage("Start Hour must be from half to half hours. Example: 09:00 or 09:30");
             RuleFor(x => x.EndHour)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("End Hour is required")
                 .MustAsync(BeValidTimeSpan).WithMessage("End Hour is not valid")
                 .MustAsync(BeFromHalfToHalfHours)

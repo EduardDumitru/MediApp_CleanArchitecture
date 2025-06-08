@@ -1,3 +1,78 @@
 .employee-card {
-    padding: 60px;
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+
+    form {
+        width: 100%;
+        max-width: 600px;
+    }
+
+    mat-card {
+        width: 100%;
+    }
+
+    mat-card-header {
+        justify-content: center;
+        margin-bottom: 1rem;
+    }
+
+    .card-actions {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+
+        a {
+            margin: 0.5rem;
+        }
+    }
+
+    .form-container {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        position: relative;
+
+        mat-form-field {
+            width: 100%;
+        }
+    }
+
+    .spinner-container {
+        display: flex;
+        justify-content: center;
+        padding: 1rem;
+    }
+
+    mat-card-actions {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 1rem;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .employee-card {
+        padding: 1rem;
+
+        .card-actions {
+            flex-direction: column;
+            align-items: stretch;
+
+            a {
+                margin: 0.25rem 0;
+            }
+        }
+
+        mat-card-actions {
+            flex-direction: column;
+
+            button {
+                margin-top: 0.5rem;
+            }
+        }
+    }
 }

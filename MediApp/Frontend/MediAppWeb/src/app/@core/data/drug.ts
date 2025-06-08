@@ -1,41 +1,46 @@
 import { Observable } from 'rxjs';
 import { SelectItemsList } from './common/selectitem';
 import { Result } from './common/result';
+import { Injectable } from '@angular/core';
 
-export class DrugDetails {
+export interface DrugDetails {
     name: string;
     deleted?: boolean;
 }
 
-export class DrugLookup {
+export interface DrugLookup {
     id: number;
     name: string;
     deleted?: boolean;
 }
 
 export class DrugsList {
-    drugs: DrugLookup[];
+    drugs: DrugLookup[] = [];
 }
 
-export class AddDrugCommand {
+export interface AddDrugCommand {
     name: string;
 }
 
-export class UpdateDrugCommand {
+export interface UpdateDrugCommand {
     id: number;
     name: string;
 }
 
-export class RestoreDrugCommand {
+export interface RestoreDrugCommand {
     id: number;
 }
+
+@Injectable({
+    providedIn: 'root'
+})
 
 export abstract class DrugData {
     abstract GetDrugDetails(id: number): Observable<DrugDetails>;
     abstract GetDrugs(): Observable<DrugsList>;
     abstract GetDrugsDropdown(): Observable<SelectItemsList>;
-    abstract AddDrug(addDrugCommand: AddDrugCommand): Observable<Result>;
-    abstract UpdateDrug(updateDrugCommand: UpdateDrugCommand): Observable<Result>;
-    abstract DeleteDrug(id: number): Observable<Result>;
-    abstract RestoreDrug(restoreDrugCommand: RestoreDrugCommand): Observable<Result>;
+    abstract AddDrug(addDrugCommand: AddDrugCommand): Observable<Result | null>;
+    abstract UpdateDrug(updateDrugCommand: UpdateDrugCommand): Observable<Result | null>;
+    abstract DeleteDrug(id: number): Observable<Result | null>;
+    abstract RestoreDrug(restoreDrugCommand: RestoreDrugCommand): Observable<Result | null>;
 }

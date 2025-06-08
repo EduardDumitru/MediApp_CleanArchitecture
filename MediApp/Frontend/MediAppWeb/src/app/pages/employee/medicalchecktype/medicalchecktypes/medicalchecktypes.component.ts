@@ -1,36 +1,52 @@
-import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, inject } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { MedicalCheckTypeLookup, MedicalCheckTypeData, MedicalCheckTypesList } from 'src/app/@core/data/medicalchecktype';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
-import { UIService } from 'src/app/shared/ui.service';
+import { catchError, finalize, of } from 'rxjs';
 import { Router } from '@angular/router';
+
+import { MedicalCheckTypeLookup, MedicalCheckTypeData, MedicalCheckTypesList } from 'src/app/@core/data/medicalchecktype';
+import { UIService } from 'src/app/shared/ui.service';
+import { getSharedImports } from 'src/app/shared/shared.module';
 
 @Component({
   selector: 'app-medicalchecktypes',
   templateUrl: './medicalchecktypes.component.html',
-  styleUrls: ['./medicalchecktypes.component.scss']
+  styleUrls: ['./medicalchecktypes.component.scss'],
+  standalone: true,
+  imports: [
+    ...getSharedImports(),
+  ],
 })
 export class MedicalchecktypesComponent implements OnInit, AfterViewInit {
   isLoading = true;
   displayedColumns = ['id', 'name', 'deleted'];
   dataSource = new MatTableDataSource<MedicalCheckTypeLookup>();
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private medicalCheckTypeData: MedicalCheckTypeData, private uiService: UIService, private router: Router) { }
+  @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  // Dependency injection using inject function
+  private readonly medicalCheckTypeData = inject(MedicalCheckTypeData);
+  private readonly uiService = inject(UIService);
+  private readonly router = inject(Router);
 
   ngOnInit(): void {
     this.getMedicalCheckTypes();
   }
 
-  getMedicalCheckTypes() {
-      this.medicalCheckTypeData.GetMedicalCheckTypes().subscribe((medicalCheckTypesList: MedicalCheckTypesList) => {
-          this.isLoading = false;
-          this.dataSource.data = medicalCheckTypesList.medicalCheckTypes;
-      }, error => {
-        this.isLoading = false;
-        this.uiService.showErrorSnackbar(error, null, 3000);
+  getMedicalCheckTypes(): void {
+    this.isLoading = true;
+    this.medicalCheckTypeData.GetMedicalCheckTypes()
+      .pipe(
+        catchError(error => {
+          this.uiService.showErrorSnackbar(error, undefined, 3000);
+          return of({ medicalCheckTypes: [] } as MedicalCheckTypesList);
+        }),
+        finalize(() => this.isLoading = false)
+      )
+      .subscribe((medicalCheckTypesList: MedicalCheckTypesList) => {
+        this.dataSource.data = medicalCheckTypesList.medicalCheckTypes;
       });
   }
 
@@ -39,8 +55,12 @@ export class MedicalchecktypesComponent implements OnInit, AfterViewInit {
     this.dataSource.paginator = this.paginator;
   }
 
-  doFilter(filterValue: string) {
+  doFilter(event: Event): void {
+    const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
+  navigateToAddMedicalCheckType(): void {
+    this.router.navigate(['/employees/medicalchecktypes/add']);
+  }
 }

@@ -1,9 +1,9 @@
-import { SelectItemsList } from './common/selectitem';
 import { Observable } from 'rxjs';
 import { Result } from './common/result';
 import { TimeSpan } from './common/timespan';
+import { Injectable } from '@angular/core';
 
-export class PrescriptionXDrugDetails {
+export interface PrescriptionXDrugDetails {
     prescriptionId: number;
     drugId: number;
     box: number;
@@ -12,7 +12,7 @@ export class PrescriptionXDrugDetails {
     deleted: boolean;
 }
 
-export class PrescriptionXDrugsLookup {
+export interface PrescriptionXDrugsLookup {
     id: number;
     drugName: string;
     box: number;
@@ -22,10 +22,10 @@ export class PrescriptionXDrugsLookup {
 }
 
 export class PrescriptionXDrugsList {
-    prescriptionXDrugs: PrescriptionXDrugsLookup[];
+    prescriptionXDrugs: PrescriptionXDrugsLookup[] = [];
 }
 
-export class AddPrescriptionXDrugCommand {
+export interface AddPrescriptionXDrugCommand {
     prescriptionId: number;
     drugId: number;
     box: number;
@@ -33,7 +33,7 @@ export class AddPrescriptionXDrugCommand {
     interval: string;
 }
 
-export class UpdatePrescriptionXDrugCommand {
+export interface UpdatePrescriptionXDrugCommand {
     id: number;
     prescriptionId: number;
     drugId: number;
@@ -42,10 +42,14 @@ export class UpdatePrescriptionXDrugCommand {
     interval: string;
 }
 
+@Injectable({
+    providedIn: 'root'
+})
+
 export abstract class PrescriptionXDrugData {
     abstract GetPrescriptionXDrugs(prescriptionId: number): Observable<PrescriptionXDrugsList>;
     abstract GetPrescriptionXDrug(id: number): Observable<PrescriptionXDrugDetails>;
-    abstract AddPrescriptionXDrug(addPrescriptionXDrugCommand: AddPrescriptionXDrugCommand): Observable<Result>;
-    abstract DeletePrescriptionXDrug(id: number): Observable<Result>;
-    abstract UpdatePrescriptionXDrug(updatePrescriptionXDrugCommand: UpdatePrescriptionXDrugCommand): Observable<Result>;
+    abstract AddPrescriptionXDrug(addPrescriptionXDrugCommand: AddPrescriptionXDrugCommand): Observable<Result | null>;
+    abstract DeletePrescriptionXDrug(id: number): Observable<Result | null>;
+    abstract UpdatePrescriptionXDrug(updatePrescriptionXDrugCommand: UpdatePrescriptionXDrugCommand): Observable<Result | null>;
 }

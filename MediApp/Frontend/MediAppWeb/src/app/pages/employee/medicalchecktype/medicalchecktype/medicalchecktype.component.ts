@@ -1,127 +1,184 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Location } from '@angular/common';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { MedicalCheckTypeData, MedicalCheckTypeDetails,
-  UpdateMedicalCheckTypeCommand, AddMedicalCheckTypeCommand, RestoreMedicalCheckTypeCommand } from 'src/app/@core/data/medicalchecktype';
-import { UIService } from 'src/app/shared/ui.service';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { catchError, finalize, of } from 'rxjs';
+
+import {
+    MedicalCheckTypeData,
+    MedicalCheckTypeDetails,
+    UpdateMedicalCheckTypeCommand,
+    AddMedicalCheckTypeCommand,
+    RestoreMedicalCheckTypeCommand
+} from 'src/app/@core/data/medicalchecktype';
+import { UIService } from 'src/app/shared/ui.service';
 import { Result } from 'src/app/@core/data/common/result';
 
+// Material imports
+import { getSharedImports } from 'src/app/shared/shared.module';
+
 @Component({
-  selector: 'app-medicalchecktype',
-  templateUrl: './medicalchecktype.component.html',
-  styleUrls: ['./medicalchecktype.component.scss']
+    selector: 'app-medicalchecktype',
+    templateUrl: './medicalchecktype.component.html',
+    styleUrls: ['./medicalchecktype.component.scss'],
+    standalone: true,
+    imports: [
+        ...getSharedImports(),
+    ],
 })
 export class MedicalchecktypeComponent implements OnInit {
-  isLoading = false;
-  medicalCheckTypeForm: FormGroup;
-  medicalCheckTypeId: number;
-  isDeleted = false;
-  constructor(private medicalCheckTypeData: MedicalCheckTypeData, private uiService: UIService,
-    private route: ActivatedRoute, private _location: Location) { }
+    isLoading = false;
+    medicalCheckTypeForm!: FormGroup;
+    medicalCheckTypeId?: number;
+    isDeleted = false;
 
-  ngOnInit() {
-      if (Number(this.route.snapshot.params.id)) {
-          this.medicalCheckTypeId = +this.route.snapshot.params.id;
-      }
-      this.initForm();
-  }
+    // Dependency injection using inject function
+    private readonly medicalCheckTypeData = inject(MedicalCheckTypeData);
+    private readonly uiService = inject(UIService);
+    private readonly route = inject(ActivatedRoute);
+    private readonly location = inject(Location);
+    private readonly fb = inject(FormBuilder);
 
-  initForm() {
-      this.medicalCheckTypeForm = new FormGroup({
-          name: new FormControl('', [Validators.required])
-      })
-      if (this.medicalCheckTypeId) {
-          this.getMedicalCheckType();
-      }
-  }
+    ngOnInit(): void {
+        const id = Number(this.route.snapshot.params['id']);
+        if (id) {
+            this.medicalCheckTypeId = id;
+        }
+        this.initForm();
+    }
 
-  getMedicalCheckType() {
-      this.isLoading = true;
-      this.medicalCheckTypeData.GetMedicalCheckTypeDetails(this.medicalCheckTypeId)
-      .subscribe((medicalCheckType: MedicalCheckTypeDetails) => {
-          this.medicalCheckTypeForm.setValue({name: medicalCheckType.name});
-          this.isDeleted = medicalCheckType.deleted;
-          if (this.isDeleted) {
-              this.medicalCheckTypeForm.disable();
-          }
-          this.isLoading = false;
-      },
-          error => {
-              this.uiService.showErrorSnackbar(error, null, 3000);
-              this.isLoading = false;
-          });
-  }
+    initForm(): void {
+        this.medicalCheckTypeForm = this.fb.group({
+            name: ['', [Validators.required]]
+        });
 
-  onSubmit() {
-      this.isLoading = true;
-      if (this.medicalCheckTypeId) {
-          this.updateMedicalCheckType();
-      } else {
-          this.addMedicalCheckType();
-      }
-  }
+        if (this.medicalCheckTypeId) {
+            this.getMedicalCheckType();
+        }
+    }
 
-  updateMedicalCheckType() {
-      const updateMedicalCheckTypeCommand: UpdateMedicalCheckTypeCommand = {
-          id: this.medicalCheckTypeId,
-          name: this.medicalCheckTypeForm.value.name
-      } as UpdateMedicalCheckTypeCommand;
+    getMedicalCheckType(): void {
+        this.isLoading = true;
+        this.medicalCheckTypeData.GetMedicalCheckTypeDetails(this.medicalCheckTypeId!)
+            .pipe(
+                catchError(error => {
+                    this.uiService.showErrorSnackbar(error, undefined, 3000);
+                    return of({} as MedicalCheckTypeDetails);
+                }),
+                finalize(() => this.isLoading = false)
+            )
+            .subscribe((medicalCheckType: MedicalCheckTypeDetails) => {
+                if (!medicalCheckType) return;
 
-      this.medicalCheckTypeData.UpdateMedicalCheckType(updateMedicalCheckTypeCommand).subscribe((res: Result) => {
-          this.uiService.showSuccessSnackbar(res.successMessage, null, 3000);
-          this._location.back();
-          this.isLoading = false;
-      }, error => {
-          this.isLoading = false;
-          this.uiService.showErrorSnackbar(error, null, 3000);
-      });
-  }
+                this.medicalCheckTypeForm.setValue({ name: medicalCheckType.name });
+                this.isDeleted = !!medicalCheckType.deleted;
 
-  addMedicalCheckType() {
-      const addMedicalCheckTypeCommand: AddMedicalCheckTypeCommand = {
-          name: this.medicalCheckTypeForm.value.name
-      } as AddMedicalCheckTypeCommand;
+                if (this.isDeleted) {
+                    this.medicalCheckTypeForm.disable();
+                }
+            });
+    }
 
-      this.medicalCheckTypeData.AddMedicalCheckType(addMedicalCheckTypeCommand).subscribe((res: Result) => {
-          this.uiService.showSuccessSnackbar(res.successMessage, null, 3000);
-          this._location.back();
-          this.isLoading = false;
-      }, error => {
-          this.isLoading = false;
-          this.uiService.showErrorSnackbar(error, null, 3000);
-      });
-  }
+    onSubmit(): void {
+        if (this.medicalCheckTypeForm.invalid) {
+            return;
+        }
 
-  deleteMedicalCheckType() {
-      this.isLoading = true;
-      this.medicalCheckTypeData.DeleteMedicalCheckType(this.medicalCheckTypeId).subscribe((res: Result) => {
-          this.uiService.showSuccessSnackbar(res.successMessage, null, 3000);
-          this._location.back();
-          this.isLoading = false;
-      }, error => {
-          this.isLoading = false;
-          this.uiService.showErrorSnackbar(error, null, 3000);
-      })
-  }
+        this.isLoading = true;
 
-  restoreMedicalCheckType() {
-      this.isLoading = true;
-      const restoreMedicalCheckTypeCommand: RestoreMedicalCheckTypeCommand = {
-          id: this.medicalCheckTypeId
-      } as RestoreMedicalCheckTypeCommand;
+        if (this.medicalCheckTypeId) {
+            this.updateMedicalCheckType();
+        } else {
+            this.addMedicalCheckType();
+        }
+    }
 
-      this.medicalCheckTypeData.RestoreMedicalCheckType(restoreMedicalCheckTypeCommand).subscribe((res: Result) => {
-          this.uiService.showSuccessSnackbar(res.successMessage, null, 3000);
-          this._location.back();
-          this.isLoading = false;
-      }, error => {
-          this.isLoading = false;
-          this.uiService.showErrorSnackbar(error, null, 3000);
-      })
-  }
+    updateMedicalCheckType(): void {
+        const updateMedicalCheckTypeCommand: UpdateMedicalCheckTypeCommand = {
+            id: this.medicalCheckTypeId!,
+            name: this.medicalCheckTypeForm.value.name
+        };
 
-  goBack() {
-      this._location.back();
+        this.medicalCheckTypeData.UpdateMedicalCheckType(updateMedicalCheckTypeCommand)
+            .pipe(
+                catchError(error => {
+                    this.uiService.showErrorSnackbar(error, undefined, 3000);
+                    return of(null);
+                }),
+                finalize(() => this.isLoading = false)
+            )
+            .subscribe((res: Result | null) => {
+                if (!res) return;
+
+                this.uiService.showSuccessSnackbar(res.successMessage, undefined, 3000);
+                this.location.back();
+            });
+    }
+
+    addMedicalCheckType(): void {
+        const addMedicalCheckTypeCommand: AddMedicalCheckTypeCommand = {
+            name: this.medicalCheckTypeForm.value.name
+        };
+
+        this.medicalCheckTypeData.AddMedicalCheckType(addMedicalCheckTypeCommand)
+            .pipe(
+                catchError(error => {
+                    this.uiService.showErrorSnackbar(error, undefined, 3000);
+                    return of(null);
+                }),
+                finalize(() => this.isLoading = false)
+            )
+            .subscribe((res: Result | null) => {
+                if (!res) return;
+
+                this.uiService.showSuccessSnackbar(res.successMessage, undefined, 3000);
+                this.location.back();
+            });
+    }
+
+    deleteMedicalCheckType(): void {
+        this.isLoading = true;
+
+        this.medicalCheckTypeData.DeleteMedicalCheckType(this.medicalCheckTypeId!)
+            .pipe(
+                catchError(error => {
+                    this.uiService.showErrorSnackbar(error, undefined, 3000);
+                    return of(null);
+                }),
+                finalize(() => this.isLoading = false)
+            )
+            .subscribe((res: Result | null) => {
+                if (!res) return;
+
+                this.uiService.showSuccessSnackbar(res.successMessage, undefined, 3000);
+                this.location.back();
+            });
+    }
+
+    restoreMedicalCheckType(): void {
+        this.isLoading = true;
+
+        const restoreMedicalCheckTypeCommand: RestoreMedicalCheckTypeCommand = {
+            id: this.medicalCheckTypeId!
+        };
+
+        this.medicalCheckTypeData.RestoreMedicalCheckType(restoreMedicalCheckTypeCommand)
+            .pipe(
+                catchError(error => {
+                    this.uiService.showErrorSnackbar(error, undefined, 3000);
+                    return of(null);
+                }),
+                finalize(() => this.isLoading = false)
+            )
+            .subscribe((res: Result | null) => {
+                if (!res) return;
+
+                this.uiService.showSuccessSnackbar(res.successMessage, undefined, 3000);
+                this.location.back();
+            });
+    }
+
+    goBack(): void {
+        this.location.back();
     }
 }

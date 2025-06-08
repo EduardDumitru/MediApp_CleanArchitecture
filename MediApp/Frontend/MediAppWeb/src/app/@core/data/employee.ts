@@ -2,14 +2,15 @@ import { Observable } from 'rxjs';
 import { SelectItemsList } from './common/selectitem';
 import { Result } from './common/result';
 import { TimeSpan } from './common/timespan';
+import { Injectable } from '@angular/core';
 
-export class EmployeeDropdownQuery {
+export interface EmployeeDropdownQuery {
     clinicId: number;
     medicalCheckTypeId: number;
     appointment: Date;
 }
 
-export class EmployeeDetails {
+export interface EmployeeDetails {
     id: number;
     startHour: TimeSpan;
     endHour: TimeSpan;
@@ -23,7 +24,7 @@ export class EmployeeDetails {
     deleted?: boolean;
 }
 
-export class EmployeeLookup {
+export interface EmployeeLookup {
     id: number;
     startHour: TimeSpan;
     endHour: TimeSpan;
@@ -37,10 +38,10 @@ export class EmployeeLookup {
 }
 
 export class EmployeesList {
-    employees: EmployeeLookup[];
+    employees: EmployeeLookup[] = [];
 }
 
-export class AddEmployeeCommand {
+export interface AddEmployeeCommand {
     startHour: string;
     endHour: string;
     userProfileId: number;
@@ -49,7 +50,7 @@ export class AddEmployeeCommand {
     clinicId: number;
 }
 
-export class UpdateEmployeeCommand {
+export interface UpdateEmployeeCommand {
     id: number;
     startHour: string;
     endHour: string;
@@ -59,9 +60,13 @@ export class UpdateEmployeeCommand {
     clinicId: number;
 }
 
-export class RestoreEmployeeCommand {
+export interface RestoreEmployeeCommand {
     id: number;
 }
+
+@Injectable({
+    providedIn: 'root'
+})
 
 export abstract class EmployeeData {
     abstract GetEmployeeDetails(id: number): Observable<EmployeeDetails>;
@@ -69,8 +74,8 @@ export abstract class EmployeeData {
     abstract GetEmployees(): Observable<EmployeesList>;
     abstract GetEmployeesDropdown(employeeDropdownQuery: EmployeeDropdownQuery): Observable<SelectItemsList>;
     abstract GetAllEmployeesDropdown(): Observable<SelectItemsList>;
-    abstract AddEmployee(addEmployeeCommand: AddEmployeeCommand): Observable<Result>;
-    abstract UpdateEmployee(updateEmployeeCommand: UpdateEmployeeCommand): Observable<Result>;
-    abstract DeleteEmployee(id: number): Observable<Result>;
-    abstract RestoreEmployee(restoreEmployeeCommand: RestoreEmployeeCommand): Observable<Result>;
+    abstract AddEmployee(addEmployeeCommand: AddEmployeeCommand): Observable<Result | null>;
+    abstract UpdateEmployee(updateEmployeeCommand: UpdateEmployeeCommand): Observable<Result | null>;
+    abstract DeleteEmployee(id: number): Observable<Result | null>;
+    abstract RestoreEmployee(restoreEmployeeCommand: RestoreEmployeeCommand): Observable<Result | null>;
 }

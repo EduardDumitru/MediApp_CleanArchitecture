@@ -1,32 +1,34 @@
-import { of as observableOf,  Observable, throwError, pipe } from 'rxjs';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { retry, catchError, map } from 'rxjs/operators';
-import { AuthService } from '../../auth/auth.service';
+import { Observable } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { ErrorService } from 'src/app/shared/error.service';
+import { ApiHelper } from './api.helper';
 import { RoleData } from '../data/role';
 import { SelectItemsList } from '../data/common/selectitem';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class RoleService extends RoleData {
-    baseUrl = environment.baseURL + 'Role';
-    constructor(private http: HttpClient, private authService: AuthService, private errService: ErrorService) {
-        super();
-    }
-    GetRolesDropdown(): Observable<SelectItemsList> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.get<SelectItemsList>(this.baseUrl + '/rolesdropdown', httpOptions)
-            .pipe(
-                map((response: any) => response),
-                retry(1),
-                catchError(this.errService.errorHandl)
-            );
-    }
+    private readonly baseUrl = `${environment.baseURL}Role`;
 
+    // Modern dependency injection using inject function
+    private readonly http = inject(HttpClient);
+    private readonly errorService = inject(ErrorService);
+    private readonly apiHelper = inject(ApiHelper);
+
+    /**
+     * Get roles for dropdown
+     * @returns Observable with select items list
+     */
+    override GetRolesDropdown(): Observable<SelectItemsList> {
+        return this.http.get<SelectItemsList>(
+            `${this.baseUrl}/rolesdropdown`,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<SelectItemsList>('GetRolesDropdown', error, new SelectItemsList()))
+        );
+    }
 }

@@ -1,146 +1,159 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpClientModule } from '@angular/common/http';
-import { CityData, CityDetails, CitiesList, AddCityCommand, UpdateCityCommand, RestoreCityCommand, CityFromEmployeesDropdownQuery } from '../data/city';
-import { Observable, throwError } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import {
+    CityData,
+    CityDetails,
+    CitiesList,
+    AddCityCommand,
+    UpdateCityCommand,
+    RestoreCityCommand,
+    CityFromEmployeesDropdownQuery
+} from '../data/city';
+import { Observable } from 'rxjs';
 import { SelectItemsList } from '../data/common/selectitem';
 import { Result } from '../data/common/result';
 import { environment } from 'src/environments/environment';
-import { retry, catchError, map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { ErrorService } from 'src/app/shared/error.service';
-import { AuthService } from 'src/app/auth/auth.service';
+import { ApiHelper } from './api.helper';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class CityService extends CityData {
+    private readonly baseUrl = `${environment.baseURL}City`;
 
-    baseUrl = environment.baseURL + 'City';
+    // Modern dependency injection using inject function
+    private readonly http = inject(HttpClient);
+    private readonly errorService = inject(ErrorService);
+    private readonly apiHelper = inject(ApiHelper);
 
-    constructor(private http: HttpClient, private errService: ErrorService, private authService: AuthService) {
-        super();
-    }
 
-    GetCityDetails(id: number): Observable<CityDetails> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.get<CityDetails>(this.baseUrl + '/' + id, httpOptions)
-            .pipe(
-                map((response: any) => response),
-                retry(1),
-                catchError(this.errService.errorHandl)
-            );
-    }
-    GetCities(): Observable<CitiesList> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.get<CitiesList>(this.baseUrl, httpOptions)
-            .pipe(
-                map((response: any) => response),
-                retry(1),
-                catchError(this.errService.errorHandl)
-            );
-    }
-    GetCitiesDropdown(): Observable<SelectItemsList> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json'
-            })
-        };
-        return this.http.get<SelectItemsList>(this.baseUrl + '/citiesdropdown', httpOptions)
-            .pipe(
-                map((response: any) => response),
-                retry(1),
-                catchError(this.errService.errorHandl)
-            );
-    }
-    GetCitiesByCountyDropdown(countyId: number): Observable<SelectItemsList> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json'
-            })
-        };
-        return this.http.get<SelectItemsList>(this.baseUrl + '/citiesdropdown/' + countyId, httpOptions)
-            .pipe(
-                map((response: any) => response),
-                retry(1),
-                catchError(this.errService.errorHandl)
-            );
-    }
-    GetCitiesByCountyFromEmployeesDropdown(cityDropdownQuery: CityFromEmployeesDropdownQuery): Observable<SelectItemsList> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.post<SelectItemsList>(this.baseUrl + '/citiesdropdownfromemployees/' , JSON.stringify(cityDropdownQuery),
-        httpOptions)
-            .pipe(
-                map((response: any) => response),
-                retry(1),
-                catchError(this.errService.errorHandl)
-            );
-    }
-    AddCity(addCityCommand: AddCityCommand): Observable<Result> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.post<Result>(this.baseUrl, JSON.stringify(addCityCommand), httpOptions)
-            .pipe(
-                map((response: any) => response),
-                retry(1),
-                catchError(this.errService.errorHandl)
-            );
-    }
-    UpdateCity(updateCityCommand: UpdateCityCommand): Observable<Result> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.put<Result>(this.baseUrl, JSON.stringify(updateCityCommand), httpOptions)
-        .pipe(
-            map((response: any) => response),
-            retry(1),
-            catchError(this.errService.errorHandl)
+    /**
+     * Get details for a specific city
+     * @param id City ID
+     * @returns Observable with city details
+     */
+    override GetCityDetails(id: number): Observable<CityDetails> {
+        return this.http.get<CityDetails>(
+            `${this.baseUrl}/${id}`,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<CityDetails>('getCityDetails', error, {} as CityDetails))
         );
     }
-    DeleteCity(id: number): Observable<Result> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.delete<Result>(this.baseUrl + '/' + id, httpOptions)
-        .pipe(
-            map((response: any) => response),
-            retry(1),
-            catchError(this.errService.errorHandl)
+
+    /**
+     * Get all cities
+     * @returns Observable with list of cities
+     */
+    override GetCities(): Observable<CitiesList> {
+        return this.http.get<CitiesList>(
+            this.baseUrl,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<CitiesList>('GetCities', error, new CitiesList()))
         );
     }
-    RestoreCity(restoreCityCommand: RestoreCityCommand): Observable<Result> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.put<Result>(this.baseUrl + '/restore', JSON.stringify(restoreCityCommand), httpOptions)
-        .pipe(
-            map((response: any) => response),
-            retry(1),
-            catchError(this.errService.errorHandl)
+
+    /**
+     * Get cities for dropdown
+     * @returns Observable with select items list
+     */
+    override GetCitiesDropdown(): Observable<SelectItemsList> {
+        return this.http.get<SelectItemsList>(
+            `${this.baseUrl}/citiesdropdown`,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<SelectItemsList>('GetCitiesDropdown', error, new SelectItemsList()))
+        );
+    }
+
+    /**
+     * Get cities by county for dropdown
+     * @param countyId County ID
+     * @returns Observable with select items list
+     */
+    override GetCitiesByCountyDropdown(countyId: number): Observable<SelectItemsList> {
+        return this.http.get<SelectItemsList>(
+            `${this.baseUrl}/citiesdropdown/${countyId}`,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<SelectItemsList>('GetCitiesByCountyDropdown', error, new SelectItemsList()))
+        );
+    }
+
+    /**
+     * Get cities by county from employees for dropdown
+     * @param cityDropdownQuery Query parameters
+     * @returns Observable with select items list
+     */
+    override GetCitiesByCountyFromEmployeesDropdown(cityDropdownQuery: CityFromEmployeesDropdownQuery): Observable<SelectItemsList> {
+        return this.http.post<SelectItemsList>(
+            `${this.baseUrl}/citiesdropdownfromemployees`,
+            cityDropdownQuery,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<SelectItemsList>('GetCitiesByCountyFromEmployeesDropdown', error, new SelectItemsList()))
+        );
+    }
+
+    /**
+     * Add a new city
+     * @param addCityCommand City data
+     * @returns Observable with result
+     */
+    override AddCity(addCityCommand: AddCityCommand): Observable<Result | null> {
+        return this.http.post<Result>(
+            this.baseUrl,
+            addCityCommand,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<Result | null>('AddCity', error, null))
+        );
+    }
+
+    /**
+     * Update an existing city
+     * @param updateCityCommand City data
+     * @returns Observable with result
+     */
+    override UpdateCity(updateCityCommand: UpdateCityCommand): Observable<Result | null> {
+        return this.http.put<Result>(
+            this.baseUrl,
+            updateCityCommand,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<Result | null>('UpdateCity', error, null))
+        );
+    }
+
+    /**
+     * Delete a city
+     * @param id City ID
+     * @returns Observable with result
+     */
+    override DeleteCity(id: number): Observable<Result | null> {
+        return this.http.delete<Result>(
+            `${this.baseUrl}/${id}`,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<Result | null>('DeleteCity', error, null))
+        );
+    }
+
+    /**
+     * Restore a previously deleted city
+     * @param restoreCityCommand City restore command
+     * @returns Observable with result
+     */
+    override RestoreCity(restoreCityCommand: RestoreCityCommand): Observable<Result | null> {
+        return this.http.put<Result>(
+            `${this.baseUrl}/restore`,
+            restoreCityCommand,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<Result | null>('RestoreCity', error, null))
         );
     }
 }

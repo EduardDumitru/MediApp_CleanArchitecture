@@ -1,71 +1,121 @@
 <mat-toolbar color="primary">
-    <div  fxHide.gt-xs>
-      <button mat-icon-button (click)="onToggleSidenav()">
-        <mat-icon>menu</mat-icon>
-      </button>
-    </div>
-    <div>
-      <a routerLink="/">MediApp</a>
-    </div>
-    <div fxFlex fxLayout fxLayoutAlign="flex-end" fxHide.xs>
-      <ul fxLayout fxLayoutGap="10px" class="navigation-items">
-        <li *ngIf="!isAuth"><a routerLink="/register">Signup</a></li>
-        <li *ngIf="!isAuth"><a routerLink="/login">Login</a></li>
-        <li *ngIf="isAuth"><a routerLink="/user/profile/{{currentUserId}}">Profile</a></li>
-        <li *ngIf="isAdmin"><mat-menu #userMenu="matMenu" yPosition="below">
-          <ng-template matMenuContent>
-            <button mat-menu-item routerLink="/user/genders">Genders</button>
-            <button mat-menu-item routerLink="/user/profiles">Profiles</button>
-          </ng-template>
+  <div class="mobile-menu">
+    <button mat-icon-button (click)="onToggleSidenav()" aria-label="Toggle sidebar navigation">
+      <mat-icon>menu</mat-icon>
+    </button>
+  </div>
+
+  <div class="brand-logo">
+    <a routerLink="/">MediApp</a>
+  </div>
+
+  <div class="nav-links">
+    <ul class="navigation-items">
+      <!-- Auth links -->
+      @if (!isAuth) {
+      <li><a routerLink="/register">Signup</a></li>
+      <li><a routerLink="/login">Login</a></li>
+      }
+
+      <!-- Profile Link -->
+      @if (isAuth) {
+      <li>
+        <a [routerLink]="['/user/profile', currentUserId]">Profile</a>
+      </li>
+      }
+
+      <!-- User Menu -->
+      @if (isAdmin) {
+      <li>
+        <button mat-button [matMenuTriggerFor]="userMenu">
+          User <mat-icon>arrow_drop_down</mat-icon>
+        </button>
+        <mat-menu #userMenu="matMenu" yPosition="below">
+          <button mat-menu-item routerLink="/user/genders">Genders</button>
+          <button mat-menu-item routerLink="/user/profiles">Profiles</button>
         </mat-menu>
-        <a style="cursor:pointer" [matMenuTriggerFor]="userMenu">
-          User
-        </a></li>
-        <li *ngIf="isAdmin"><mat-menu #locationMenu="matMenu" yPosition="below">
-          <ng-template matMenuContent>
-            <button mat-menu-item routerLink="/location/countries">Countries</button>
-            <button mat-menu-item routerLink="/location/counties">Counties</button>
-            <button mat-menu-item routerLink="/location/cities">Cities</button>
-            <button mat-menu-item routerLink="/location/clinics">Clinics</button>
-          </ng-template>
+      </li>
+      }
+
+      <!-- Location Menu -->
+      @if (isAdmin) {
+      <li>
+        <button mat-button [matMenuTriggerFor]="locationMenu">
+          Location <mat-icon>arrow_drop_down</mat-icon>
+        </button>
+        <mat-menu #locationMenu="matMenu" yPosition="below">
+          <button mat-menu-item routerLink="/location/countries">Countries</button>
+          <button mat-menu-item routerLink="/location/counties">Counties</button>
+          <button mat-menu-item routerLink="/location/cities">Cities</button>
+          <button mat-menu-item routerLink="/location/clinics">Clinics</button>
         </mat-menu>
-        <a style="cursor:pointer" [matMenuTriggerFor]="locationMenu">
-          Location
-        </a></li>
-        <li *ngIf="isAdmin"><mat-menu #diagnosisMenu="matMenu" yPosition="below">
-          <ng-template matMenuContent>
-            <button mat-menu-item routerLink="/diagnoses/diagnoses">Diagnoses</button>
-            <button mat-menu-item routerLink="/diagnoses/drugs">Drugs</button>
-            <button mat-menu-item routerLink="/diagnoses/diagnosisxdrugs">DiagnosisXDrugs</button>
-          </ng-template>
+      </li>
+      }
+
+      <!-- Diagnosis Menu -->
+      @if (isAdmin) {
+      <li>
+        <button mat-button [matMenuTriggerFor]="diagnosisMenu">
+          Diagnosis <mat-icon>arrow_drop_down</mat-icon>
+        </button>
+        <mat-menu #diagnosisMenu="matMenu" yPosition="below">
+          <button mat-menu-item routerLink="/diagnoses/diagnoses">Diagnoses</button>
+          <button mat-menu-item routerLink="/diagnoses/drugs">Drugs</button>
+          <button mat-menu-item routerLink="/diagnoses/diagnosisxdrugs">DiagnosisXDrugs</button>
         </mat-menu>
-        <a style="cursor:pointer" [matMenuTriggerFor]="diagnosisMenu">
-          Diagnosis
-        </a></li>
-        <li *ngIf="isAdmin || isDoctor || isNurse"><mat-menu #employeeMenu="matMenu" yPosition="below">
-          <ng-template matMenuContent>
-            <button *ngIf="isAdmin" mat-menu-item routerLink="/employees/employeetypes">Employee Types</button>
-            <button *ngIf="isAdmin" mat-menu-item routerLink="/employees/medicalchecktypes">Medical Check Types</button>
-            <button mat-menu-item routerLink="/employees/holidayintervals">Holiday Intervals</button>
-            <button *ngIf="isAdmin" mat-menu-item routerLink="/employees/employees">Employees</button>
-          </ng-template>
+      </li>
+      }
+
+      <!-- Employee Menu -->
+      @if (isAdmin || isDoctor || isNurse) {
+      <li>
+        <button mat-button [matMenuTriggerFor]="employeeMenu">
+          Employee <mat-icon>arrow_drop_down</mat-icon>
+        </button>
+        <mat-menu #employeeMenu="matMenu" yPosition="below">
+          @if (isAdmin) {
+          <button mat-menu-item routerLink="/employees/employeetypes">Employee Types</button>
+          <button mat-menu-item routerLink="/employees/medicalchecktypes">Medical Check Types</button>
+          <button mat-menu-item routerLink="/employees/employees">Employees</button>
+          }
+          <button mat-menu-item routerLink="/employees/holidayintervals">Holiday Intervals</button>
         </mat-menu>
-        <a style="cursor:pointer" [matMenuTriggerFor]="employeeMenu">
-          Employee
-        </a></li>
-        <li *ngIf="isAuth"><mat-menu #employeeMenu="matMenu" yPosition="below">
-          <ng-template matMenuContent>
-            <button *ngIf="isDoctor" mat-menu-item routerLink="/treatments/employeeprescriptions/{{currentUserId}}">Doctor Prescriptions</button>
-            <button mat-menu-item routerLink="/treatments/patientprescriptions/{{currentUserId}}">My Prescriptions</button>
-            <button *ngIf="isDoctor" mat-menu-item routerLink="/treatments/employeemedicalchecks/{{currentUserId}}">Doctor Medical Checks</button>
-            <button mat-menu-item routerLink="/treatments/patientmedicalchecks/{{currentUserId}}">My Medical Checks</button>
-            <button *ngIf="isDoctor || isNurse" mat-menu-item routerLink="/treatments/medicalchecksbyclinic/{{clinicId}}">Clinic Medical Checks</button>
-          </ng-template>
+      </li>
+      }
+
+      <!-- Treatment Menu -->
+      @if (isAuth) {
+      <li>
+        <button mat-button [matMenuTriggerFor]="treatmentMenu">
+          Treatment <mat-icon>arrow_drop_down</mat-icon>
+        </button>
+        <mat-menu #treatmentMenu="matMenu" yPosition="below">
+          @if (isDoctor) {
+          <button mat-menu-item [routerLink]="['/treatments/employeeprescriptions', currentUserId]">Doctor
+            Prescriptions</button>
+          <button mat-menu-item [routerLink]="['/treatments/employeemedicalchecks', currentUserId]">Doctor Medical
+            Checks</button>
+          }
+          <button mat-menu-item [routerLink]="['/treatments/patientprescriptions', currentUserId]">My
+            Prescriptions</button>
+          <button mat-menu-item [routerLink]="['/treatments/patientmedicalchecks', currentUserId]">My Medical
+            Checks</button>
+          @if (isDoctor || isNurse) {
+          <button mat-menu-item [routerLink]="['/treatments/medicalchecksbyclinic', clinicId]">Clinic Medical
+            Checks</button>
+          }
         </mat-menu>
-        <a style="cursor:pointer" [matMenuTriggerFor]="employeeMenu">
-          Treatment
-        </a></li>
-        <li *ngIf="isAuth"><a style="cursor:pointer" (click)="onLogout()">Logout</a></li>
-      </ul>
-    </div>
-  </mat-toolbar>
+      </li>
+      }
+
+      <!-- Logout Link -->
+      @if (isAuth) {
+      <li>
+        <button mat-button (click)="onLogout()">
+          Logout
+        </button>
+      </li>
+      }
+    </ul>
+  </div>
+</mat-toolbar>

@@ -1,6 +1,6 @@
 using Application;
 using Application.Common.Interfaces;
-using FluentValidation.AspNetCore;
+using FluentValidation;
 using Infrastructure;
 using Infrastructure.Persistence;
 using MediApp.Installers;
@@ -11,21 +11,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Reflection;
 
 namespace MediApp
 {
-    public class Startup
+    public class Startup(IConfiguration configuration, IWebHostEnvironment environment)
     {
-        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
-        {
-            Configuration = configuration;
-            Environment = environment;
-        }
-
-        private IConfiguration Configuration { get; }
-
-        private IWebHostEnvironment Environment { get; }
-
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -37,7 +28,7 @@ namespace MediApp
 
             services.AddApplication();
 
-            services.AddInfrastructure(Configuration, Environment);
+            services.AddInfrastructure(configuration, environment);
 
             services.AddScoped<ICurrentUserService, CurrentUserService>();
 
@@ -46,10 +37,16 @@ namespace MediApp
             services.AddHealthChecks()
                 .AddDbContextCheck<ApplicationDbContext>();
 
-            services.AddControllers()
-                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<IApplicationDbContext>());
+            services.Scan(scan => scan
+                                      .FromAssemblies(Assembly.GetExecutingAssembly())
+                                      .AddClasses(classes => classes.AssignableTo(typeof(IValidator<>)))
+                                      .AsImplementedInterfaces()
+                                      .WithTransientLifetime()
+                         );
 
-            services.InstallServicesInAssembly(Configuration);
+            services.AddControllers();
+
+            services.InstallServicesInAssembly(configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -72,7 +69,7 @@ namespace MediApp
             app.UseAuthorization();
 
             var swaggerOptions = new SwaggerOptions();
-            Configuration.GetSection(nameof(SwaggerOptions)).Bind(swaggerOptions);
+            configuration.GetSection(nameof(SwaggerOptions)).Bind(swaggerOptions);
 
             app.UseSwagger(option => { option.RouteTemplate = swaggerOptions.JsonRoute; });
 

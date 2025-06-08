@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Application.Common.Interfaces;
+using FluentValidation;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Application.Common.Interfaces;
-using FluentValidation;
-using Microsoft.EntityFrameworkCore;
 
 namespace Application.CommandsAndQueries
 {
@@ -18,26 +18,26 @@ namespace Application.CommandsAndQueries
             _context = context;
             _dateTime = dateTime;
             RuleFor(x => x.ClinicId)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Clinic is required")
                 .MustAsync(ExistsClinic).WithMessage("Clinic is not valid");
             RuleFor(x => x.MedicalCheckTypeId)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Medical Check Type is required")
                 .MustAsync(ExistsMedicalCheckType).WithMessage("Medical Check Type is not valid");
             RuleFor(x => x.PatientId)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Patient is required")
                 .MustAsync(ExistsPatient).WithMessage("Patient is not valid");
             RuleFor(x => x.EmployeeId)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Employee is required")
                 .MustAsync(ExistsEmployee).WithMessage("Employee is not valid")
                 .MustAsync(ExistsEmployeeInClinic).WithMessage("Employee is not available in this clinic")
                 .MustAsync(ExistsEmployeeInMedicalCheckType)
                 .WithMessage("Employee is not available in this medical check type");
             RuleFor(x => x.Appointment)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Appointment is required")
                 .MustAsync(BeHigherThanCurrentDate).WithMessage("Appointment is not valid")
                 .MustAsync(BeFromHalfToHalfHours).WithMessage("Appointment must be from half to half hours.")

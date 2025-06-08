@@ -1,8 +1,9 @@
 import { SelectItemsList } from './common/selectitem';
 import { Observable } from 'rxjs';
 import { Result } from './common/result';
+import { Injectable } from '@angular/core';
 
-export class DiagnosisXDrugsLookup {
+export interface DiagnosisXDrugsLookup {
     id: number;
     diagnosisName: string;
     drugName: string;
@@ -10,22 +11,26 @@ export class DiagnosisXDrugsLookup {
 }
 
 export class DiagnosisXDrugsList {
-    diagnosisXDrugs: DiagnosisXDrugsLookup[];
+    diagnosisXDrugs: DiagnosisXDrugsLookup[] = [];
 }
 
-export class AddDiagnosisXDrugCommand {
+export interface AddDiagnosisXDrugCommand {
     diagnosisId: number;
     drugId: number;
 }
 
-export class RestoreDiagnosisXDrugCommand {
+export interface RestoreDiagnosisXDrugCommand {
     id: number;
 }
+
+@Injectable({
+    providedIn: 'root'
+})
 
 export abstract class DiagnosisXDrugData {
     abstract GetDiagnosisXDrugs(): Observable<DiagnosisXDrugsList>;
     abstract GetDrugsByDiagnosisDropdown(diagnosisId: number): Observable<SelectItemsList>;
-    abstract AddDiagnosisXDrug(addDiagnosisXDrugCommand: AddDiagnosisXDrugCommand): Observable<Result>;
-    abstract DeleteDiagnosisXDrug(id: number): Observable<Result>;
-    abstract RestoreDiagnosisXDrug(restoreDiagnosisXDrugCommand: RestoreDiagnosisXDrugCommand): Observable<Result>;
+    abstract AddDiagnosisXDrug(addDiagnosisXDrugCommand: AddDiagnosisXDrugCommand): Observable<Result | null>;
+    abstract DeleteDiagnosisXDrug(id: number): Observable<Result | null>;
+    abstract RestoreDiagnosisXDrug(restoreDiagnosisXDrugCommand: RestoreDiagnosisXDrugCommand): Observable<Result | null>;
 }

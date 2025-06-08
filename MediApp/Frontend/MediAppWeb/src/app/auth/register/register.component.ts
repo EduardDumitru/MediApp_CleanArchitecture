@@ -1,174 +1,254 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { NgForm, FormGroup, FormControl, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ValidatorFn, AbstractControl, ReactiveFormsModule } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import { Location } from '@angular/common';
+import { Subject, takeUntil, catchError, finalize, of } from 'rxjs';
+
+// Services and data
 import { UIService } from 'src/app/shared/ui.service';
-import { UserService } from 'src/app/@core/services/user.service';
 import { AddUserCommand, UserData } from 'src/app/@core/data/userclasses/user';
-import { Router } from '@angular/router';
 import { CountyData } from 'src/app/@core/data/county';
 import { GenderData } from 'src/app/@core/data/gender';
 import { CountryData } from 'src/app/@core/data/country';
 import { CityData } from 'src/app/@core/data/city';
 import { SelectItemsList } from 'src/app/@core/data/common/selectitem';
 import { AuthService } from '../auth.service';
-import { Subscription } from 'rxjs/internal/Subscription';
-import { Location } from '@angular/common';
+
+import { getSharedImports } from 'src/app/shared/shared.module';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.scss']
+  styleUrls: ['./register.component.scss'],
+  standalone: true,
+  imports: [
+    ...getSharedImports(),
+  ],
 })
 export class RegisterComponent implements OnInit, OnDestroy {
   isLoading = false;
-  registerForm: FormGroup;
-  constructor(private userData: UserData, private uiService: UIService, private router: Router,
-              private countryData: CountryData, private countyData: CountyData, private cityData: CityData,
-              private genderData: GenderData, private authService: AuthService, private _location: Location) { }
+  registerForm!: FormGroup;
 
   countrySelectList: SelectItemsList = new SelectItemsList();
   countySelectList: SelectItemsList = new SelectItemsList();
   citySelectList: SelectItemsList = new SelectItemsList();
   genderSelectList: SelectItemsList = new SelectItemsList();
 
-  authChangeSubscription: Subscription;
+  // Dependency injection using inject function
+  private readonly userData = inject(UserData);
+  private readonly uiService = inject(UIService);
+  private readonly router = inject(Router);
+  private readonly countryData = inject(CountryData);
+  private readonly countyData = inject(CountyData);
+  private readonly cityData = inject(CityData);
+  private readonly genderData = inject(GenderData);
+  private readonly authService = inject(AuthService);
+  private readonly location = inject(Location);
+  private readonly fb = inject(FormBuilder);
 
+  // Stream to handle unsubscription
+  private readonly destroy$ = new Subject<void>();
 
   ngOnInit(): void {
-    this.authChangeSubscription = this.authService.authChange.subscribe((authChange: boolean) => {
-      if (authChange === true) {
+    this.authService.authChange
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((authChange: boolean) => {
+        if (authChange === true) {
           this.router.navigate(['']);
-      } else {
-        this.initForm();
-        this.getCountriesSelect();
-        this.getGendersSelect();
-      }
-    })
+        } else {
+          this.initForm();
+          this.getCountriesSelect();
+          this.getGendersSelect();
+        }
+      });
   }
 
-  initForm() {
-    this.registerForm = new FormGroup({
-        email: new FormControl('', [Validators.required, Validators.email]),
-        password: new FormControl('', [Validators.required, Validators.pattern('^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$')]),
-        firstName: new FormControl('', [Validators.required]),
-        middleName: new FormControl(''),
-        lastName: new FormControl('', [Validators.required]),
-        address: new FormControl(''),
-        streetName: new FormControl(''),
-        streetNo: new FormControl('', [Validators.required]),
-        cnp: new FormControl('', [Validators.required, this.CnpValidator()]),
-        phoneNumber: new FormControl('', [Validators.required, Validators.pattern('^(07[0-8]{1}[0-9]{1}|02[0-9]{2}|03[0-9]{2}){1}?([0-9]{3}){2}$')]),
-        countryId: new FormControl('', [Validators.required]),
-        countyId: new FormControl('', [Validators.required]),
-        cityId: new FormControl('', [Validators.required]),
-        genderId: new FormControl('', [Validators.required])
-    })
+  initForm(): void {
+    this.registerForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [
+        Validators.required,
+        Validators.pattern('^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$')
+      ]],
+      firstName: ['', [Validators.required]],
+      middleName: [''],
+      lastName: ['', [Validators.required]],
+      address: [''],
+      streetName: [''],
+      streetNo: ['', [Validators.required]],
+      cnp: ['', [Validators.required, this.CnpValidator()]],
+      phoneNumber: ['', [
+        Validators.required,
+        Validators.pattern('^(07[0-8]{1}[0-9]{1}|02[0-9]{2}|03[0-9]{2}){1}?([0-9]{3}){2}$')
+      ]],
+      countryId: ['', [Validators.required]],
+      countyId: ['', [Validators.required]],
+      cityId: ['', [Validators.required]],
+      genderId: ['', [Validators.required]]
+    });
   }
 
   CnpValidator(): ValidatorFn {
-    return (control: AbstractControl): {[key: string]: any} | null => {
-      const invalid = this.validateCNP(control.value);
-      return !invalid ? {invalidError: {value: control.value}} : null;
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      if (!control.value) {
+        return null;
+      }
+      const isValid = this.validateCNP(control.value);
+      return !isValid ? { invalidCnp: { value: control.value } } : null;
     };
   }
 
-  private validateCNP( pCnp: string ) {
+  private validateCNP(pCnp: string): boolean {
+    if (!pCnp || typeof pCnp !== 'string') {
+      return false;
+    }
+
     let i = 0;
     let year = 0;
     let hashResult = 0;
     const cnp = [];
-    const hashTable=[2,7,9,1,4,6,3,5,8,2,7,9];
-    if( pCnp.length !== 13 ) { return false; }
-    for( i=0 ; i<13 ; i++ ) {
-        cnp[i] = parseInt( pCnp.charAt(i) , 10 );
-        if( isNaN( cnp[i] ) ) { return false; }
-        if( i < 12 ) { hashResult = hashResult + ( cnp[i] * hashTable[i] ); }
+    const hashTable = [2, 7, 9, 1, 4, 6, 3, 5, 8, 2, 7, 9];
+
+    if (pCnp.length !== 13) { return false; }
+
+    for (i = 0; i < 13; i++) {
+      cnp[i] = parseInt(pCnp.charAt(i), 10);
+      if (isNaN(cnp[i])) { return false; }
+      if (i < 12) { hashResult = hashResult + (cnp[i] * hashTable[i]); }
     }
+
     hashResult = hashResult % 11;
-    if( hashResult === 10 ) { hashResult = 1; }
-    year = (cnp[1]*10)+cnp[2];
-    switch( cnp[0] ) {
-        case 1  : case 2 : { year += 1900; } break;
-        case 3  : case 4 : { year += 1800; } break;
-        case 5  : case 6 : { year += 2000; } break;
-        case 7  : case 8 : case 9 : { year += 2000;
-          if( year > ( new Date().getFullYear() - 14 ) ) { year -= 100; } } break;
-        default : { return false; }
+    if (hashResult === 10) { hashResult = 1; }
+
+    year = (cnp[1] * 10) + cnp[2];
+    switch (cnp[0]) {
+      case 1:
+      case 2: year += 1900; break;
+      case 3:
+      case 4: year += 1800; break;
+      case 5:
+      case 6: year += 2000; break;
+      case 7:
+      case 8:
+      case 9: {
+        year += 2000;
+        if (year > (new Date().getFullYear() - 14)) { year -= 100; }
+        break;
+      }
+      default: return false;
     }
-    if( year < 1800 || year > 2099 ) { return false; }
-    return ( cnp[12] === hashResult );
+
+    if (year < 1800 || year > 2099) { return false; }
+    return (cnp[12] === hashResult);
   }
 
-  getGendersSelect() {
-    this.genderData.GetGendersDropdown().subscribe((genders: SelectItemsList) => {
-      this.genderSelectList = genders;
-    },
-    error => {
-        this.uiService.showErrorSnackbar(error, null, 3000);
-    })
+  getGendersSelect(): void {
+    this.genderData.GetGendersDropdown()
+      .pipe(
+        takeUntil(this.destroy$),
+        catchError(error => {
+          this.uiService.showErrorSnackbar(error, undefined, 3000);
+          return of(new SelectItemsList());
+        })
+      )
+      .subscribe((genders: SelectItemsList) => {
+        this.genderSelectList = genders;
+      });
   }
 
-  getCountriesSelect() {
-    this.countryData.GetCountriesDropdown().subscribe((countries: SelectItemsList) => {
-      this.countrySelectList = countries;
-    },
-    error => {
-        this.uiService.showErrorSnackbar(error, null, 3000);
-    })
+  getCountriesSelect(): void {
+    this.countryData.GetCountriesDropdown()
+      .pipe(
+        takeUntil(this.destroy$),
+        catchError(error => {
+          this.uiService.showErrorSnackbar(error, undefined, 3000);
+          return of(new SelectItemsList());
+        })
+      )
+      .subscribe((countries: SelectItemsList) => {
+        this.countrySelectList = countries;
+      });
   }
 
-  getCountiesSelect(countryId: string) {
-    this.countyData.GetCountiesByCountryDropdown(+countryId).subscribe((counties: SelectItemsList) => {
-      this.countySelectList = counties;
-    },
-    error => {
-        this.uiService.showErrorSnackbar(error, null, 3000);
-    })
+  getCountiesSelect(countryId: string): void {
+    if (!countryId) return;
+
+    this.countyData.GetCountiesByCountryDropdown(+countryId)
+      .pipe(
+        takeUntil(this.destroy$),
+        catchError(error => {
+          this.uiService.showErrorSnackbar(error, undefined, 3000);
+          return of(new SelectItemsList());
+        })
+      )
+      .subscribe((counties: SelectItemsList) => {
+        this.countySelectList = counties;
+        this.registerForm.get('countyId')?.setValue('');
+        this.registerForm.get('cityId')?.setValue('');
+        this.citySelectList = new SelectItemsList();
+      });
   }
 
-  getCitiesSelect(countyId: string) {
-    this.cityData.GetCitiesByCountyDropdown(+countyId).subscribe((cities: SelectItemsList) => {
-      this.citySelectList = cities;
-    },
-    error => {
-        this.uiService.showErrorSnackbar(error, null, 3000);
-    })
+  getCitiesSelect(countyId: string): void {
+    if (!countyId) return;
+
+    this.cityData.GetCitiesByCountyDropdown(+countyId)
+      .pipe(
+        takeUntil(this.destroy$),
+      )
+      .subscribe((cities: SelectItemsList) => {
+        this.citySelectList = cities;
+        this.registerForm.get('cityId')?.setValue('');
+      });
   }
 
-  onSubmit() {
+  onSubmit(): void {
+    if (this.registerForm.invalid) {
+      return;
+    }
+
     this.isLoading = true;
+    const formValues = this.registerForm.value;
+
     const addUserCommand: AddUserCommand = {
-        email: this.registerForm.value.email,
-        password: this.registerForm.value.password,
-        firstName: this.registerForm.value.firstName,
-        middleName: this.registerForm.value.middleName,
-        lastName: this.registerForm.value.lastName,
-        address: this.registerForm.value.address,
-        streetName: this.registerForm.value.streetName,
-        streetNo: this.registerForm.value.streetNo,
-        cnp: this.registerForm.value.cnp,
-        phoneNumber: this.registerForm.value.phoneNumber,
-        countryId: +this.registerForm.value.countryId,
-        countyId: +this.registerForm.value.countyId,
-        cityId: +this.registerForm.value.cityId,
-        genderId: +this.registerForm.value.genderId
+      email: formValues.email,
+      password: formValues.password,
+      firstName: formValues.firstName,
+      middleName: formValues.middleName,
+      lastName: formValues.lastName,
+      address: formValues.address,
+      streetName: formValues.streetName,
+      streetNo: formValues.streetNo,
+      cnp: formValues.cnp,
+      phoneNumber: formValues.phoneNumber,
+      countryId: +formValues.countryId,
+      countyId: +formValues.countyId,
+      cityId: +formValues.cityId,
+      genderId: +formValues.genderId
     } as AddUserCommand;
-    this.userData.AddUser(addUserCommand).subscribe(res => {
-        this.isLoading = false;
-        this.authService.setToken(res.token)
-        this.uiService.showSuccessSnackbar('You successfully registered! Welcome!', null, 3000);
+
+    this.userData.AddUser(addUserCommand)
+      .pipe(
+        takeUntil(this.destroy$),
+        finalize(() => this.isLoading = false)
+      )
+      .subscribe(res => {
+        if (!res) return;
+
+        this.authService.setToken(res.token);
+        this.uiService.showSuccessSnackbar('You successfully registered! Welcome!', undefined, 3000);
         this.authService.initAuthListener();
         this.router.navigate(['']);
-    }, error => {
-        this.isLoading = false;
-        this.uiService.showErrorSnackbar(error, null, 3000);
-    })
+      });
   }
 
-  goBack() {
-    this._location.back();
+  goBack(): void {
+    this.location.back();
   }
 
-  ngOnDestroy() : void {
-    this.authChangeSubscription.unsubscribe();
+  ngOnDestroy(): void {
+    // Clean up all subscriptions at once
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

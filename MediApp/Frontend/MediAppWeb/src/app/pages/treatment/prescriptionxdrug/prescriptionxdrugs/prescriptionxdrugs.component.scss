@@ -1,0 +1,69 @@
+.filter-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.filter-field {
+    width: 40%;
+}
+
+@media (max-width: 599px) {
+    .filter-field {
+        width: 100%;
+    }
+}
+
+.action-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 16px;
+}
+
+.add-button {
+    width: 200px;
+}
+
+@media (max-width: 599px) {
+    .add-button {
+        width: 100%;
+    }
+}
+
+.table-container {
+    position: relative;
+    min-height: 200px;
+}
+
+table {
+    width: 100%;
+}
+
+.clickable-row {
+    cursor: pointer;
+}
+
+.clickable-row:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+}
+
+.loading-spinner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.7);
+}
+
+.mat-paginator-centered {
+    display: flex;
+    justify-content: center;
+}
+
+.iconbutton {
+    margin-right: 8px;
+}

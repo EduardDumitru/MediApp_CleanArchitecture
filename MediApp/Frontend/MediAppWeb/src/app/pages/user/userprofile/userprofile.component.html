@@ -1,157 +1,175 @@
-
-<section fxLayout fxLayoutAlign="center" class="user-profile-card">
+<section class="user-profile-card">
   <form [formGroup]="userProfileForm" (ngSubmit)="onSubmit()">
-    <mat-card fxFlex.xs="100%" fxFlex="600px">
-      <mat-card-title fxLayoutAlign="center">Update Profile</mat-card-title>
-      <mat-card-content fxLayout="column" fxLayoutAlign="center">
-        <mat-form-field>
-          <input
-            type="email"
-            matInput
-            placeholder="Your email"
-            formControlName="email">
+    <mat-card class="profile-card">
+      <mat-card-header>
+        <mat-card-title class="card-title">Update Profile</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="card-content">
+        <mat-form-field class="form-field">
+          <mat-label>Your email</mat-label>
+          <input type="email" matInput formControlName="email">
         </mat-form-field>
-        <mat-form-field>
-          <input
-            matInput
-            placeholder="First Name"
-            formControlName="firstName"
-            required>
+
+        <mat-form-field class="form-field">
+          <mat-label>First Name</mat-label>
+          <input matInput formControlName="firstName" required>
           <mat-hint>Please enter a first name.</mat-hint>
+          @if (userProfileForm.get('firstName')?.hasError('required') && userProfileForm.get('firstName')?.touched) {
           <mat-error>First name is required</mat-error>
+          }
         </mat-form-field>
-        <mat-form-field>
-          <input
-            matInput
-            placeholder="Middle Name"
-            formControlName="middleName">
+
+        <mat-form-field class="form-field">
+          <mat-label>Middle Name</mat-label>
+          <input matInput formControlName="middleName">
         </mat-form-field>
-        <mat-form-field>
-          <input
-            matInput
-            placeholder="Last Name"
-            formControlName="lastName"
-            required>
+
+        <mat-form-field class="form-field">
+          <mat-label>Last Name</mat-label>
+          <input matInput formControlName="lastName" required>
           <mat-hint>Please enter a last name.</mat-hint>
+          @if (userProfileForm.get('lastName')?.hasError('required') && userProfileForm.get('lastName')?.touched) {
           <mat-error>Last name is required</mat-error>
+          }
         </mat-form-field>
-        <mat-form-field>
-          <input
-            matInput
-            placeholder="Address"
-            formControlName="address">
+
+        <mat-form-field class="form-field">
+          <mat-label>Address</mat-label>
+          <input matInput formControlName="address">
         </mat-form-field>
-        <mat-form-field>
-          <input
-            matInput
-            placeholder="Street Name"
-            formControlName="streetName">
+
+        <mat-form-field class="form-field">
+          <mat-label>Street Name</mat-label>
+          <input matInput formControlName="streetName">
         </mat-form-field>
-        <mat-form-field>
-          <input
-            matInput
-            placeholder="Street No."
-            formControlName="streetNo"
-            required>
+
+        <mat-form-field class="form-field">
+          <mat-label>Street No.</mat-label>
+          <input matInput formControlName="streetNo" required>
           <mat-hint>Please enter a street no.</mat-hint>
+          @if (userProfileForm.get('streetNo')?.hasError('required') && userProfileForm.get('streetNo')?.touched) {
           <mat-error>Street No. is Required</mat-error>
+          }
         </mat-form-field>
-        <mat-form-field>
-          <input
-            matInput
-            placeholder="CNP"
-            formControlName="cnp"
-            required>
+
+        <mat-form-field class="form-field">
+          <mat-label>CNP</mat-label>
+          <input matInput formControlName="cnp" required>
           <mat-hint>Please enter a valid CNP. Example: 1991111121123</mat-hint>
+          @if (userProfileForm.get('cnp')?.invalid && userProfileForm.get('cnp')?.touched) {
           <mat-error>Invalid or missing CNP. Example: 1991111121123</mat-error>
+          }
         </mat-form-field>
-        <mat-form-field>
-          <input
-            matInput
-            placeholder="Phone Number"
-            formControlName="phoneNumber"
-            required>
+
+        <mat-form-field class="form-field">
+          <mat-label>Phone Number</mat-label>
+          <input matInput formControlName="phoneNumber" required>
           <mat-hint>Please enter a valid phone number. Example: 0743123123</mat-hint>
+          @if (userProfileForm.get('phoneNumber')?.invalid && userProfileForm.get('phoneNumber')?.touched) {
           <mat-error>Invalid or missing phone number. Example: 0743123123</mat-error>
+          }
         </mat-form-field>
-        <mat-form-field>
-          <mat-select placeholder="Choose Country" formControlName="countryId" (selectionChange)="getCountiesSelectOnChange($event.value)" required>
-            <mat-option
-              *ngFor="let country of countrySelectList.selectItems"
-              [value]="country.value">
+
+        <mat-form-field class="form-field">
+          <mat-label>Choose Country</mat-label>
+          <mat-select formControlName="countryId" (selectionChange)="getCountiesSelectOnChange($event.value)" required>
+            @for (country of countrySelectList.selectItems; track country.value) {
+            <mat-option [value]="country.value">
               {{ country.label }}
             </mat-option>
+            }
           </mat-select>
           <mat-hint>Please choose a country</mat-hint>
+          @if (userProfileForm.get('countryId')?.hasError('required') && userProfileForm.get('countryId')?.touched) {
           <mat-error>Please choose a country</mat-error>
+          }
         </mat-form-field>
-        <mat-form-field *ngIf="this.countySelectList.selectItems">
-          <mat-select placeholder="Choose County" formControlName="countyId" required (selectionChange)="getCitiesSelect($event.value)" required>
-            <mat-option
-              *ngFor="let county of countySelectList.selectItems"
-              [value]="county.value">
+
+        @if (countySelectList.selectItems?.length) {
+        <mat-form-field class="form-field">
+          <mat-label>Choose County</mat-label>
+          <mat-select formControlName="countyId" (selectionChange)="getCitiesSelect($event.value)" required>
+            @for (county of countySelectList.selectItems; track county.value) {
+            <mat-option [value]="county.value">
               {{ county.label }}
             </mat-option>
+            }
           </mat-select>
           <mat-hint>Please choose a county</mat-hint>
+          @if (userProfileForm.get('countyId')?.hasError('required') && userProfileForm.get('countyId')?.touched) {
           <mat-error>Please choose a county</mat-error>
+          }
         </mat-form-field>
-        <mat-form-field *ngIf="this.citySelectList.selectItems">
-          <mat-select placeholder="Choose City" formControlName="cityId" required>
-            <mat-option
-              *ngFor="let city of citySelectList.selectItems"
-              [value]="city.value">
+        }
+
+        @if (citySelectList.selectItems?.length) {
+        <mat-form-field class="form-field">
+          <mat-label>Choose City</mat-label>
+          <mat-select formControlName="cityId" required>
+            @for (city of citySelectList.selectItems; track city.value) {
+            <mat-option [value]="city.value">
               {{ city.label }}
             </mat-option>
+            }
           </mat-select>
           <mat-hint>Please choose a city</mat-hint>
+          @if (userProfileForm.get('cityId')?.hasError('required') && userProfileForm.get('cityId')?.touched) {
           <mat-error>Please choose a city</mat-error>
+          }
         </mat-form-field>
-        <mat-form-field>
-          <mat-select placeholder="Choose Gender" formControlName="genderId" required>
-            <mat-option
-              *ngFor="let gender of genderSelectList.selectItems"
-              [value]="gender.value">
+        }
+
+        <mat-form-field class="form-field">
+          <mat-label>Choose Gender</mat-label>
+          <mat-select formControlName="genderId" required>
+            @for (gender of genderSelectList.selectItems; track gender.value) {
+            <mat-option [value]="gender.value">
               {{ gender.label }}
             </mat-option>
+            }
           </mat-select>
           <mat-hint>Please choose a gender</mat-hint>
+          @if (userProfileForm.get('genderId')?.hasError('required') && userProfileForm.get('genderId')?.touched) {
           <mat-error>Please choose a gender</mat-error>
+          }
         </mat-form-field>
-        <mat-form-field *ngIf="isAdmin">
-          <mat-select placeholder="Choose Roles" formControlName="roleIds" required multiple>
-            <mat-option
-              *ngFor="let role of roleSelectList.selectItems"
-              [value]="role.value"
-              [disabled]="role.label === userRoleName">
+
+        @if (isAdmin) {
+        <mat-form-field class="form-field">
+          <mat-label>Choose Roles</mat-label>
+          <mat-select formControlName="roleIds" required multiple>
+            @for (role of roleSelectList.selectItems; track role.value) {
+            <mat-option [value]="role.value" [disabled]="role.label === userRoleName">
               {{ role.label }}
             </mat-option>
+            }
           </mat-select>
           <mat-hint>Please choose roles</mat-hint>
+          @if (userProfileForm.get('roleIds')?.hasError('required') && userProfileForm.get('roleIds')?.touched) {
           <mat-error>Please choose roles</mat-error>
+          }
         </mat-form-field>
-        <mat-spinner *ngIf="isLoading"></mat-spinner>
+        }
+
+        @if (isLoading) {
+        <div class="spinner-container">
+          <mat-spinner></mat-spinner>
+        </div>
+        }
       </mat-card-content>
-      <mat-card-actions fxLayoutAlign="center" *ngIf="!isLoading">
-        <button
-        *ngIf="!isLoading"
-        type="button"
-        mat-raised-button
-        color="accent"
-        (click)="goBack()"
-      >
-        Back
-      </button>
-        <button
-          *ngIf="!isDeleted"
-          type="submit"
-          mat-raised-button
-          color="primary"
-          [disabled]="userProfileForm.invalid"
-        >
+
+      @if (!isLoading) {
+      <mat-card-actions class="card-actions">
+        <button type="button" mat-raised-button color="accent" (click)="goBack()">
+          Back
+        </button>
+        @if (!isDeleted) {
+        <button type="submit" mat-raised-button color="primary" [disabled]="userProfileForm.invalid">
           Submit
         </button>
+        }
       </mat-card-actions>
+      }
     </mat-card>
   </form>
 </section>

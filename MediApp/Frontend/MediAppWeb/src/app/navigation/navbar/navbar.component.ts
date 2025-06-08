@@ -1,15 +1,19 @@
-import { Component, OnInit, EventEmitter, Output, OnDestroy } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, OnDestroy, inject } from '@angular/core';
 import { AuthService } from '../../auth/auth.service';
-import { Subscription } from 'rxjs/internal/Subscription';
+import { Subject, takeUntil } from 'rxjs';
+import { getSharedImports } from 'src/app/shared/shared.module';
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.scss']
+  styleUrls: ['./navbar.component.scss'],
+  standalone: true,
+  imports: [
+    ...getSharedImports(),
+  ],
 })
 export class NavbarComponent implements OnInit, OnDestroy {
-  @Output()
-  sidebarToggle = new EventEmitter<void>();
+  @Output() sidebarToggle = new EventEmitter<void>();
 
   isAuth = false;
   isAdmin = false;
@@ -17,51 +21,51 @@ export class NavbarComponent implements OnInit, OnDestroy {
   isNurse = false;
   currentUserId = -1;
   clinicId = -1;
-  authSubscription: Subscription;
-  adminSubscription: Subscription;
-  doctorSubscription: Subscription;
-  nurseSubscription: Subscription;
-  currentUserIdSubscription: Subscription;
-  clinicIdSubscription: Subscription;
 
-  constructor(private authService: AuthService) { }
+  // Dependency injection using inject function
+  private readonly authService = inject(AuthService);
+
+  // Stream to handle unsubscription
+  private readonly destroy$ = new Subject<void>();
 
   ngOnInit(): void {
-    this.authSubscription = this.authService.authChange.subscribe(authStatus => {
-      this.isAuth = authStatus;
-    })
-    this.adminSubscription = this.authService.isAdmin.subscribe(isAdmin => {
-      this.isAdmin = isAdmin;
-    })
-    this.doctorSubscription = this.authService.isDoctor.subscribe(isDoctor => {
-      this.isDoctor = isDoctor;
-    })
-    this.nurseSubscription = this.authService.isNurse.subscribe(isNurse => {
-      this.isNurse = isNurse;
-    })
-    this.currentUserIdSubscription = this.authService.currentUserId.subscribe(userId => {
-      this.currentUserId = userId;
-    })
-    this.clinicIdSubscription = this.authService.clinicId.subscribe(clinicId => {
-      this.clinicId = clinicId;
-    })
+    // Simplify subscriptions with takeUntil pattern
+    this.authService.authChange
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(authStatus => this.isAuth = authStatus);
+
+    this.authService.isAdmin
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(isAdmin => this.isAdmin = isAdmin);
+
+    this.authService.isDoctor
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(isDoctor => this.isDoctor = isDoctor);
+
+    this.authService.isNurse
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(isNurse => this.isNurse = isNurse);
+
+    this.authService.currentUserId
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(userId => this.currentUserId = userId);
+
+    this.authService.clinicId
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(clinicId => this.clinicId = clinicId);
   }
 
   ngOnDestroy(): void {
-    this.authSubscription.unsubscribe();
-    this.adminSubscription.unsubscribe();
-    this.doctorSubscription.unsubscribe();
-    this.nurseSubscription.unsubscribe();
-    this.currentUserIdSubscription.unsubscribe();
-    this.clinicIdSubscription.unsubscribe();
+    // Clean up all subscriptions at once
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
-  onToggleSidenav() {
+  onToggleSidenav(): void {
     this.sidebarToggle.emit();
   }
 
-  onLogout() {
+  onLogout(): void {
     this.authService.logout();
   }
-
 }

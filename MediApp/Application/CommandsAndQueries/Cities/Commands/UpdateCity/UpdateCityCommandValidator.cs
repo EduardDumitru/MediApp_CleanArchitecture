@@ -14,13 +14,13 @@ namespace Application.CommandsAndQueries.Cities.Commands.UpdateCity
         {
             _context = context;
             RuleFor(x => x.Id)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Id is required");
             RuleFor(x => x.Name)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Name is required");
             RuleFor(x => x.CountyId)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("County is required")
                 .MustAsync(ExistsCounty).WithMessage("County is not valid");
         }

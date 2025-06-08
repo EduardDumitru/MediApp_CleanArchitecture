@@ -14,7 +14,7 @@ namespace Application.CommandsAndQueries
         {
             _context = context;
             RuleFor(x => x.PatientId)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Patient is required")
                 .MustAsync(ExistsPatient).WithMessage("Patient is not valid");
         }

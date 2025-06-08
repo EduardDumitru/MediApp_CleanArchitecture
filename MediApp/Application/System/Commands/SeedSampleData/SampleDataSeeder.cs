@@ -1,75 +1,64 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Application.CommandsAndQueries;
+﻿using Application.CommandsAndQueries;
 using Application.Common.Constants;
 using Application.Common.Interfaces;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Application.System.Commands.SeedSampleData
 {
-    public class SampleDataSeeder
+    public class SampleDataSeeder(IApplicationDbContext context, IIdentityService identityService, IDateTime dateTime)
     {
-        private readonly IApplicationDbContext _context;
-        private readonly IDateTime _dateTime;
-        private readonly IIdentityService _identityService;
-
-        public SampleDataSeeder(IApplicationDbContext context, IIdentityService identityService, IDateTime dateTime)
-        {
-            _context = context;
-            _identityService = identityService;
-            _dateTime = dateTime;
-        }
-
         public async Task SeedAllAsync(CancellationToken cancellationToken)
         {
-            if (_context.Employees.Any()) return;
+            if (context.Employees.Any()) return;
 
-            await SeedCountriesAsync(cancellationToken);
+            // await SeedCountriesAsync(cancellationToken);
 
-            await SeedCountiesAsync(cancellationToken);
+            // await SeedCountiesAsync(cancellationToken);
 
-            await SeedCitiesAsync(cancellationToken);
+            // await SeedCitiesAsync(cancellationToken);
 
-            await SeedGendersAsync(cancellationToken);
+            // await SeedGendersAsync(cancellationToken);
 
-            await SeedRolesAsync(cancellationToken);
+            // await SeedRolesAsync(cancellationToken);
 
-            await SeedUsersAsync(cancellationToken);
+            //await SeedUsersAsync(cancellationToken);
 
-            await SeedDiagnosesAsync(cancellationToken);
+            //await SeedDiagnosesAsync(cancellationToken);
 
-            await SeedDrugsAsync(cancellationToken);
+            //await SeedDrugsAsync(cancellationToken);
 
-            await SeedDiagnosisXDrugsAsync(cancellationToken);
+            //await SeedDiagnosisXDrugsAsync(cancellationToken);
 
-            await SeedClinicsAsync(cancellationToken);
+            //await SeedClinicsAsync(cancellationToken);
 
-            await SeedEmployeeTypesAsync(cancellationToken);
+            //await SeedEmployeeTypesAsync(cancellationToken);
 
-            await SeedMedicalCheckTypesAsync(cancellationToken);
+            //await SeedMedicalCheckTypesAsync(cancellationToken);
 
-            await SeedEmployeesAsync(cancellationToken);
+            //await SeedEmployeesAsync(cancellationToken);
 
-            await SeedHolidayIntervalsAsync(cancellationToken);
+            //await SeedHolidayIntervalsAsync(cancellationToken);
 
-            await SeedMedicalChecksAsync(cancellationToken);
+            //await SeedMedicalChecksAsync(cancellationToken);
 
-            await SeedPrescriptionsAsync(cancellationToken);
+            //await SeedPrescriptionsAsync(cancellationToken);
 
-            await SeedPrescriptionXDrugsAsync(cancellationToken);
+            //await SeedPrescriptionXDrugsAsync(cancellationToken);
         }
 
         private async Task SeedUsersAsync(CancellationToken cancellationToken)
         {
             var galatiCity =
-                await _context.Cities.Include(x => x.County).ThenInclude(x => x.Country)
+                await context.Cities.Include(x => x.County).ThenInclude(x => x.Country)
                     .FirstOrDefaultAsync(x => x.Name == "Galati" && !x.Deleted, cancellationToken);
 
             var gender =
-                await _context.Genders.FirstOrDefaultAsync(x => x.Name == "Male", cancellationToken);
+                await context.Genders.FirstOrDefaultAsync(x => x.Name == "Male", cancellationToken);
 
             var userToAdd = new AddUserCommand
             {
@@ -88,9 +77,9 @@ namespace Application.System.Commands.SeedSampleData
                 GenderId = gender.Id
             };
 
-            var result = await _identityService.CreateUserSeedAsync(userToAdd);
+            var result = await identityService.CreateUserSeedAsync(userToAdd);
 
-            await _identityService.AddToRoleAsync(result.UserId, RoleConstants.Admin);
+            await identityService.AddToRoleAsync(result.UserId, RoleConstants.Admin);
 
             userToAdd = new AddUserCommand
             {
@@ -110,9 +99,9 @@ namespace Application.System.Commands.SeedSampleData
                 GenderId = gender.Id
             };
 
-            result = await _identityService.CreateUserSeedAsync(userToAdd);
+            result = await identityService.CreateUserSeedAsync(userToAdd);
 
-            await _identityService.AddToRoleAsync(result.UserId, RoleConstants.Doctor);
+            await identityService.AddToRoleAsync(result.UserId, RoleConstants.Doctor);
 
             userToAdd = new AddUserCommand
             {
@@ -131,9 +120,9 @@ namespace Application.System.Commands.SeedSampleData
                 GenderId = gender.Id
             };
 
-            result = await _identityService.CreateUserSeedAsync(userToAdd);
+            result = await identityService.CreateUserSeedAsync(userToAdd);
 
-            await _identityService.AddToRoleAsync(result.UserId, RoleConstants.Nurse);
+            await identityService.AddToRoleAsync(result.UserId, RoleConstants.Nurse);
 
             userToAdd = new AddUserCommand
             {
@@ -152,21 +141,21 @@ namespace Application.System.Commands.SeedSampleData
                 GenderId = gender.Id
             };
 
-            result = await _identityService.CreateUserSeedAsync(userToAdd);
+            result = await identityService.CreateUserSeedAsync(userToAdd);
 
-            await _identityService.AddToRoleAsync(result.UserId, RoleConstants.User);
+            await identityService.AddToRoleAsync(result.UserId, RoleConstants.User);
 
-            await _context.SaveChangesAsync(cancellationToken);
+            await context.SaveChangesAsync(cancellationToken);
         }
 
         private async Task SeedRolesAsync(CancellationToken cancellationToken)
         {
-            await _identityService.CreateRoleAsync(RoleConstants.Admin);
-            await _identityService.CreateRoleAsync(RoleConstants.Nurse);
-            await _identityService.CreateRoleAsync(RoleConstants.Doctor);
-            await _identityService.CreateRoleAsync(RoleConstants.User);
+            await identityService.CreateRoleAsync(RoleConstants.Admin);
+            await identityService.CreateRoleAsync(RoleConstants.Nurse);
+            await identityService.CreateRoleAsync(RoleConstants.Doctor);
+            await identityService.CreateRoleAsync(RoleConstants.User);
 
-            await _context.SaveChangesAsync(cancellationToken);
+            await context.SaveChangesAsync(cancellationToken);
         }
 
         private async Task SeedCountriesAsync(CancellationToken cancellationToken)
@@ -178,18 +167,18 @@ namespace Application.System.Commands.SeedSampleData
                 new Country {Name = "Bulgaria"}
             };
 
-            await _context.Countries.AddRangeAsync(countries, cancellationToken);
-            await _context.SaveChangesAsync(cancellationToken);
+            await context.Countries.AddRangeAsync(countries, cancellationToken);
+            await context.SaveChangesAsync(cancellationToken);
         }
 
         private async Task SeedCountiesAsync(CancellationToken cancellationToken)
         {
             var romania =
-                await _context.Countries.FirstOrDefaultAsync(x => x.Name == "Romania" && !x.Deleted, cancellationToken);
-            var sua = await _context.Countries.FirstOrDefaultAsync(x => x.Name == "SUA" && !x.Deleted,
+                await context.Countries.FirstOrDefaultAsync(x => x.Name == "Romania" && !x.Deleted, cancellationToken);
+            var sua = await context.Countries.FirstOrDefaultAsync(x => x.Name == "SUA" && !x.Deleted,
                 cancellationToken);
             var bulgaria =
-                await _context.Countries.FirstOrDefaultAsync(x => x.Name == "Bulgaria" && !x.Deleted,
+                await context.Countries.FirstOrDefaultAsync(x => x.Name == "Bulgaria" && !x.Deleted,
                     cancellationToken);
 
             var counties = new[]
@@ -200,20 +189,20 @@ namespace Application.System.Commands.SeedSampleData
                 new County {Name = "California", CountryId = sua.Id}
             };
 
-            await _context.Counties.AddRangeAsync(counties, cancellationToken);
-            await _context.SaveChangesAsync(cancellationToken);
+            await context.Counties.AddRangeAsync(counties, cancellationToken);
+            await context.SaveChangesAsync(cancellationToken);
         }
 
         private async Task SeedCitiesAsync(CancellationToken cancellationToken)
         {
             var galati =
-                await _context.Counties.FirstOrDefaultAsync(x => x.Name == "Galati" && !x.Deleted, cancellationToken);
+                await context.Counties.FirstOrDefaultAsync(x => x.Name == "Galati" && !x.Deleted, cancellationToken);
             var prahova =
-                await _context.Counties.FirstOrDefaultAsync(x => x.Name == "Prahova" && !x.Deleted, cancellationToken);
-            var sofia = await _context.Counties.FirstOrDefaultAsync(x => x.Name == "Sofia" && !x.Deleted,
+                await context.Counties.FirstOrDefaultAsync(x => x.Name == "Prahova" && !x.Deleted, cancellationToken);
+            var sofia = await context.Counties.FirstOrDefaultAsync(x => x.Name == "Sofia" && !x.Deleted,
                 cancellationToken);
             var california =
-                await _context.Counties.FirstOrDefaultAsync(x => x.Name == "California" && !x.Deleted,
+                await context.Counties.FirstOrDefaultAsync(x => x.Name == "California" && !x.Deleted,
                     cancellationToken);
 
             var cities = new[]
@@ -226,8 +215,8 @@ namespace Application.System.Commands.SeedSampleData
                 new City {Name = "Los Angeles", CountyId = california.Id}
             };
 
-            await _context.Cities.AddRangeAsync(cities, cancellationToken);
-            await _context.SaveChangesAsync(cancellationToken);
+            await context.Cities.AddRangeAsync(cities, cancellationToken);
+            await context.SaveChangesAsync(cancellationToken);
         }
 
         private async Task SeedDiagnosesAsync(CancellationToken cancellationToken)
@@ -239,8 +228,8 @@ namespace Application.System.Commands.SeedSampleData
                 new Diagnosis {Name = "Conjunctivitis"}
             };
 
-            await _context.Diagnoses.AddRangeAsync(diagnoses, cancellationToken);
-            await _context.SaveChangesAsync(cancellationToken);
+            await context.Diagnoses.AddRangeAsync(diagnoses, cancellationToken);
+            await context.SaveChangesAsync(cancellationToken);
         }
 
         private async Task SeedDrugsAsync(CancellationToken cancellationToken)
@@ -253,27 +242,27 @@ namespace Application.System.Commands.SeedSampleData
                 new Drug {Name = "Azyter"}
             };
 
-            await _context.Drugs.AddRangeAsync(drugs, cancellationToken);
-            await _context.SaveChangesAsync(cancellationToken);
+            await context.Drugs.AddRangeAsync(drugs, cancellationToken);
+            await context.SaveChangesAsync(cancellationToken);
         }
 
         private async Task SeedDiagnosisXDrugsAsync(CancellationToken cancellationToken)
         {
-            var flu = await _context.Diagnoses.FirstOrDefaultAsync(x => x.Name == "Flu" && !x.Deleted,
+            var flu = await context.Diagnoses.FirstOrDefaultAsync(x => x.Name == "Flu" && !x.Deleted,
                 cancellationToken);
-            var cold = await _context.Diagnoses.FirstOrDefaultAsync(x => x.Name == "Cold" && !x.Deleted,
+            var cold = await context.Diagnoses.FirstOrDefaultAsync(x => x.Name == "Cold" && !x.Deleted,
                 cancellationToken);
             var conjunctivits =
-                await _context.Diagnoses.FirstOrDefaultAsync(x => x.Name == "Conjunctivitis" && !x.Deleted,
+                await context.Diagnoses.FirstOrDefaultAsync(x => x.Name == "Conjunctivitis" && !x.Deleted,
                     cancellationToken);
             var strepsils =
-                await _context.Drugs.FirstOrDefaultAsync(x => x.Name == "Strepsils" && !x.Deleted, cancellationToken);
+                await context.Drugs.FirstOrDefaultAsync(x => x.Name == "Strepsils" && !x.Deleted, cancellationToken);
             var olynth =
-                await _context.Drugs.FirstOrDefaultAsync(x => x.Name == "Olynth" && !x.Deleted, cancellationToken);
+                await context.Drugs.FirstOrDefaultAsync(x => x.Name == "Olynth" && !x.Deleted, cancellationToken);
             var paracetamol =
-                await _context.Drugs.FirstOrDefaultAsync(x => x.Name == "Paracetamol" && !x.Deleted, cancellationToken);
+                await context.Drugs.FirstOrDefaultAsync(x => x.Name == "Paracetamol" && !x.Deleted, cancellationToken);
             var azyter =
-                await _context.Drugs.FirstOrDefaultAsync(x => x.Name == "Azyter" && !x.Deleted, cancellationToken);
+                await context.Drugs.FirstOrDefaultAsync(x => x.Name == "Azyter" && !x.Deleted, cancellationToken);
             var diagnosisXDrugs = new[]
             {
                 new DiagnosisXDrug {DiagnosisId = flu.Id, DrugId = paracetamol.Id},
@@ -284,8 +273,8 @@ namespace Application.System.Commands.SeedSampleData
                 new DiagnosisXDrug {DiagnosisId = conjunctivits.Id, DrugId = azyter.Id}
             };
 
-            await _context.DiagnosisXDrugs.AddRangeAsync(diagnosisXDrugs, cancellationToken);
-            await _context.SaveChangesAsync(cancellationToken);
+            await context.DiagnosisXDrugs.AddRangeAsync(diagnosisXDrugs, cancellationToken);
+            await context.SaveChangesAsync(cancellationToken);
         }
 
         private async Task SeedGendersAsync(CancellationToken cancellationToken)
@@ -296,17 +285,17 @@ namespace Application.System.Commands.SeedSampleData
                 new Gender {Name = "Female"}
             };
 
-            await _context.Genders.AddRangeAsync(genders, cancellationToken);
-            await _context.SaveChangesAsync(cancellationToken);
+            await context.Genders.AddRangeAsync(genders, cancellationToken);
+            await context.SaveChangesAsync(cancellationToken);
         }
 
         private async Task SeedClinicsAsync(CancellationToken cancellationToken)
         {
-            var ploiestiCity = await _context.Cities.Include(x => x.County).ThenInclude(x => x.Country)
+            var ploiestiCity = await context.Cities.Include(x => x.County).ThenInclude(x => x.Country)
                 .FirstOrDefaultAsync(x => x.Name == "Ploiesti" && !x.Deleted, cancellationToken);
 
             var galatiCity =
-                await _context.Cities.Include(x => x.County).ThenInclude(x => x.Country)
+                await context.Cities.Include(x => x.County).ThenInclude(x => x.Country)
                     .FirstOrDefaultAsync(x => x.Name == "Galati" && !x.Deleted, cancellationToken);
             var clinics = new[]
             {
@@ -326,8 +315,8 @@ namespace Application.System.Commands.SeedSampleData
                 }
             };
 
-            await _context.Clinics.AddRangeAsync(clinics, cancellationToken);
-            await _context.SaveChangesAsync(cancellationToken);
+            await context.Clinics.AddRangeAsync(clinics, cancellationToken);
+            await context.SaveChangesAsync(cancellationToken);
         }
 
         private async Task SeedEmployeeTypesAsync(CancellationToken cancellationToken)
@@ -338,8 +327,8 @@ namespace Application.System.Commands.SeedSampleData
                 new EmployeeType {Name = "Nurse"}
             };
 
-            await _context.EmployeeTypes.AddRangeAsync(employeeTypes, cancellationToken);
-            await _context.SaveChangesAsync(cancellationToken);
+            await context.EmployeeTypes.AddRangeAsync(employeeTypes, cancellationToken);
+            await context.SaveChangesAsync(cancellationToken);
         }
 
         private async Task SeedMedicalCheckTypesAsync(CancellationToken cancellationToken)
@@ -353,29 +342,29 @@ namespace Application.System.Commands.SeedSampleData
                 new MedicalCheckType {Name = "Nutrition"}
             };
 
-            await _context.MedicalCheckTypes.AddRangeAsync(medicalCheckTypes, cancellationToken);
-            await _context.SaveChangesAsync(cancellationToken);
+            await context.MedicalCheckTypes.AddRangeAsync(medicalCheckTypes, cancellationToken);
+            await context.SaveChangesAsync(cancellationToken);
         }
 
         private async Task SeedEmployeesAsync(CancellationToken cancellationToken)
         {
-            var userDoctorId = await _identityService.GetUserIdAsync("doctor@doctor.com");
+            var userDoctorId = await identityService.GetUserIdAsync("doctor@doctor.com");
             var docProfile =
-                await _context.UserProfiles.FirstOrDefaultAsync(x => x.UserId == userDoctorId.Value, cancellationToken);
-            var nurseId = await _identityService.GetUserIdAsync("nurse@nurse.com");
+                await context.UserProfiles.FirstOrDefaultAsync(x => x.UserId == userDoctorId.Value, cancellationToken);
+            var nurseId = await identityService.GetUserIdAsync("nurse@nurse.com");
             var nurseProfile =
-                await _context.UserProfiles.FirstOrDefaultAsync(x => x.UserId == nurseId, cancellationToken);
+                await context.UserProfiles.FirstOrDefaultAsync(x => x.UserId == nurseId, cancellationToken);
             var doctorEmpType =
-                await _context.EmployeeTypes.FirstOrDefaultAsync(x => x.Name == "Doctor" && !x.Deleted,
+                await context.EmployeeTypes.FirstOrDefaultAsync(x => x.Name == "Doctor" && !x.Deleted,
                     cancellationToken);
             var nurseEmpType =
-                await _context.EmployeeTypes.FirstOrDefaultAsync(x => x.Name == "Nurse" && !x.Deleted,
+                await context.EmployeeTypes.FirstOrDefaultAsync(x => x.Name == "Nurse" && !x.Deleted,
                     cancellationToken);
             var familyType =
-                await _context.MedicalCheckTypes.FirstOrDefaultAsync(x => x.Name == "Family" && !x.Deleted,
+                await context.MedicalCheckTypes.FirstOrDefaultAsync(x => x.Name == "Family" && !x.Deleted,
                     cancellationToken);
             var galatiClinic =
-                await _context.Clinics.FirstOrDefaultAsync(x => x.Email == "clinicacladireb@clinica.ro" && !x.Deleted,
+                await context.Clinics.FirstOrDefaultAsync(x => x.Email == "clinicacladireb@clinica.ro" && !x.Deleted,
                     cancellationToken);
             var employees = new[]
             {
@@ -395,46 +384,46 @@ namespace Application.System.Commands.SeedSampleData
                 }
             };
 
-            await _context.Employees.AddRangeAsync(employees, cancellationToken);
-            await _context.SaveChangesAsync(cancellationToken);
+            await context.Employees.AddRangeAsync(employees, cancellationToken);
+            await context.SaveChangesAsync(cancellationToken);
         }
 
         private async Task SeedHolidayIntervalsAsync(CancellationToken cancellationToken)
         {
-            var userDoctorId = await _identityService.GetUserIdAsync("doctor@doctor.com");
+            var userDoctorId = await identityService.GetUserIdAsync("doctor@doctor.com");
             var docProfile =
-                await _context.UserProfiles.FirstOrDefaultAsync(x => x.UserId == userDoctorId.Value, cancellationToken);
+                await context.UserProfiles.FirstOrDefaultAsync(x => x.UserId == userDoctorId.Value, cancellationToken);
 
             var holidayIntervals = new[]
             {
                 new HolidayInterval
                 {
-                    StartDate = _dateTime.Now.AddDays(100),
-                    EndDate = _dateTime.Now.AddDays(105),
+                    StartDate = dateTime.Now.AddDays(100),
+                    EndDate = dateTime.Now.AddDays(105),
                     EmployeeId = docProfile.Id
                 }
             };
 
-            await _context.HolidayIntervals.AddRangeAsync(holidayIntervals, cancellationToken);
-            await _context.SaveChangesAsync(cancellationToken);
+            await context.HolidayIntervals.AddRangeAsync(holidayIntervals, cancellationToken);
+            await context.SaveChangesAsync(cancellationToken);
         }
 
         private async Task SeedMedicalChecksAsync(CancellationToken cancellationToken)
         {
             var galatiClinic =
-                await _context.Clinics.FirstOrDefaultAsync(x => x.Email == "clinicacladireb@clinica.ro" && !x.Deleted,
+                await context.Clinics.FirstOrDefaultAsync(x => x.Email == "clinicacladireb@clinica.ro" && !x.Deleted,
                     cancellationToken);
-            var patientId = await _identityService.GetUserIdAsync("user@user.com");
+            var patientId = await identityService.GetUserIdAsync("user@user.com");
             var patientProfile =
-                await _context.UserProfiles.FirstOrDefaultAsync(x => x.UserId == patientId.Value, cancellationToken);
-            var userDoctorId = await _identityService.GetUserIdAsync("doctor@doctor.com");
+                await context.UserProfiles.FirstOrDefaultAsync(x => x.UserId == patientId.Value, cancellationToken);
+            var userDoctorId = await identityService.GetUserIdAsync("doctor@doctor.com");
             var docProfile =
-                await _context.UserProfiles.FirstOrDefaultAsync(x => x.UserId == userDoctorId.Value, cancellationToken);
-            var doctor = await _context.Employees.Include(x => x.MedicalCheckType).FirstOrDefaultAsync(
+                await context.UserProfiles.FirstOrDefaultAsync(x => x.UserId == userDoctorId.Value, cancellationToken);
+            var doctor = await context.Employees.Include(x => x.MedicalCheckType).FirstOrDefaultAsync(
                 x => x.UserProfileId == docProfile.Id && !x.Deleted,
                 cancellationToken);
-            var diagnosis = await _context.Diagnoses.FirstOrDefaultAsync(x => x.Name == "Flu", cancellationToken);
-            var now = _dateTime.Now;
+            var diagnosis = await context.Diagnoses.FirstOrDefaultAsync(x => x.Name == "Flu", cancellationToken);
+            var now = dateTime.Now;
             var medicalChecks = new[]
             {
                 new MedicalCheck
@@ -457,19 +446,19 @@ namespace Application.System.Commands.SeedSampleData
                 }
             };
 
-            await _context.MedicalChecks.AddRangeAsync(medicalChecks, cancellationToken);
-            await _context.SaveChangesAsync(cancellationToken);
+            await context.MedicalChecks.AddRangeAsync(medicalChecks, cancellationToken);
+            await context.SaveChangesAsync(cancellationToken);
         }
 
         private async Task SeedPrescriptionsAsync(CancellationToken cancellationToken)
         {
-            var patientId = await _identityService.GetUserIdAsync("user@user.com");
+            var patientId = await identityService.GetUserIdAsync("user@user.com");
             var patientProfile =
-                await _context.UserProfiles.FirstOrDefaultAsync(x => x.UserId == patientId.Value, cancellationToken);
-            var now = _dateTime.Now;
+                await context.UserProfiles.FirstOrDefaultAsync(x => x.UserId == patientId.Value, cancellationToken);
+            var now = dateTime.Now;
             var medicalCheck =
-                await _context.MedicalChecks.FirstOrDefaultAsync(x => x.Appointment < now &&
-                                                                      x.PatientId == patientProfile.Id,
+                await context.MedicalChecks.FirstOrDefaultAsync(x => x.Appointment < now &&
+                                                                       x.PatientId == patientProfile.Id,
                     cancellationToken);
             var prescriptions = new[]
             {
@@ -483,26 +472,26 @@ namespace Application.System.Commands.SeedSampleData
                 }
             };
 
-            await _context.Prescriptions.AddRangeAsync(prescriptions, cancellationToken);
-            await _context.SaveChangesAsync(cancellationToken);
+            await context.Prescriptions.AddRangeAsync(prescriptions, cancellationToken);
+            await context.SaveChangesAsync(cancellationToken);
         }
 
         private async Task SeedPrescriptionXDrugsAsync(CancellationToken cancellationToken)
         {
-            var patientId = await _identityService.GetUserIdAsync("user@user.com");
+            var patientId = await identityService.GetUserIdAsync("user@user.com");
             var patientProfile =
-                await _context.UserProfiles.FirstOrDefaultAsync(x => x.UserId == patientId.Value, cancellationToken);
-            var now = _dateTime.Now;
+                await context.UserProfiles.FirstOrDefaultAsync(x => x.UserId == patientId.Value, cancellationToken);
+            var now = dateTime.Now;
             var medicalCheck =
-                await _context.MedicalChecks.FirstOrDefaultAsync(x => x.Appointment < now, cancellationToken);
-            var prescription = await _context.Prescriptions.FirstOrDefaultAsync(
+                await context.MedicalChecks.FirstOrDefaultAsync(x => x.Appointment < now, cancellationToken);
+            var prescription = await context.Prescriptions.FirstOrDefaultAsync(
                 x => x.MedicalCheckId == medicalCheck.Id && x.PatientId == patientProfile.Id, cancellationToken);
             var olynth =
-                await _context.Drugs.FirstOrDefaultAsync(x => x.Name == "Olynth" && !x.Deleted, cancellationToken);
+                await context.Drugs.FirstOrDefaultAsync(x => x.Name == "Olynth" && !x.Deleted, cancellationToken);
             var paracetamol =
-                await _context.Drugs.FirstOrDefaultAsync(x => x.Name == "Paracetamol" && !x.Deleted, cancellationToken);
+                await context.Drugs.FirstOrDefaultAsync(x => x.Name == "Paracetamol" && !x.Deleted, cancellationToken);
             var strepsils =
-                await _context.Drugs.FirstOrDefaultAsync(x => x.Name == "Strepsils" && !x.Deleted, cancellationToken);
+                await context.Drugs.FirstOrDefaultAsync(x => x.Name == "Strepsils" && !x.Deleted, cancellationToken);
             var prescriptionXDrugs = new[]
             {
                 new PrescriptionXDrug
@@ -531,8 +520,8 @@ namespace Application.System.Commands.SeedSampleData
                 }
             };
 
-            await _context.PrescriptionXDrugs.AddRangeAsync(prescriptionXDrugs, cancellationToken);
-            await _context.SaveChangesAsync(cancellationToken);
+            await context.PrescriptionXDrugs.AddRangeAsync(prescriptionXDrugs, cancellationToken);
+            await context.SaveChangesAsync(cancellationToken);
         }
     }
 }

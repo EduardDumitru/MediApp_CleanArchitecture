@@ -1,7 +1,7 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Application.Common.Interfaces;
+﻿using Application.Common.Interfaces;
 using MediatR;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Application.System.Commands.SeedSampleData
 {
@@ -9,27 +9,21 @@ namespace Application.System.Commands.SeedSampleData
     {
     }
 
-    public class SeedSampleDataCommandHandler : IRequestHandler<SeedSampleDataCommand>
+    public class SeedSampleDataCommandHandler(IApplicationDbContext context, IIdentityService identityService,
+        IDateTime dateTimeService) : IRequestHandler<SeedSampleDataCommand>
     {
-        private readonly IApplicationDbContext _context;
-        private readonly IDateTime _dateTimeService;
-        private readonly IIdentityService _identityService;
-
-        public SeedSampleDataCommandHandler(IApplicationDbContext context, IIdentityService identityService,
-            IDateTime dateTimeService)
+        public async Task<Unit> Handle(SeedSampleDataCommand _, CancellationToken cancellationToken)
         {
-            _context = context;
-            _identityService = identityService;
-            _dateTimeService = dateTimeService;
-        }
-
-        public async Task<Unit> Handle(SeedSampleDataCommand request, CancellationToken cancellationToken)
-        {
-            var seeder = new SampleDataSeeder(_context, _identityService, _dateTimeService);
+            var seeder = new SampleDataSeeder(context, identityService, dateTimeService);
 
             await seeder.SeedAllAsync(cancellationToken);
 
             return Unit.Value;
+        }
+
+        async Task IRequestHandler<SeedSampleDataCommand>.Handle(SeedSampleDataCommand request, CancellationToken cancellationToken)
+        {
+            await Handle(request, cancellationToken);
         }
     }
 }

@@ -1,92 +1,99 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { PrescriptionXDrugData, PrescriptionXDrugsList,
-    AddPrescriptionXDrugCommand, UpdatePrescriptionXDrugCommand, PrescriptionXDrugDetails } from '../data/prescriptionxdrug';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import {
+    PrescriptionXDrugData,
+    PrescriptionXDrugsList,
+    AddPrescriptionXDrugCommand,
+    UpdatePrescriptionXDrugCommand,
+    PrescriptionXDrugDetails
+} from '../data/prescriptionxdrug';
 import { environment } from 'src/environments/environment';
-import { Observable, throwError } from 'rxjs';
-import { retry, catchError, map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { Result } from '../data/common/result';
 import { ErrorService } from 'src/app/shared/error.service';
-import { AuthService } from 'src/app/auth/auth.service';
+import { ApiHelper } from './api.helper';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class PrescriptionXDrugService extends PrescriptionXDrugData {
-    baseUrl = environment.baseURL + 'PrescriptionXDrug';
+    private readonly baseUrl = `${environment.baseURL}PrescriptionXDrug`;
 
-    constructor(private http: HttpClient, private errService: ErrorService, private authService: AuthService) {
-        super();
-    }
+    // Modern dependency injection using inject function
+    private readonly http = inject(HttpClient);
+    private readonly errorService = inject(ErrorService);
+    private readonly apiHelper = inject(ApiHelper);
 
-
-
-    GetPrescriptionXDrugs(prescriptionId: number): Observable<PrescriptionXDrugsList> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.get<PrescriptionXDrugsList>(this.baseUrl + '/drugsbyprescription/' + prescriptionId, httpOptions)
-            .pipe(
-                map((response: any) => response),
-                retry(1),
-                catchError(this.errService.errorHandl)
-            );
-    }
-    GetPrescriptionXDrug(id: number): Observable<PrescriptionXDrugDetails> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.get<PrescriptionXDrugsList>(this.baseUrl + '/' + id, httpOptions)
-            .pipe(
-                map((response: any) => response),
-                retry(1),
-                catchError(this.errService.errorHandl)
-            );
-    }
-    AddPrescriptionXDrug(addPrescriptionXDrugCommand: AddPrescriptionXDrugCommand): Observable<Result> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.post<Result>(this.baseUrl, JSON.stringify(addPrescriptionXDrugCommand), httpOptions)
-            .pipe(
-                map((response: any) => response),
-                retry(1),
-                catchError(this.errService.errorHandl)
-            );
-    }
-    DeletePrescriptionXDrug(id: number): Observable<Result> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.delete<Result>(this.baseUrl + '/' + id, httpOptions)
-        .pipe(
-            map((response: any) => response),
-            retry(1),
-            catchError(this.errService.errorHandl)
+    /**
+     * Get prescription x drugs by prescription
+     * @param prescriptionId Prescription ID
+     * @returns Observable with list of prescription x drugs
+     */
+    override GetPrescriptionXDrugs(prescriptionId: number): Observable<PrescriptionXDrugsList> {
+        return this.http.get<PrescriptionXDrugsList>(
+            `${this.baseUrl}/drugsbyprescription/${prescriptionId}`,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<PrescriptionXDrugsList>('GetPrescriptionXDrugs', error, new PrescriptionXDrugsList()))
         );
     }
-    UpdatePrescriptionXDrug(updatePrescriptionXDrugCommand: UpdatePrescriptionXDrugCommand): Observable<Result> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.put<Result>(this.baseUrl, JSON.stringify(updatePrescriptionXDrugCommand), httpOptions)
-        .pipe(
-            map((response: any) => response),
-            retry(1),
-            catchError(this.errService.errorHandl)
+
+    /**
+     * Get details for a specific prescription x drug
+     * @param id Prescription x drug ID
+     * @returns Observable with prescription x drug details
+     */
+    override GetPrescriptionXDrug(id: number): Observable<PrescriptionXDrugDetails> {
+        return this.http.get<PrescriptionXDrugDetails>(
+            `${this.baseUrl}/${id}`,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<PrescriptionXDrugDetails>('GetPrescriptionXDrug', error, {} as PrescriptionXDrugDetails))
+        );
+    }
+
+    /**
+     * Add a new prescription x drug mapping
+     * @param addPrescriptionXDrugCommand Prescription x drug data
+     * @returns Observable with result
+     */
+    override AddPrescriptionXDrug(addPrescriptionXDrugCommand: AddPrescriptionXDrugCommand): Observable<Result | null> {
+        return this.http.post<Result>(
+            this.baseUrl,
+            addPrescriptionXDrugCommand,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<Result | null>('AddPrescriptionXDrug', error, null))
+        );
+    }
+
+    /**
+     * Delete a prescription x drug mapping
+     * @param id Prescription x drug ID
+     * @returns Observable with result
+     */
+    override DeletePrescriptionXDrug(id: number): Observable<Result | null> {
+        return this.http.delete<Result>(
+            `${this.baseUrl}/${id}`,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<Result | null>('DeletePrescriptionXDrug', error, null))
+        );
+    }
+
+    /**
+     * Update an existing prescription x drug mapping
+     * @param updatePrescriptionXDrugCommand Prescription x drug data
+     * @returns Observable with result
+     */
+    override UpdatePrescriptionXDrug(updatePrescriptionXDrugCommand: UpdatePrescriptionXDrugCommand): Observable<Result | null> {
+        return this.http.put<Result>(
+            this.baseUrl,
+            updatePrescriptionXDrugCommand,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<Result | null>('UpdatePrescriptionXDrug', error, null))
         );
     }
 }

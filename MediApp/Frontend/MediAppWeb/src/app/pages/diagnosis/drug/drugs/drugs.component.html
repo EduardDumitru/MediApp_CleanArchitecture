@@ -1,35 +1,62 @@
-<div fxLayoutAlign="center center">
-    <mat-form-field fxFlex="40%" fxFlex.xs="100%">
-        <input matInput type="text" (keyup)="doFilter($event.target.value)" placeholder="Filter"/>
-    </mat-form-field>
+<div class="drugs-container">
+    <div class="filter-container">
+        <mat-form-field appearance="outline">
+            <mat-label>Filter</mat-label>
+            <input matInput type="text" (keyup)="doFilter($event)" placeholder="Filter drugs..." />
+        </mat-form-field>
+    </div>
+
+    <div class="actions-container">
+        @if (!isLoading) {
+        <button type="button" mat-raised-button color="primary" (click)="navigateToAddDrug()">
+            Add Drug
+        </button>
+        }
+    </div>
+
+    <div class="table-container">
+        <table mat-table [dataSource]="dataSource" matSort>
+            <!-- ID Column -->
+            <ng-container matColumnDef="id">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
+                <td mat-cell *matCellDef="let drug">{{ drug.id }}</td>
+            </ng-container>
+
+            <!-- Name Column -->
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+                <td mat-cell *matCellDef="let drug">{{ drug.name }}</td>
+            </ng-container>
+
+            <!-- Deleted Column -->
+            <ng-container matColumnDef="deleted">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Deleted</th>
+                <td mat-cell *matCellDef="let drug">
+                    <mat-checkbox [checked]="drug.deleted" disabled></mat-checkbox>
+                </td>
+            </ng-container>
+
+            <!-- Header and Row Definitions -->
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let drug; columns: displayedColumns" [routerLink]="['/diagnoses/drugs', drug.id]"
+                class="clickable-row"></tr>
+        </table>
+
+        @if (isLoading) {
+        <div class="spinner-container">
+            <mat-spinner></mat-spinner>
+        </div>
+        }
+
+        <!-- No data message -->
+        @if (dataSource.data.length === 0 && !isLoading) {
+        <div class="no-data-message">
+            No drugs found
+        </div>
+        }
+
+        <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons
+            aria-label="Select page of drugs">
+        </mat-paginator>
+    </div>
 </div>
-<div fxLayoutAlign="end" fxLayout="row" >
-<button *ngIf="!isLoading" type="submit" mat-raised-button color="primary" 
-fxFlex="200px" fxFlex.xs="100%" routerLink="/diagnoses/drugs/add">Add Drug</button>
-</div>
-<mat-table [dataSource]="dataSource" matSort>
-
-    <ng-container matColumnDef="id">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Id</mat-header-cell>
-        <mat-cell *matCellDef="let element">{{element.id | number}}</mat-cell>
-    </ng-container>
-
-    <ng-container matColumnDef="name">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
-        <mat-cell *matCellDef="let element">{{element.name}}</mat-cell>
-    </ng-container>
-
-    <ng-container matColumnDef="deleted">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Deleted</mat-header-cell>
-        <mat-cell *matCellDef="let element">
-            <mat-checkbox [checked]="element.deleted" disabled></mat-checkbox>
-        </mat-cell>
-    </ng-container>
-
-    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns" routerLink="/diagnoses/drugs/{{row.id}}"></mat-row>
-    <mat-spinner *ngIf="isLoading"></mat-spinner>
-</mat-table>
-
-<mat-paginator #paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]" fxLayoutAlign="center center"></mat-paginator>
-

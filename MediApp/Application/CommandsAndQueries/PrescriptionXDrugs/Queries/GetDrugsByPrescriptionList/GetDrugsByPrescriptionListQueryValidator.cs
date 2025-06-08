@@ -14,7 +14,7 @@ namespace Application.CommandsAndQueries
         {
             _context = context;
             RuleFor(x => x.PrescriptionId)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Prescription is required")
                 .MustAsync(ExistsPrescription).WithMessage("Prescription is not valid");
         }

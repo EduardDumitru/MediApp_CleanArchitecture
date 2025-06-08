@@ -14,7 +14,7 @@ namespace Application.CommandsAndQueries
         {
             _context = context;
             RuleFor(x => x.ClinicId)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Clinic is required")
                 .MustAsync(ExistsClinic).WithMessage("Clinic is not valid");
         }

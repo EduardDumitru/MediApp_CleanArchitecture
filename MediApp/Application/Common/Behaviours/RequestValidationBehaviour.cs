@@ -1,28 +1,24 @@
-﻿using System.Collections.Generic;
+﻿using FluentValidation;
+using FluentValidation.Results;
+using MediatR;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using FluentValidation;
-using FluentValidation.Results;
-using MediatR;
 using ValidationException = Application.Common.Exceptions.ValidationException;
 
 namespace Application.Common.Behaviours
 {
-    public class RequestValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-        where TRequest : IRequest<TResponse>
+    public class RequestValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TRequest>> validators) : IPipelineBehavior<TRequest, TResponse>
+           where TRequest : IRequest<TResponse>
     {
-        private readonly IEnumerable<IValidator<TRequest>> _validators;
+        private readonly IEnumerable<IValidator<TRequest>> _validators = validators;
 
-        public RequestValidationBehavior(IEnumerable<IValidator<TRequest>> validators)
+        public async Task<TResponse> Handle(TRequest request,
+            RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
-            _validators = validators;
-        }
-
-        public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken,
-            RequestHandlerDelegate<TResponse> next)
-        {
-            var context = new ValidationContext(request);
+            // Fix: Specify the generic type argument for ValidationContext<T>
+            var context = new ValidationContext<TRequest>(request);
 
             var validators = _validators
                 .Select(v => v.ValidateAsync(context, cancellationToken)).ToList();
@@ -30,12 +26,12 @@ namespace Application.Common.Behaviours
             foreach (var validator in validators)
             {
                 var validationResult = await validator;
-                if (validationResult.Errors.Any()) failures.AddRange(validationResult.Errors);
+                if (validationResult.Errors.Count != 0) failures.AddRange(validationResult.Errors);
             }
 
             if (failures.Count != 0) throw new ValidationException(failures);
 
-            return await next();
+            return await next(cancellationToken);
         }
     }
 }

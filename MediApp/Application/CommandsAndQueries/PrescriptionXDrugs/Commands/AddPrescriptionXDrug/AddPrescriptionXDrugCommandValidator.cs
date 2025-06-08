@@ -16,21 +16,21 @@ namespace Application.CommandsAndQueries
         {
             _context = context;
             RuleFor(x => x.PrescriptionId)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Diagnosis is required")
                 .MustAsync(ExistsPrescription).WithMessage("Prescription is not valid");
             RuleFor(x => x.DrugId)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Drug is required")
                 .MustAsync(ExistsDrug).WithMessage("Drug is not valid");
             RuleFor(x => x.Box)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Box is required");
             RuleFor(x => x.PerInterval)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Per interval is required");
             RuleFor(x => x.Interval)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Interval is required")
                 .MustAsync(BeValidTimeSpan).WithMessage("Interval is not correctly configured");
         }

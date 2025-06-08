@@ -16,6 +16,10 @@ namespace Infrastructure.Persistence
         private readonly ICurrentUserService _currentUserService;
         private readonly IDateTime _dateTime;
 
+        public ApplicationDbContext(DbContextOptions options) : base(options)
+        {
+        }
+
         public ApplicationDbContext(DbContextOptions options, ICurrentUserService currentUserService,
             IDateTime dateTime)
             : base(options)
@@ -50,6 +54,7 @@ namespace Infrastructure.Persistence
                         entry.Entity.CreatedBy = _currentUserService.UserId;
                         entry.Entity.CreatedOn = _dateTime.Now;
                         break;
+
                     case EntityState.Modified:
                         if (entry.Entity.Deleted)
                         {

@@ -1,56 +1,79 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { Location } from '@angular/common';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { HolidayIntervalData, HolidayIntervalDetails, 
-  UpdateHolidayIntervalCommand, AddHolidayIntervalCommand, RestoreHolidayIntervalCommand } from 'src/app/@core/data/holidayinterval';
-import { UIService } from 'src/app/shared/ui.service';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { catchError, finalize, of, Subscription } from 'rxjs';
+
+import {
+  HolidayIntervalData,
+  HolidayIntervalDetails,
+  UpdateHolidayIntervalCommand,
+  AddHolidayIntervalCommand,
+  RestoreHolidayIntervalCommand
+} from 'src/app/@core/data/holidayinterval';
+import { UIService } from 'src/app/shared/ui.service';
 import { Result } from 'src/app/@core/data/common/result';
 import { AuthService } from 'src/app/auth/auth.service';
-import { Subscription } from 'rxjs';
 import { SelectItemsList } from 'src/app/@core/data/common/selectitem';
 import { EmployeeData, EmployeeDetails } from 'src/app/@core/data/employee';
+
+import { getSharedImports } from 'src/app/shared/shared.module';
 
 @Component({
   selector: 'app-holidayinterval',
   templateUrl: './holidayinterval.component.html',
-  styleUrls: ['./holidayinterval.component.scss']
+  styleUrls: ['./holidayinterval.component.scss'],
+  standalone: true,
+  imports: [
+    ...getSharedImports(),
+  ],
 })
 export class HolidayintervalComponent implements OnInit, OnDestroy {
   isLoading = false;
-  holidayIntervalForm: FormGroup;
-  holidayIntervalId: number;
-  isDeleted = false;
+  holidayIntervalForm!: FormGroup;
+  holidayIntervalId?: number;
+  isDeleted: boolean | undefined = false;
   currentUserId = -1;
-  currentEmployeeUserId = -1;
+  currentEmployeeUserId: number | undefined = -1;
   employeeId = '';
   isAdmin = false;
-  currentUserIdSubscription: Subscription;
-  adminSubscription: Subscription;
+  currentUserIdSubscription!: Subscription;
+  adminSubscription!: Subscription;
   minDate: Date = new Date();
   employeeSelectList: SelectItemsList = new SelectItemsList();
-  constructor(private holidayIntervalData: HolidayIntervalData, private uiService: UIService,
-    private route: ActivatedRoute, private _location: Location, private authService: AuthService,
-    private employeeData: EmployeeData) { }
 
-  ngOnInit() {
-      this.minDate = this.getMinDate();
-      this.currentUserIdSubscription = this.authService.currentUserId.subscribe(userId => {
-        this.currentUserId = userId;
-      });
-      this.adminSubscription = this.authService.isAdmin.subscribe(isAdmin => {
-        this.isAdmin = isAdmin;
-        });
-      if (Number(this.route.snapshot.params.id)) {
-          this.holidayIntervalId = +this.route.snapshot.params.id;
-      }
-      this.initForm();
-      this.getEmployees();
+  // Dependency injection using inject function
+  private readonly holidayIntervalData = inject(HolidayIntervalData);
+  private readonly uiService = inject(UIService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly location = inject(Location);
+  private readonly authService = inject(AuthService);
+  private readonly employeeData = inject(EmployeeData);
+  private readonly fb = inject(FormBuilder);
+
+  ngOnInit(): void {
+    this.minDate = this.getMinDate();
+
+    this.currentUserIdSubscription = this.authService.currentUserId.subscribe(userId => {
+      this.currentUserId = userId;
+    });
+
+    this.adminSubscription = this.authService.isAdmin.subscribe(isAdmin => {
+      this.isAdmin = isAdmin;
+    });
+
+    const id = Number(this.route.snapshot.params['id']);
+    if (id) {
+      this.holidayIntervalId = id;
+    }
+
+    this.initForm();
+    this.getEmployees();
   }
 
-  ngOnDestroy() {
-      this.currentUserIdSubscription.unsubscribe();
-      this.adminSubscription.unsubscribe();
+  ngOnDestroy(): void {
+    this.currentUserIdSubscription?.unsubscribe();
+    this.adminSubscription?.unsubscribe();
   }
 
   myFilter = (d: Date | null): boolean => {
@@ -59,167 +82,224 @@ export class HolidayintervalComponent implements OnInit, OnDestroy {
     return day !== 0 && day !== 6;
   }
 
-  getMinDate() {
+  getMinDate(): Date {
     const tempDate = new Date();
-    const day = (this.minDate).getDay();
+    const day = tempDate.getDay();
+
     // Prevent Saturday and Sunday from being selected.
     if (day === 0) {
       tempDate.setTime(tempDate.getTime() + 1000 * 60 * 60 * 24);
       return tempDate;
     }
+
     if (day === 6) {
       tempDate.setTime(tempDate.getTime() + 1000 * 60 * 60 * 48);
       return tempDate;
     }
+
     return tempDate;
   }
 
-
-  disableEmployeeId() {
-    this.holidayIntervalForm.get('employeeId').disable();
+  disableEmployeeId(): void {
+    this.holidayIntervalForm.get('employeeId')?.disable();
   }
 
-  initForm() {
-      this.holidayIntervalForm = new FormGroup({
-          employeeId: new FormControl('', [Validators.required]),
-          startDate: new FormControl({value: this.minDate, disabled: true}, [Validators.required]),
-          endDate: new FormControl({value: this.minDate, disabled: true}, [Validators.required])
-      })
-      if (this.holidayIntervalId) {
-          this.getHolidayInterval();
-      } else {
-        if (!this.isAdmin) {
-          this.getEmployee();
+  initForm(): void {
+    this.holidayIntervalForm = this.fb.group({
+      employeeId: ['', Validators.required],
+      startDate: [{ value: this.minDate, disabled: true }, Validators.required],
+      endDate: [{ value: this.minDate, disabled: true }, Validators.required]
+    });
+
+    if (this.holidayIntervalId) {
+      this.getHolidayInterval();
+    } else {
+      if (!this.isAdmin) {
+        this.getEmployee();
+      }
+    }
+  }
+
+  getEmployee(): void {
+    this.isLoading = true;
+
+    this.employeeData.GetEmployeeDetailsByCurrentUser()
+      .pipe(
+        catchError(error => {
+          this.uiService.showErrorSnackbar(error, undefined, 3000);
+          return of({} as EmployeeDetails);
+        }),
+        finalize(() => this.isLoading = false)
+      )
+      .subscribe((employee: EmployeeDetails) => {
+        if (!employee) return;
+
+        this.employeeId = employee.id.toString();
+        this.currentEmployeeUserId = employee.userProfileId;
+        this.holidayIntervalForm.patchValue({ employeeId: this.employeeId });
+        this.disableEmployeeId();
+      });
+  }
+
+  getEmployees(): void {
+    this.isLoading = true;
+
+    this.employeeData.GetAllEmployeesDropdown()
+      .pipe(
+        catchError(error => {
+          this.uiService.showErrorSnackbar(error, undefined, 3000);
+          return of(new SelectItemsList());
+        }),
+        finalize(() => this.isLoading = false)
+      )
+      .subscribe((employees: SelectItemsList) => {
+        this.employeeSelectList = employees;
+      });
+  }
+
+  getHolidayInterval(): void {
+    this.isLoading = true;
+
+    this.holidayIntervalData.GetHolidayIntervalDetails(this.holidayIntervalId!)
+      .pipe(
+        catchError(error => {
+          this.uiService.showErrorSnackbar(error, undefined, 3000);
+          return of({} as HolidayIntervalDetails);
+        }),
+        finalize(() => this.isLoading = false)
+      )
+      .subscribe((holidayInterval: HolidayIntervalDetails) => {
+        if (!holidayInterval) return;
+
+        this.holidayIntervalForm.setValue({
+          employeeId: holidayInterval.employeeId.toString(),
+          startDate: new Date(holidayInterval.startDate),
+          endDate: new Date(holidayInterval.endDate)
+        });
+
+        this.isDeleted = holidayInterval.deleted;
+        this.employeeId = holidayInterval.employeeId.toString();
+        this.currentEmployeeUserId = holidayInterval.userProfileId;
+        this.disableEmployeeId();
+
+        if (this.isDeleted) {
+          this.holidayIntervalForm.disable();
         }
-      }
-  }
-
-  getEmployee() {
-    this.employeeData.GetEmployeeDetailsByCurrentUser().subscribe((employee: EmployeeDetails) => {
-      this.employeeId = employee.id.toString();
-      this.currentEmployeeUserId = employee.userProfileId;
-      this.holidayIntervalForm.patchValue({employeeId: this.employeeId});
-      this.disableEmployeeId();
-    },
-    error => {
-        this.uiService.showErrorSnackbar(error, null, 3000);
-        this.isLoading = false;
-    });
-  }
-
-  getEmployees() {
-    this.employeeData.GetAllEmployeesDropdown().subscribe((employees: SelectItemsList) => {
-      this.employeeSelectList = employees;
-      console.log(this.employeeSelectList);
-    },
-    error => {
-        this.uiService.showErrorSnackbar(error, null, 3000);
-        this.isLoading = false;
-    });
-  }
-
-  getHolidayInterval() {
-      this.isLoading = true;
-      this.holidayIntervalData.GetHolidayIntervalDetails(this.holidayIntervalId).subscribe((holidayInterval: HolidayIntervalDetails) => {
-          this.holidayIntervalForm.setValue({employeeId: holidayInterval.employeeId.toString(),
-            startDate: new Date(holidayInterval.startDate),
-            endDate: new Date(holidayInterval.endDate)});
-          this.isDeleted = holidayInterval.deleted;
-          this.employeeId = holidayInterval.employeeId.toString();
-          this.currentEmployeeUserId = holidayInterval.userProfileId;
-          console.log(holidayInterval.userProfileId)
-          this.holidayIntervalForm.patchValue({employeeId: this.employeeId});
-          this.disableEmployeeId();
-          if (this.isDeleted) {
-              this.holidayIntervalForm.disable();
-          }
-          this.isLoading = false;
-      },
-          error => {
-              this.uiService.showErrorSnackbar(error, null, 3000);
-              this.isLoading = false;
-          });
-  }
-
-  onSubmit() {
-      this.isLoading = true;
-      if (this.holidayIntervalId) {
-          this.updateHolidayInterval();
-      } else {
-          this.addHolidayInterval();
-      }
-  }
-
-  updateHolidayInterval() {
-      const updateHolidayIntervalCommand: UpdateHolidayIntervalCommand = {
-          id: this.holidayIntervalId,
-          employeeId: +this.employeeId,
-          startDate: new Date(this.holidayIntervalForm.getRawValue().startDate),
-          endDate: new Date(this.holidayIntervalForm.getRawValue().endDate)
-      } as UpdateHolidayIntervalCommand;
-
-      this.holidayIntervalData.UpdateHolidayInterval(updateHolidayIntervalCommand).subscribe((res: Result) => {
-          this.uiService.showSuccessSnackbar(res.successMessage, null, 3000);
-          this._location.back();
-          this.isLoading = false;
-      }, error => {
-          this.isLoading = false;
-          this.uiService.showErrorSnackbar(error, null, 3000);
-          console.log(error);
       });
   }
 
-  addHolidayInterval() {
-      const addHolidayIntervalCommand: AddHolidayIntervalCommand = {
-        employeeId: +this.holidayIntervalForm.value.employeeId,
-        startDate: new Date(this.holidayIntervalForm.getRawValue().startDate),
-        endDate: new Date(this.holidayIntervalForm.getRawValue().endDate)
-    } as AddHolidayIntervalCommand;
+  onSubmit(): void {
+    if (this.holidayIntervalForm.invalid) {
+      return;
+    }
 
-      this.holidayIntervalData.AddHolidayInterval(addHolidayIntervalCommand).subscribe((res: Result) => {
-          this.uiService.showSuccessSnackbar(res.successMessage, null, 3000);
-          this._location.back();
-          this.isLoading = false;
-      }, error => {
-          this.isLoading = false;
-          this.uiService.showErrorSnackbar(error, null, 3000);
+    this.isLoading = true;
+
+    if (this.holidayIntervalId) {
+      this.updateHolidayInterval();
+    } else {
+      this.addHolidayInterval();
+    }
+  }
+
+  updateHolidayInterval(): void {
+    const formValues = this.holidayIntervalForm.getRawValue();
+
+    const updateCommand: UpdateHolidayIntervalCommand = {
+      id: this.holidayIntervalId!,
+      employeeId: +this.employeeId,
+      startDate: new Date(formValues.startDate),
+      endDate: new Date(formValues.endDate)
+    };
+
+    this.holidayIntervalData.UpdateHolidayInterval(updateCommand)
+      .pipe(
+        catchError(error => {
+          this.uiService.showErrorSnackbar(error, undefined, 3000);
+          return of(null);
+        }),
+        finalize(() => this.isLoading = false)
+      )
+      .subscribe((res: Result | null) => {
+        if (!res) return;
+
+        this.uiService.showSuccessSnackbar(res.successMessage, undefined, 3000);
+        this.location.back();
       });
   }
 
-  deleteHolidayInterval() {
-      this.isLoading = true;
-      this.holidayIntervalData.DeleteHolidayInterval(this.holidayIntervalId).subscribe((res: Result) => {
-          this.uiService.showSuccessSnackbar(res.successMessage, null, 3000);
-          this._location.back();
-          this.isLoading = false;
-      }, error => {
-          this.isLoading = false;
-          this.uiService.showErrorSnackbar(error, null, 3000);
-      })
+  addHolidayInterval(): void {
+    const formValues = this.holidayIntervalForm.getRawValue();
+
+    const addCommand: AddHolidayIntervalCommand = {
+      employeeId: +formValues.employeeId,
+      startDate: new Date(formValues.startDate),
+      endDate: new Date(formValues.endDate)
+    };
+
+    this.holidayIntervalData.AddHolidayInterval(addCommand)
+      .pipe(
+        catchError(error => {
+          this.uiService.showErrorSnackbar(error, undefined, 3000);
+          return of(null);
+        }),
+        finalize(() => this.isLoading = false)
+      )
+      .subscribe((res: Result | null) => {
+        if (!res) return;
+
+        this.uiService.showSuccessSnackbar(res.successMessage, undefined, 3000);
+        this.location.back();
+      });
   }
 
-  restoreHolidayInterval() {
-      this.isLoading = true;
-      const restoreHolidayIntervalCommand: RestoreHolidayIntervalCommand = {
-          id: this.holidayIntervalId
-      } as RestoreHolidayIntervalCommand;
+  deleteHolidayInterval(): void {
+    this.isLoading = true;
 
-      this.holidayIntervalData.RestoreHolidayInterval(restoreHolidayIntervalCommand).subscribe((res: Result) => {
-          this.uiService.showSuccessSnackbar(res.successMessage, null, 3000);
-          this._location.back();
-          this.isLoading = false;
-      }, error => {
-          this.isLoading = false;
-          this.uiService.showErrorSnackbar(error, null, 3000);
-      })
+    this.holidayIntervalData.DeleteHolidayInterval(this.holidayIntervalId!)
+      .pipe(
+        catchError(error => {
+          this.uiService.showErrorSnackbar(error, undefined, 3000);
+          return of(null);
+        }),
+        finalize(() => this.isLoading = false)
+      )
+      .subscribe((res: Result | null) => {
+        if (!res) return;
+
+        this.uiService.showSuccessSnackbar(res.successMessage, undefined, 3000);
+        this.location.back();
+      });
   }
 
-  isCurrentUserOwner() {
+  restoreHolidayInterval(): void {
+    this.isLoading = true;
+
+    const restoreCommand: RestoreHolidayIntervalCommand = {
+      id: this.holidayIntervalId!
+    };
+
+    this.holidayIntervalData.RestoreHolidayInterval(restoreCommand)
+      .pipe(
+        catchError(error => {
+          this.uiService.showErrorSnackbar(error, undefined, 3000);
+          return of(null);
+        }),
+        finalize(() => this.isLoading = false)
+      )
+      .subscribe((res: Result | null) => {
+        if (!res) return;
+
+        this.uiService.showSuccessSnackbar(res.successMessage, undefined, 3000);
+        this.location.back();
+      });
+  }
+
+  isCurrentUserOwner(): boolean {
     return this.currentUserId === this.currentEmployeeUserId;
   }
 
-  goBack() {
-      this._location.back();
-    }
-
+  goBack(): void {
+    this.location.back();
+  }
 }

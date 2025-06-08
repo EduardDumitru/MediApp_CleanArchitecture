@@ -1,8 +1,8 @@
 import { Observable } from 'rxjs';
-import { SelectItemsList } from './common/selectitem';
 import { Result } from './common/result';
+import { Injectable } from '@angular/core';
 
-export class MedicalCheckDetails {
+export interface MedicalCheckDetails {
     appointment: Date;
     medicalCheckTypeName: string;
     medicalCheckTypeId: number;
@@ -19,7 +19,7 @@ export class MedicalCheckDetails {
     deleted?: boolean;
 }
 
-export class EmployeeMedicalCheckLookup {
+export interface EmployeeMedicalCheckLookup {
     id: number;
     appointment: Date;
     medicalCheckTypeName: string;
@@ -31,10 +31,10 @@ export class EmployeeMedicalCheckLookup {
 }
 
 export class EmployeeMedicalChecksList {
-    employeeMedicalChecks: EmployeeMedicalCheckLookup[];
+    employeeMedicalChecks: EmployeeMedicalCheckLookup[] = [];
 }
 
-export class PatientMedicalCheckLookup {
+export interface PatientMedicalCheckLookup {
     id: number;
     appointment: Date;
     medicalCheckTypeName: string;
@@ -45,10 +45,10 @@ export class PatientMedicalCheckLookup {
 }
 
 export class PatientMedicalChecksList {
-    patientMedicalChecks: PatientMedicalCheckLookup[];
+    patientMedicalChecks: PatientMedicalCheckLookup[] = [];
 }
 
-export class MedicalChecksToAddLookup {
+export interface MedicalChecksToAddLookup {
     appointment: Date;
     medicalCheckTypeName: string;
     diagnosisName: string;
@@ -57,7 +57,7 @@ export class MedicalChecksToAddLookup {
     deleted?: boolean;
 }
 
-export class MedicalChecksByClinicLookup {
+export interface MedicalChecksByClinicLookup {
     id: number;
     appointment: Date;
     medicalCheckTypeName: string;
@@ -70,21 +70,21 @@ export class MedicalChecksByClinicLookup {
 }
 
 export class MedicalChecksByClinicList {
-    medicalChecksByClinic: MedicalChecksByClinicLookup[];
+    medicalChecksByClinic: MedicalChecksByClinicLookup[] = [];
 }
 
 export class MedicalChecksToAddList {
-    medicalChecksToAdd: MedicalChecksToAddLookup[];
+    medicalChecksToAdd: MedicalChecksToAddLookup[] = [];
 }
 
-export class MedicalChecksToAddQuery {
+export interface MedicalChecksToAddQuery {
     appointment: Date;
     clinicId: number;
     medicalCheckTypeId: number;
     employeeId: number;
 }
 
-export class AddMedicalCheckCommand {
+export interface AddMedicalCheckCommand {
     appointment: Date;
     clinicId: number;
     patientId: number;
@@ -92,10 +92,14 @@ export class AddMedicalCheckCommand {
     medicalCheckTypeId: number;
 }
 
-export class UpdateMedicalCheckCommand {
+export interface UpdateMedicalCheckCommand {
     id: number;
     diagnosisId: number;
 }
+
+@Injectable({
+    providedIn: 'root'
+})
 
 export abstract class MedicalCheckData {
     abstract GetMedicalCheckDetails(id: number): Observable<MedicalCheckDetails>;
@@ -103,7 +107,7 @@ export abstract class MedicalCheckData {
     abstract GetPatientMedicalChecks(patientId: number): Observable<PatientMedicalChecksList>;
     abstract GetMedicalChecksToAdd(medicalChecksToAdd: MedicalChecksToAddQuery): Observable<MedicalChecksToAddList>;
     abstract GetMedicalChecksByClinic(clinicId: number): Observable<MedicalChecksByClinicList>;
-    abstract AddMedicalCheck(addMedicalCheckCommand: AddMedicalCheckCommand): Observable<Result>;
-    abstract UpdateMedicalCheck(updateMedicalCheckCommand: UpdateMedicalCheckCommand): Observable<Result>;
-    abstract DeleteMedicalCheck(id: number): Observable<Result>;
+    abstract AddMedicalCheck(addMedicalCheckCommand: AddMedicalCheckCommand): Observable<Result | null>;
+    abstract UpdateMedicalCheck(updateMedicalCheckCommand: UpdateMedicalCheckCommand): Observable<Result | null>;
+    abstract DeleteMedicalCheck(id: number): Observable<Result | null>;
 }

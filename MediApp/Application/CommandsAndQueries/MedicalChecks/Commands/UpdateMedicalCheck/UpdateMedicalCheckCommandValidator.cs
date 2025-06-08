@@ -14,10 +14,10 @@ namespace Application.CommandsAndQueries
         {
             _context = context;
             RuleFor(x => x.Id)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Id is required");
             RuleFor(x => x.DiagnosisId)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Diagnosis is required")
                 .MustAsync(ExistsDiagnosis).WithMessage("Diagnosis is not valid");
         }

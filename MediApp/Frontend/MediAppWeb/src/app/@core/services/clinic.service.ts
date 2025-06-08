@@ -1,126 +1,142 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { ClinicData, ClinicDetails, ClinicsList, AddClinicCommand, UpdateClinicCommand, RestoreClinicCommand } from '../data/clinic';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import {
+    ClinicData,
+    ClinicDetails,
+    ClinicsList,
+    AddClinicCommand,
+    UpdateClinicCommand,
+    RestoreClinicCommand
+} from '../data/clinic';
 import { environment } from 'src/environments/environment';
-import { Observable, throwError } from 'rxjs';
-import { retry, catchError, map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { SelectItemsList } from '../data/common/selectitem';
 import { Result } from '../data/common/result';
 import { ErrorService } from 'src/app/shared/error.service';
-import { AuthService } from 'src/app/auth/auth.service';
+import { ApiHelper } from './api.helper';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class ClinicService extends ClinicData {
-    baseUrl = environment.baseURL + 'Clinic';
+    private readonly baseUrl = `${environment.baseURL}Clinic`;
 
-    constructor(private http: HttpClient, private errService: ErrorService, private authService: AuthService) {
-        super();
+    // Modern dependency injection using inject function
+    private readonly http = inject(HttpClient);
+    private readonly errorService = inject(ErrorService);
+    private readonly apiHelper = inject(ApiHelper);
+
+    /**
+     * Get details for a specific clinic
+     * @param id Clinic ID
+     * @returns Observable with clinic details
+     */
+    override GetClinicDetails(id: number): Observable<ClinicDetails> {
+        return this.http.get<ClinicDetails>(
+            `${this.baseUrl}/${id}`,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<ClinicDetails>('GetClinicDetails', error, {} as ClinicDetails))
+        );
     }
 
+    /**
+     * Get all clinics
+     * @returns Observable with list of clinics
+     */
+    override GetClinics(): Observable<ClinicsList> {
+        return this.http.get<ClinicsList>(
+            this.baseUrl,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<ClinicsList>('GetClinics', error, new ClinicsList()))
+        );
+    }
 
-    GetClinicDetails(id: number): Observable<ClinicDetails> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.get<ClinicDetails>(this.baseUrl + '/' + id, httpOptions)
-            .pipe(
-                map((response: any) => response),
-                retry(1),
-                catchError(this.errService.errorHandl)
-            );
-    }
-    GetClinics(): Observable<ClinicsList> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.get<ClinicsList>(this.baseUrl, httpOptions)
-            .pipe(
-                map((response: any) => response),
-                retry(1),
-                catchError(this.errService.errorHandl)
-            );
-    }
-    GetClinicsDropdown(countryId?: number, countyId?: number, cityId?: number): Observable<SelectItemsList> {
+    /**
+     * Get clinics for dropdown
+     * @param countryId Optional country ID filter
+     * @param countyId Optional county ID filter
+     * @param cityId Optional city ID filter
+     * @returns Observable with select items list
+     */
+    override GetClinicsDropdown(countryId?: number, countyId?: number, cityId?: number): Observable<SelectItemsList> {
         const params = new HttpParams({
             fromObject: {
                 countryId: countryId ? countryId.toString() : '',
                 countyId: countyId ? countyId.toString() : '',
                 cityId: cityId ? cityId.toString() : ''
             }
-          });
+        });
 
-        const httpOptions = {
-            headers: new HttpHeaders({  'Content-Type': 'application/json', Authorization: `Bearer ${this.authService.getToken()}`}),
-            params
-        };
-
-        return this.http.get<SelectItemsList>(this.baseUrl + '/clinicsdropdown/', httpOptions)
-            .pipe(
-                map((response: any) => response),
-                retry(1),
-                catchError(this.errService.errorHandl)
-            );
-    }
-    AddClinic(addClinicCommand: AddClinicCommand): Observable<Result> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.post<Result>(this.baseUrl, JSON.stringify(addClinicCommand), httpOptions)
-            .pipe(
-                map((response: any) => response),
-                retry(1),
-                catchError(this.errService.errorHandl)
-            );
-    }
-    UpdateClinic(updateClinicCommand: UpdateClinicCommand): Observable<Result> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.put<Result>(this.baseUrl, JSON.stringify(updateClinicCommand), httpOptions)
-        .pipe(
-            map((response: any) => response),
-            retry(1),
-            catchError(this.errService.errorHandl)
+        return this.http.get<SelectItemsList>(
+            `${this.baseUrl}/clinicsdropdown`,
+            {
+                ...this.apiHelper.getAuthOptions(),
+                params
+            }
+        ).pipe(
+            catchError(error => this.errorService.handleError<SelectItemsList>('GetClinicsDropdown', error, new SelectItemsList()))
         );
     }
-    DeleteClinic(id: number): Observable<Result> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.delete<Result>(this.baseUrl + '/' + id, httpOptions)
-        .pipe(
-            map((response: any) => response),
-            retry(1),
-            catchError(this.errService.errorHandl)
+
+    /**
+     * Add a new clinic
+     * @param addClinicCommand Clinic data
+     * @returns Observable with result
+     */
+    override AddClinic(addClinicCommand: AddClinicCommand): Observable<Result | null> {
+        return this.http.post<Result>(
+            this.baseUrl,
+            addClinicCommand, // Angular HttpClient automatically serializes objects
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<Result | null>('AddClinic', error, null))
         );
     }
-    RestoreClinic(restoreClinicCommand: RestoreClinicCommand): Observable<Result> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.put<Result>(this.baseUrl + '/restore', JSON.stringify(restoreClinicCommand), httpOptions)
-        .pipe(
-            map((response: any) => response),
-            retry(1),
-            catchError(this.errService.errorHandl)
+
+    /**
+     * Update an existing clinic
+     * @param updateClinicCommand Clinic data
+     * @returns Observable with result
+     */
+    override UpdateClinic(updateClinicCommand: UpdateClinicCommand): Observable<Result | null> {
+        return this.http.put<Result>(
+            this.baseUrl,
+            updateClinicCommand, // Angular HttpClient automatically serializes objects
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<Result | null>('UpdateClinic', error, null))
+        );
+    }
+
+    /**
+     * Delete a clinic
+     * @param id Clinic ID
+     * @returns Observable with result
+     */
+    override DeleteClinic(id: number): Observable<Result | null> {
+        return this.http.delete<Result>(
+            `${this.baseUrl}/${id}`,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<Result | null>('DeleteClinic', error, null))
+        );
+    }
+
+    /**
+     * Restore a previously deleted clinic
+     * @param restoreClinicCommand Clinic restore command
+     * @returns Observable with result
+     */
+    override RestoreClinic(restoreClinicCommand: RestoreClinicCommand): Observable<Result | null> {
+        return this.http.put<Result>(
+            `${this.baseUrl}/restore`,
+            restoreClinicCommand, // Angular HttpClient automatically serializes objects
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<Result | null>('RestoreClinic', error, null))
         );
     }
 }

@@ -1,120 +1,128 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { DiagnosisData, DiagnosisDetails,
-    AddDiagnosisCommand, UpdateDiagnosisCommand, RestoreDiagnosisCommand, DiagnosesList } from '../data/diagnosis';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import {
+    DiagnosisData,
+    DiagnosisDetails,
+    AddDiagnosisCommand,
+    UpdateDiagnosisCommand,
+    RestoreDiagnosisCommand,
+    DiagnosesList
+} from '../data/diagnosis';
 import { environment } from 'src/environments/environment';
-import { Observable, throwError } from 'rxjs';
-import { retry, catchError, map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { SelectItemsList } from '../data/common/selectitem';
 import { Result } from '../data/common/result';
 import { ErrorService } from 'src/app/shared/error.service';
-import { AuthService } from 'src/app/auth/auth.service';
+import { ApiHelper } from './api.helper';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class DiagnosisService extends DiagnosisData {
-    baseUrl = environment.baseURL + 'Diagnosis';
+    private readonly baseUrl = `${environment.baseURL}Diagnosis`;
 
-    constructor(private http: HttpClient, private errService: ErrorService, private authService: AuthService) {
-        super();
-    }
+    // Modern dependency injection using inject function
+    private readonly http = inject(HttpClient);
+    private readonly errorService = inject(ErrorService);
+    private readonly apiHelper = inject(ApiHelper);
 
-
-    GetDiagnosisDetails(id: number): Observable<DiagnosisDetails> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.get<DiagnosisDetails>(this.baseUrl + '/' + id, httpOptions)
-            .pipe(
-                map((response: any) => response),
-                retry(1),
-                catchError(this.errService.errorHandl)
-            );
-    }
-    GetDiagnoses(): Observable<DiagnosesList> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.get<DiagnosesList>(this.baseUrl, httpOptions)
-            .pipe(
-                map((response: any) => response),
-                retry(1),
-                catchError(this.errService.errorHandl)
-            );
-    }
-    GetDiagnosesDropdown(): Observable<SelectItemsList> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.get<SelectItemsList>(this.baseUrl + '/diagnosesdropdown', httpOptions)
-            .pipe(
-                map((response: any) => response),
-                retry(1),
-                catchError(this.errService.errorHandl)
-            );
-    }
-    AddDiagnosis(addDiagnosisCommand: AddDiagnosisCommand): Observable<Result> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.post<Result>(this.baseUrl, JSON.stringify(addDiagnosisCommand), httpOptions)
-            .pipe(
-                map((response: any) => response),
-                retry(1),
-                catchError(this.errService.errorHandl)
-            );
-    }
-    UpdateDiagnosis(updateDiagnosisCommand: UpdateDiagnosisCommand): Observable<Result> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.put<Result>(this.baseUrl, JSON.stringify(updateDiagnosisCommand), httpOptions)
-        .pipe(
-            map((response: any) => response),
-            retry(1),
-            catchError(this.errService.errorHandl)
+    /**
+     * Get details for a specific diagnosis
+     * @param id Diagnosis ID
+     * @returns Observable with diagnosis details
+     */
+    override GetDiagnosisDetails(id: number): Observable<DiagnosisDetails> {
+        return this.http.get<DiagnosisDetails>(
+            `${this.baseUrl}/${id}`,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<DiagnosisDetails>('GetDiagnosisDetails', error, {} as DiagnosisDetails))
         );
     }
-    DeleteDiagnosis(id: number): Observable<Result> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.delete<Result>(this.baseUrl + '/' + id, httpOptions)
-        .pipe(
-            map((response: any) => response),
-            retry(1),
-            catchError(this.errService.errorHandl)
+
+    /**
+     * Get all diagnoses
+     * @returns Observable with list of diagnoses
+     */
+    override GetDiagnoses(): Observable<DiagnosesList> {
+        return this.http.get<DiagnosesList>(
+            this.baseUrl,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<DiagnosesList>('GetDiagnoses', error, new DiagnosesList()))
         );
     }
-    RestoreDiagnosis(restoreDiagnosisCommand: RestoreDiagnosisCommand): Observable<Result> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.put<Result>(this.baseUrl + '/restore', JSON.stringify(restoreDiagnosisCommand), httpOptions)
-        .pipe(
-            map((response: any) => response),
-            retry(1),
-            catchError(this.errService.errorHandl)
+
+    /**
+     * Get diagnoses for dropdown
+     * @returns Observable with select items list
+     */
+    override GetDiagnosesDropdown(): Observable<SelectItemsList> {
+        return this.http.get<SelectItemsList>(
+            `${this.baseUrl}/diagnosesdropdown`,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<SelectItemsList>('GetDiagnosesDropdown', error, new SelectItemsList()))
+        );
+    }
+
+    /**
+     * Add a new diagnosis
+     * @param addDiagnosisCommand Diagnosis data
+     * @returns Observable with result
+     */
+    override AddDiagnosis(addDiagnosisCommand: AddDiagnosisCommand): Observable<Result | null> {
+        return this.http.post<Result>(
+            this.baseUrl,
+            addDiagnosisCommand,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<Result | null>('AddDiagnosis', error, null))
+        );
+    }
+
+    /**
+     * Update an existing diagnosis
+     * @param updateDiagnosisCommand Diagnosis data
+     * @returns Observable with result
+     */
+    override UpdateDiagnosis(updateDiagnosisCommand: UpdateDiagnosisCommand): Observable<Result | null> {
+        return this.http.put<Result>(
+            this.baseUrl,
+            updateDiagnosisCommand,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<Result | null>('UpdateDiagnosis', error, null))
+        );
+    }
+
+    /**
+     * Delete a diagnosis
+     * @param id Diagnosis ID
+     * @returns Observable with result
+     */
+    override DeleteDiagnosis(id: number): Observable<Result | null> {
+        return this.http.delete<Result>(
+            `${this.baseUrl}/${id}`,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<Result | null>('DeleteDiagnosis', error, null))
+        );
+    }
+
+    /**
+     * Restore a previously deleted diagnosis
+     * @param restoreDiagnosisCommand Diagnosis restore command
+     * @returns Observable with result
+     */
+    override RestoreDiagnosis(restoreDiagnosisCommand: RestoreDiagnosisCommand): Observable<Result | null> {
+        return this.http.put<Result>(
+            `${this.baseUrl}/restore`,
+            restoreDiagnosisCommand,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<Result | null>('RestoreDiagnosis', error, null))
         );
     }
 }

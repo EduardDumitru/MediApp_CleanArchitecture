@@ -1,3 +1,53 @@
+Projects\MediApp\MediApp_CleanArchitecture\MediApp\Frontend\MediAppWeb\src\app\pages\location\country\country\country.component.scss .country-container {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
 .country-card {
-    padding: 60px;
+    width: 100%;
+    max-width: 600px;
+}
+
+.card-title {
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.card-content {
+    display: flex;
+    flex-direction: column;
+    padding: 16px 0;
+}
+
+.form-field {
+    width: 100%;
+    margin-bottom: 16px;
+}
+
+.card-actions {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    padding: 16px;
+}
+
+.spinner-container {
+    display: flex;
+    justify-content: center;
+    margin: 16px 0;
+}
+
+@media (max-width: 599px) {
+    .country-container {
+        padding: 10px;
+    }
+
+    .card-actions {
+        flex-direction: column;
+    }
+
+    .card-actions button {
+        margin: 4px 0;
+    }
 }

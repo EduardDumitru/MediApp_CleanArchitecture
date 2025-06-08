@@ -1,36 +1,49 @@
-<section fxLayout fxLayoutAlign="center" class="login-form">
-    <form
-      [formGroup]="loginForm"
-      (ngSubmit)="login()"
-      >
-      <mat-card fxFlex.xs="100%" fxFlex="600px">
-      <mat-card-title fxLayoutAlign="center">Login</mat-card-title>
-      <mat-card-content fxLayout="column" fxLayoutAlign="center" fxLayoutGap="15px">
-      <mat-form-field>
-        <input
-          type="email"
-          matInput
-          placeholder="Your email"
-          formControlName="email">
-        <mat-hint>Please enter a valid email.</mat-hint>
-        <mat-error>Invalid or missing email.</mat-error>
-      </mat-form-field>
-      <mat-form-field>
-        <input
-          type="password"
-          matInput
-          placeholder="Your password"
-          formControlName="password">
-        <mat-hint>Please enter your password.</mat-hint>
-        <mat-error>Missing password.</mat-error>
-      </mat-form-field>
-      <mat-spinner *ngIf="isLoading"></mat-spinner>
-    </mat-card-content>
-      <mat-card-actions fxLayoutAlign="center" *ngIf="!isLoading">
-        <button *ngIf="!isLoading" type="submit" mat-raised-button color="primary" [disabled]="loginForm.invalid">
-          Submit
+<section class="login-card">
+  <form [formGroup]="loginForm" (ngSubmit)="login()">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Login</mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="form-field-container">
+          <mat-form-field appearance="outline">
+            <mat-label>Email</mat-label>
+            <input type="email" matInput formControlName="email" placeholder="Your email" required>
+            <mat-error *ngIf="loginForm?.get('email')?.hasError('required')">
+              Email is required
+            </mat-error>
+            <mat-error *ngIf="loginForm?.get('email')?.hasError('email')">
+              Please enter a valid email address
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Password</mat-label>
+            <input type="password" matInput formControlName="password" placeholder="Your password" required>
+            <mat-error *ngIf="loginForm?.get('password')?.hasError('required')">
+              Password is required
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        @if (isLoading) {
+        <div class="spinner-container">
+          <mat-spinner></mat-spinner>
+        </div>
+        }
+      </mat-card-content>
+
+      @if (!isLoading) {
+      <mat-card-actions>
+        <button type="submit" mat-raised-button color="primary">
+          Login
         </button>
+        <a mat-button routerLink="/register" color="accent">
+          New user? Sign up
+        </a>
       </mat-card-actions>
-      </mat-card>
-    </form>
-  </section>
+      }
+    </mat-card>
+  </form>
+</section>

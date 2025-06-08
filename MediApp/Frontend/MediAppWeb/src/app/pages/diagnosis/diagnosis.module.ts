@@ -6,15 +6,23 @@ import { DiagnosisxDrugsComponent } from './diagnosisxdrug/diagnosisxdrugs/diagn
 import { DrugComponent } from './drug/drug/drug.component';
 import { DrugsComponent } from './drug/drugs/drugs.component';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { DIAGNOSISROUTES } from './diagnosis-routes';
+import { DiagnosisRoutingModule } from './diagnosis-routes';
 import { DiagnosisXDrugComponent } from './diagnosisxdrug/diagnosisxdrug/diagnosisxdrug.component';
 
 
 
 @NgModule({
-  declarations: [DiagnosisComponent, DiagnosesComponent, DiagnosisxDrugsComponent, DiagnosisXDrugComponent, DrugComponent, DrugsComponent],
+  declarations: [],
   imports: [
-    CommonModule, SharedModule, DIAGNOSISROUTES
+    CommonModule,
+    SharedModule,
+    DiagnosisRoutingModule,
+    DiagnosisComponent,
+    DiagnosesComponent,
+    DiagnosisxDrugsComponent,
+    DiagnosisXDrugComponent,
+    DrugComponent,
+    DrugsComponent
   ]
 })
 export class DiagnosisModule { }

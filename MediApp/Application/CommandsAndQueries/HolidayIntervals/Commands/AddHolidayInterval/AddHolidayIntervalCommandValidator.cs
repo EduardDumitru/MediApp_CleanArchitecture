@@ -18,17 +18,17 @@ namespace Application.CommandsAndQueries
             _context = context;
             _dateTime = dateTime;
             RuleFor(x => x.StartDate)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Start date is required")
                 .MustAsync(IsHigherThanCurrentDate).WithMessage("Start date must be after current date");
             RuleFor(x => x.EndDate)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("End date is required")
                 .MustAsync(IsSmallerThanEndDate).WithMessage("Start date must be before end date or equal")
                 .MustAsync(NoHolidayIntervalsInThisPeriod)
                 .WithMessage("Employee has other holiday intervals in this period");
             RuleFor(x => x.EmployeeId)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Employee is required")
                 .MustAsync(ExistsEmployee).WithMessage("Employee is not valid")
                 .MustAsync(NoMedicalChecksInThisPeriod).WithMessage("Employee has medical checks in this period");

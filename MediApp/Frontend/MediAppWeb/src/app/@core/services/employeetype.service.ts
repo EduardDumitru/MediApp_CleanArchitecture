@@ -1,120 +1,128 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { Observable, throwError } from 'rxjs';
-import { EmployeeTypeDetails, EmployeeTypesList,
-    AddEmployeeTypeCommand, UpdateEmployeeTypeCommand, RestoreEmployeeTypeCommand, EmployeeTypeData } from '../data/employeetype';
-import { retry, catchError, map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import {
+    EmployeeTypeData,
+    EmployeeTypeDetails,
+    EmployeeTypesList,
+    AddEmployeeTypeCommand,
+    UpdateEmployeeTypeCommand,
+    RestoreEmployeeTypeCommand
+} from '../data/employeetype';
+import { catchError } from 'rxjs/operators';
 import { SelectItemsList } from '../data/common/selectitem';
 import { Result } from '../data/common/result';
 import { ErrorService } from 'src/app/shared/error.service';
-import { AuthService } from 'src/app/auth/auth.service';
+import { ApiHelper } from './api.helper';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class EmployeeTypeService extends EmployeeTypeData {
-    baseUrl = environment.baseURL + 'EmployeeType';
+    private readonly baseUrl = `${environment.baseURL}EmployeeType`;
 
-    constructor(private http: HttpClient, private errService: ErrorService, private authService: AuthService) {
-        super();
-    }
+    // Modern dependency injection using inject function
+    private readonly http = inject(HttpClient);
+    private readonly errorService = inject(ErrorService);
+    private readonly apiHelper = inject(ApiHelper);
 
-
-    GetEmployeeTypeDetails(id: number): Observable<EmployeeTypeDetails> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.get<EmployeeTypeDetails>(this.baseUrl + '/' + id, httpOptions)
-            .pipe(
-                map((response: any) => response),
-                retry(1),
-                catchError(this.errService.errorHandl)
-            );
-    }
-    GetEmployeeTypes(): Observable<EmployeeTypesList> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.get<EmployeeTypesList>(this.baseUrl, httpOptions)
-            .pipe(
-                map((response: any) => response),
-                retry(1),
-                catchError(this.errService.errorHandl)
-            );
-    }
-    GetEmployeeTypesDropdown(): Observable<SelectItemsList> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.get<SelectItemsList>(this.baseUrl + '/employeetypesdropdown', httpOptions)
-            .pipe(
-                map((response: any) => response),
-                retry(1),
-                catchError(this.errService.errorHandl)
-            );
-    }
-    AddEmployeeType(addEmployeeTypeCommand: AddEmployeeTypeCommand): Observable<Result> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.post<Result>(this.baseUrl, JSON.stringify(addEmployeeTypeCommand), httpOptions)
-            .pipe(
-                map((response: any) => response),
-                retry(1),
-                catchError(this.errService.errorHandl)
-            );
-    }
-    UpdateEmployeeType(updateEmployeeTypeCommand: UpdateEmployeeTypeCommand): Observable<Result> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.put<Result>(this.baseUrl, JSON.stringify(updateEmployeeTypeCommand), httpOptions)
-        .pipe(
-            map((response: any) => response),
-            retry(1),
-            catchError(this.errService.errorHandl)
+    /**
+     * Get details for a specific employee type
+     * @param id Employee type ID
+     * @returns Observable with employee type details
+     */
+    override GetEmployeeTypeDetails(id: number): Observable<EmployeeTypeDetails> {
+        return this.http.get<EmployeeTypeDetails>(
+            `${this.baseUrl}/${id}`,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<EmployeeTypeDetails>('GetEmployeeTypeDetails', error, {} as EmployeeTypeDetails))
         );
     }
-    DeleteEmployeeType(id: number): Observable<Result> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.delete<Result>(this.baseUrl + '/' + id, httpOptions)
-        .pipe(
-            map((response: any) => response),
-            retry(1),
-            catchError(this.errService.errorHandl)
+
+    /**
+     * Get all employee types
+     * @returns Observable with list of employee types
+     */
+    override GetEmployeeTypes(): Observable<EmployeeTypesList> {
+        return this.http.get<EmployeeTypesList>(
+            this.baseUrl,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<EmployeeTypesList>('GetEmployeeTypes', error, new EmployeeTypesList()))
         );
     }
-    RestoreEmployeeType(restoreEmployeeTypeCommand: RestoreEmployeeTypeCommand): Observable<Result> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.authService.getToken()}`
-            })
-        };
-        return this.http.put<Result>(this.baseUrl + '/restore', JSON.stringify(restoreEmployeeTypeCommand), httpOptions)
-        .pipe(
-            map((response: any) => response),
-            retry(1),
-            catchError(this.errService.errorHandl)
+
+    /**
+     * Get employee types for dropdown
+     * @returns Observable with select items list
+     */
+    override GetEmployeeTypesDropdown(): Observable<SelectItemsList> {
+        return this.http.get<SelectItemsList>(
+            `${this.baseUrl}/employeetypesdropdown`,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<SelectItemsList>('GetEmployeeTypesDropdown', error, new SelectItemsList()))
+        );
+    }
+
+    /**
+     * Add a new employee type
+     * @param addEmployeeTypeCommand Employee type data
+     * @returns Observable with result
+     */
+    override AddEmployeeType(addEmployeeTypeCommand: AddEmployeeTypeCommand): Observable<Result | null> {
+        return this.http.post<Result>(
+            this.baseUrl,
+            addEmployeeTypeCommand,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<Result | null>('AddEmployeeType', error, null))
+        );
+    }
+
+    /**
+     * Update an existing employee type
+     * @param updateEmployeeTypeCommand Employee type data
+     * @returns Observable with result
+     */
+    override UpdateEmployeeType(updateEmployeeTypeCommand: UpdateEmployeeTypeCommand): Observable<Result | null> {
+        return this.http.put<Result>(
+            this.baseUrl,
+            updateEmployeeTypeCommand,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<Result | null>('UpdateEmployeeType', error, null))
+        );
+    }
+
+    /**
+     * Delete an employee type
+     * @param id Employee type ID
+     * @returns Observable with result
+     */
+    override DeleteEmployeeType(id: number): Observable<Result | null> {
+        return this.http.delete<Result>(
+            `${this.baseUrl}/${id}`,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<Result | null>('DeleteEmployeeType', error, null))
+        );
+    }
+
+    /**
+     * Restore a previously deleted employee type
+     * @param restoreEmployeeTypeCommand Employee type restore command
+     * @returns Observable with result
+     */
+    override RestoreEmployeeType(restoreEmployeeTypeCommand: RestoreEmployeeTypeCommand): Observable<Result | null> {
+        return this.http.put<Result>(
+            `${this.baseUrl}/restore`,
+            restoreEmployeeTypeCommand,
+            this.apiHelper.getAuthOptions()
+        ).pipe(
+            catchError(error => this.errorService.handleError<Result | null>('RestoreEmployeeType', error, null))
         );
     }
 }

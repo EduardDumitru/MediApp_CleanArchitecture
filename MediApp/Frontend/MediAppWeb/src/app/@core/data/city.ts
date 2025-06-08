@@ -1,14 +1,15 @@
 import { Result } from './common/result';
 import { Observable } from 'rxjs/internal/Observable';
 import { SelectItemsList } from './common/selectitem';
+import { Injectable } from '@angular/core';
 
-export class CityDetails {
+export interface CityDetails {
     name: string;
     countyId: number;
     deleted?: boolean;
 }
 
-export class CitiesLookup {
+export interface CitiesLookup {
     id: number;
     name: string;
     countyName: string;
@@ -17,28 +18,32 @@ export class CitiesLookup {
 }
 
 export class CitiesList {
-    cities: CitiesLookup[];
+    cities: CitiesLookup[] = [];
 }
 
-export class AddCityCommand {
+export interface AddCityCommand {
     name: string;
     countyId: number;
 }
 
-export class UpdateCityCommand {
+export interface UpdateCityCommand {
     id: number;
     countyId: number;
     name: string;
 }
 
-export class RestoreCityCommand {
+export interface RestoreCityCommand {
     id: number;
 }
 
-export class CityFromEmployeesDropdownQuery {
+export interface CityFromEmployeesDropdownQuery {
     countyId: number;
     appointment: Date;
 }
+
+@Injectable({
+    providedIn: 'root'
+})
 
 export abstract class CityData {
     abstract GetCityDetails(id: number): Observable<CityDetails>;
@@ -46,8 +51,8 @@ export abstract class CityData {
     abstract GetCitiesDropdown(): Observable<SelectItemsList>;
     abstract GetCitiesByCountyDropdown(countyId: number): Observable<SelectItemsList>;
     abstract GetCitiesByCountyFromEmployeesDropdown(cityDropdownQuery: CityFromEmployeesDropdownQuery): Observable<SelectItemsList>;
-    abstract AddCity(addCityCommand: AddCityCommand): Observable<Result>;
-    abstract UpdateCity(updateCityCommand: UpdateCityCommand): Observable<Result>;
-    abstract DeleteCity(id: number): Observable<Result>;
-    abstract RestoreCity(restoreCityCommand: RestoreCityCommand): Observable<Result>;
+    abstract AddCity(addCityCommand: AddCityCommand): Observable<Result | null>;
+    abstract UpdateCity(updateCityCommand: UpdateCityCommand): Observable<Result | null>;
+    abstract DeleteCity(id: number): Observable<Result | null>;
+    abstract RestoreCity(restoreCityCommand: RestoreCityCommand): Observable<Result | null>;
 }
