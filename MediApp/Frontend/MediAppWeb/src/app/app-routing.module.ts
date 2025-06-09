@@ -19,7 +19,7 @@ const routes: Routes = [
     // Updated lazy loading syntax
     loadChildren: () => import('./pages/pages.module').then(m => m.PagesModule),
     // Updated to use functional guards instead of canLoad
-    canActivate: [authGuard]
+    canActivate: [authGuard],
   },
   {
     path: '**',

@@ -26,8 +26,6 @@ export class AuthService {
   readonly currentUserId = new BehaviorSubject<number>(-1);
   readonly clinicId = new BehaviorSubject<number>(-1);
 
-  private isUserAuthenticated = false;
-
   // Use inject instead of constructor injection
   private readonly router = inject(Router);
   private readonly jwtHelper = inject(JwtHelperService);
@@ -36,21 +34,31 @@ export class AuthService {
    * Initialize authentication listener to check token validity
    * and update authentication state accordingly
    */
-  initAuthListener(): void {
-    this.isAuthenticated().subscribe(isAuthenticated => {
-      if (isAuthenticated) {
-        this.handleAuthenticated();
+  initAuthListener(shouldNavigate = true): void {
+    const token = this.getToken();
+
+    // Check if token exists and isn't expired
+    if (token && !this.jwtHelper.isTokenExpired(token)) {
+      this.authChange.next(true);
+
+      // Process token data
+      const decodedToken = this.getDecodedToken();
+      if (decodedToken) {
+        this.processUserRoles(decodedToken);
       } else {
-        this.handleUnauthenticated();
+        this.handleUnauthenticated(shouldNavigate);
       }
-    });
+    } else {
+      // Handle no token or expired token
+      this.handleUnauthenticated(shouldNavigate);
+    }
   }
 
   /**
    * Check if user is authenticated by validating JWT token
    * @returns Observable with authentication state
    */
-  isAuthenticated(): Observable<boolean> {
+  isAuthenticatedAsync(): Observable<boolean> {
     const token = this.getToken();
 
     if (!token) {
@@ -64,8 +72,20 @@ export class AuthService {
    * Get current authentication state
    * @returns Boolean indicating if user is authenticated
    */
-  isAuth(): boolean {
-    return this.isUserAuthenticated;
+  isAuthenticated(): boolean {
+    // Update to check token validity, not just the flag
+    const token = this.getToken();
+    if (!token) {
+      return false;
+    }
+
+    try {
+      const isExpired = this.jwtHelper.isTokenExpired(token);
+      return !isExpired;
+    } catch (error) {
+      console.error('Error checking token:', error);
+      return false;
+    }
   }
 
   /**
@@ -112,13 +132,13 @@ export class AuthService {
   /**
    * Handle authenticated user state
    */
-  private handleAuthenticated(): void {
-    this.isUserAuthenticated = true;
+  public handleAuthenticated(): void {
+    // Only update state, don't navigate
     this.authChange.next(true);
 
     const token = this.getDecodedToken();
     if (!token) {
-      this.handleUnauthenticated();
+      this.handleUnauthenticated(false); // Pass false to avoid navigation
       return;
     }
 
@@ -160,16 +180,19 @@ export class AuthService {
   /**
    * Handle unauthenticated state
    */
-  private handleUnauthenticated(): void {
+  private handleUnauthenticated(shouldNavigate = true): void {
     this.resetAuthState();
-    this.router.navigate(['/login']);
+
+    // Only navigate if the flag is true
+    if (shouldNavigate) {
+      this.router.navigate(['/login']);
+    }
   }
 
   /**
    * Reset all authentication state to default values
    */
   private resetAuthState(): void {
-    this.isUserAuthenticated = false;
     this.authChange.next(false);
     this.isAdmin.next(false);
     this.isDoctor.next(false);

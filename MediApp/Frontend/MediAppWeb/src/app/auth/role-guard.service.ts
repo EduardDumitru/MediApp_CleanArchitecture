@@ -32,7 +32,7 @@ export class RoleGuardService {
       roles.push(tokenPayload.role);
     }
 
-    if (!this.authService.isAuth()) {
+    if (!this.authService.isAuthenticated()) {
       this.router.navigate(['login']);
       return false;
     } else if (!this.checkIfUserHasExpectedRole(roles, expectedRoles)) {
@@ -70,7 +70,7 @@ export const roleGuard = (expectedRoles: string[]): CanActivateFn => {
     }
 
     // Check authentication and role
-    if (!authService.isAuth()) {
+    if (!authService.isAuthenticated()) {
       router.navigate(['login']);
       return false;
     }

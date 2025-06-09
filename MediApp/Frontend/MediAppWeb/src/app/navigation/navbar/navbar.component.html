@@ -26,84 +26,99 @@
 
       <!-- User Menu -->
       @if (isAdmin) {
-      <li>
-        <button mat-button [matMenuTriggerFor]="userMenu">
+      <li class="menu-item">
+        <button mat-button [matMenuTriggerFor]="userMenu" #userMenuTrigger="matMenuTrigger">
           User <mat-icon>arrow_drop_down</mat-icon>
         </button>
-        <mat-menu #userMenu="matMenu" yPosition="below">
-          <button mat-menu-item routerLink="/user/genders">Genders</button>
-          <button mat-menu-item routerLink="/user/profiles">Profiles</button>
+        <mat-menu #userMenu="matMenu" [hasBackdrop]="false" yPosition="below">
+          <div class="menu-container" (mouseenter)="userMenuTrigger.openMenu()"
+            (mouseleave)="closeMenuWithDelay(userMenuTrigger)">
+            <button mat-menu-item routerLink="/user/genders">Genders</button>
+            <button mat-menu-item routerLink="/user/profiles">Profiles</button>
+          </div>
         </mat-menu>
       </li>
       }
 
       <!-- Location Menu -->
       @if (isAdmin) {
-      <li>
-        <button mat-button [matMenuTriggerFor]="locationMenu">
+      <li class="menu-item">
+        <button mat-button [matMenuTriggerFor]="locationMenu" #locationMenuTrigger="matMenuTrigger">
           Location <mat-icon>arrow_drop_down</mat-icon>
         </button>
-        <mat-menu #locationMenu="matMenu" yPosition="below">
-          <button mat-menu-item routerLink="/location/countries">Countries</button>
-          <button mat-menu-item routerLink="/location/counties">Counties</button>
-          <button mat-menu-item routerLink="/location/cities">Cities</button>
-          <button mat-menu-item routerLink="/location/clinics">Clinics</button>
+        <mat-menu #locationMenu="matMenu" [hasBackdrop]="false" yPosition="below">
+          <div class="menu-container" (mouseenter)="locationMenuTrigger.openMenu()"
+            (mouseleave)="closeMenuWithDelay(locationMenuTrigger)">
+            <button mat-menu-item routerLink="/location/countries">Countries</button>
+            <button mat-menu-item routerLink="/location/counties">Counties</button>
+            <button mat-menu-item routerLink="/location/cities">Cities</button>
+            <button mat-menu-item routerLink="/location/clinics">Clinics</button>
+          </div>
         </mat-menu>
       </li>
       }
 
       <!-- Diagnosis Menu -->
       @if (isAdmin) {
-      <li>
-        <button mat-button [matMenuTriggerFor]="diagnosisMenu">
+      <li class="menu-item">
+        <button mat-button [matMenuTriggerFor]="diagnosisMenu" #diagnosisMenuTrigger="matMenuTrigger">
           Diagnosis <mat-icon>arrow_drop_down</mat-icon>
         </button>
-        <mat-menu #diagnosisMenu="matMenu" yPosition="below">
-          <button mat-menu-item routerLink="/diagnoses/diagnoses">Diagnoses</button>
-          <button mat-menu-item routerLink="/diagnoses/drugs">Drugs</button>
-          <button mat-menu-item routerLink="/diagnoses/diagnosisxdrugs">DiagnosisXDrugs</button>
+        <mat-menu #diagnosisMenu="matMenu" [hasBackdrop]="false" yPosition="below">
+          <div class="menu-container" (mouseenter)="diagnosisMenuTrigger.openMenu()"
+            (mouseleave)="closeMenuWithDelay(diagnosisMenuTrigger)">
+            <button mat-menu-item routerLink="/diagnoses/diagnoses">Diagnoses</button>
+            <button mat-menu-item routerLink="/diagnoses/drugs">Drugs</button>
+            <button mat-menu-item routerLink="/diagnoses/diagnosisxdrugs">DiagnosisXDrugs</button>
+          </div>
         </mat-menu>
       </li>
       }
 
       <!-- Employee Menu -->
       @if (isAdmin || isDoctor || isNurse) {
-      <li>
-        <button mat-button [matMenuTriggerFor]="employeeMenu">
+      <li class="menu-item">
+        <button mat-button [matMenuTriggerFor]="employeeMenu" #employeeMenuTrigger="matMenuTrigger">
           Employee <mat-icon>arrow_drop_down</mat-icon>
         </button>
-        <mat-menu #employeeMenu="matMenu" yPosition="below">
-          @if (isAdmin) {
-          <button mat-menu-item routerLink="/employees/employeetypes">Employee Types</button>
-          <button mat-menu-item routerLink="/employees/medicalchecktypes">Medical Check Types</button>
-          <button mat-menu-item routerLink="/employees/employees">Employees</button>
-          }
-          <button mat-menu-item routerLink="/employees/holidayintervals">Holiday Intervals</button>
+        <mat-menu #employeeMenu="matMenu" [hasBackdrop]="false" yPosition="below">
+          <div class="menu-container" (mouseenter)="employeeMenuTrigger.openMenu()"
+            (mouseleave)="closeMenuWithDelay(employeeMenuTrigger)">
+            @if (isAdmin) {
+            <button mat-menu-item routerLink="/employees/employeetypes">Employee Types</button>
+            <button mat-menu-item routerLink="/employees/medicalchecktypes">Medical Check Types</button>
+            <button mat-menu-item routerLink="/employees/employees">Employees</button>
+            }
+            <button mat-menu-item routerLink="/employees/holidayintervals">Holiday Intervals</button>
+          </div>
         </mat-menu>
       </li>
       }
 
       <!-- Treatment Menu -->
       @if (isAuth) {
-      <li>
-        <button mat-button [matMenuTriggerFor]="treatmentMenu">
+      <li class="menu-item">
+        <button mat-button [matMenuTriggerFor]="treatmentMenu" #treatmentMenuTrigger="matMenuTrigger">
           Treatment <mat-icon>arrow_drop_down</mat-icon>
         </button>
-        <mat-menu #treatmentMenu="matMenu" yPosition="below">
-          @if (isDoctor) {
-          <button mat-menu-item [routerLink]="['/treatments/employeeprescriptions', currentUserId]">Doctor
-            Prescriptions</button>
-          <button mat-menu-item [routerLink]="['/treatments/employeemedicalchecks', currentUserId]">Doctor Medical
-            Checks</button>
-          }
-          <button mat-menu-item [routerLink]="['/treatments/patientprescriptions', currentUserId]">My
-            Prescriptions</button>
-          <button mat-menu-item [routerLink]="['/treatments/patientmedicalchecks', currentUserId]">My Medical
-            Checks</button>
-          @if (isDoctor || isNurse) {
-          <button mat-menu-item [routerLink]="['/treatments/medicalchecksbyclinic', clinicId]">Clinic Medical
-            Checks</button>
-          }
+        <mat-menu #treatmentMenu="matMenu" [hasBackdrop]="false" yPosition="below">
+          <div class="menu-container" (mouseenter)="treatmentMenuTrigger.openMenu()"
+            (mouseleave)="closeMenuWithDelay(treatmentMenuTrigger)">
+            @if (isDoctor) {
+            <button mat-menu-item [routerLink]="['/treatments/employeeprescriptions', currentUserId]">Doctor
+              Prescriptions</button>
+            <button mat-menu-item [routerLink]="['/treatments/employeemedicalchecks', currentUserId]">Doctor Medical
+              Checks</button>
+            }
+            <button mat-menu-item [routerLink]="['/treatments/patientprescriptions', currentUserId]">My
+              Prescriptions</button>
+            <button mat-menu-item [routerLink]="['/treatments/patientmedicalchecks', currentUserId]">My Medical
+              Checks</button>
+            @if (isDoctor || isNurse) {
+            <button mat-menu-item [routerLink]="['/treatments/medicalchecksbyclinic', clinicId]">Clinic Medical
+              Checks</button>
+            }
+          </div>
         </mat-menu>
       </li>
       }

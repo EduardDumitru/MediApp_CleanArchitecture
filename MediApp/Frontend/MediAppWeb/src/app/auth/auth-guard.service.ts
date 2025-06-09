@@ -9,7 +9,7 @@ export class AuthGuardService {
   constructor(private auth: AuthService, private router: Router) { }
 
   canActivate(): boolean {
-    if (!this.auth.isAuthenticated()) {
+    if (!this.auth.isAuthenticatedAsync()) {
       this.router.navigate(['/login']);
       return false;
     }
@@ -22,6 +22,7 @@ export const authGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
+  // Use the enhanced isAuthenticated() method
   if (!authService.isAuthenticated()) {
     router.navigate(['/login']);
     return false;

@@ -54,7 +54,7 @@ mat-toolbar {
                     }
                 }
 
-                button.mat-button {
+                button.mat-mdc-button {
                     display: flex;
                     align-items: center;
 
@@ -65,6 +65,11 @@ mat-toolbar {
                         width: 18px;
                     }
                 }
+
+                // Menu item styling
+                &.menu-item {
+                    position: relative;
+                }
             }
         }
 
@@ -74,16 +79,38 @@ mat-toolbar {
     }
 }
 
+// Menu styling - notice ::ng-deep is used correctly for Angular Material components
 ::ng-deep {
-    .mat-menu-panel {
+
+    // Enhanced menu panel styling
+    .mat-mdc-menu-panel {
         min-width: 200px;
 
-        .mat-menu-item {
-            font-size: 14px;
+        // Smooth transition when opening/closing
+        .mat-mdc-menu-content {
+            padding: 0;
+        }
 
+        // Menu container specific styles
+        .menu-container {
+            padding: 0;
+
+            // Prevent cursor issues
             &:hover {
-                background-color: rgba(0, 0, 0, 0.04);
+                cursor: default;
             }
+        }
+    }
+
+    // Menu item styling
+    .mat-mdc-menu-item {
+        font-size: 14px;
+        line-height: 36px;
+        height: 36px;
+
+        // More prominent hover effect
+        &:hover {
+            background-color: rgba(0, 0, 0, 0.04);
         }
     }
 }

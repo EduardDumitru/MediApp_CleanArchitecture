@@ -16,6 +16,4 @@ import { MatSidenavModule } from '@angular/material/sidenav';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
-  // Your component code
-}
+export class AppComponent { }

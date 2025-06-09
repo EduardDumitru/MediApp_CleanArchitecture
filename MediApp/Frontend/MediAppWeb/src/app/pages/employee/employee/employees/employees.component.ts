@@ -39,7 +39,6 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
 
   // Dependency injection using inject function
   private readonly employeeData = inject(EmployeeData);
-  private readonly uiService = inject(UIService);
   private readonly router = inject(Router);
 
   ngOnInit(): void {
@@ -54,6 +53,7 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
       )
       .subscribe((employeesList: EmployeesList) => {
         this.dataSource.data = employeesList.employees;
+        console.log('Employees loaded:', this.dataSource.data);
       });
   }
 
@@ -71,7 +71,15 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
     this.router.navigate(['/employees/employees/add']);
   }
 
-  formatTime(hours: number, minutes: number): string {
-    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+  // Updated method to handle string time format "HH:MM:SS"
+  formatTime(timeString: string): string {
+    if (!timeString) return '';
+
+    // Extract just hours and minutes from the HH:MM:SS format
+    const parts = timeString.split(':');
+    if (parts.length >= 2) {
+      return `${parts[0]}:${parts[1]}`;
+    }
+    return timeString;
   }
 }

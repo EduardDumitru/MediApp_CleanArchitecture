@@ -97,16 +97,20 @@ export class EmployeeComponent implements OnInit {
             .subscribe((employee: EmployeeDetails) => {
                 if (!employee) return;
 
+                // Parse time strings from API
+                const startTime = this.parseTimeString(employee.startHour);
+                const endTime = this.parseTimeString(employee.endHour);
+
                 this.employeeForm.patchValue({
                     name: employee.name,
                     cnp: employee.cnp,
                     employeeTypeId: employee.employeeTypeId.toString(),
                     medicalCheckTypeId: employee.medicalCheckTypeId?.toString(),
                     clinicId: employee.clinicId.toString(),
-                    startHour: employee.startHour.hours.toString(),
-                    startMinutes: employee.startHour.minutes.toString(),
-                    endHour: employee.endHour.hours.toString(),
-                    endMinutes: employee.endHour.minutes.toString(),
+                    startHour: startTime.hours,
+                    startMinutes: startTime.minutes,
+                    endHour: endTime.hours,
+                    endMinutes: endTime.minutes,
                     terminationDate: employee.terminationDate ? new Date(employee.terminationDate) : null
                 });
 
@@ -120,6 +124,7 @@ export class EmployeeComponent implements OnInit {
                 if (employee.medicalCheckTypeId) {
                     this.getMedicalCheckTypeSelect();
                 }
+                console.log('Employee details loaded:', employee);
 
                 this.getEmployeeTypeSelect();
             });
@@ -275,5 +280,44 @@ export class EmployeeComponent implements OnInit {
         }
 
         this.employeeForm.get('medicalCheckTypeId')?.updateValueAndValidity();
+    }
+
+    parseTimeString(timeValue: any): { hours: string, minutes: string } {
+        // Default values
+        let hours = '0';
+        let minutes = '0';
+
+        try {
+            if (!timeValue) {
+                return { hours, minutes };
+            }
+
+            // Case: It's a string like "08:00:00"
+            if (typeof timeValue === 'string') {
+                const parts = timeValue.split(':');
+                if (parts.length >= 2) {
+                    // Remove leading zeros to avoid octal interpretation issues
+                    hours = String(parseInt(parts[0], 10));
+                    minutes = String(parseInt(parts[1], 10));
+                }
+                return { hours, minutes };
+            }
+
+            // Case: It's already an object with hours and minutes
+            if (typeof timeValue === 'object') {
+                if ('hours' in timeValue && 'minutes' in timeValue) {
+                    return {
+                        hours: String(timeValue.hours),
+                        minutes: String(timeValue.minutes)
+                    };
+                }
+            }
+
+            console.warn('Unknown time format encountered:', timeValue);
+            return { hours, minutes };
+        } catch (error) {
+            console.error('Error parsing time:', error, timeValue);
+            return { hours, minutes };
+        }
     }
 }

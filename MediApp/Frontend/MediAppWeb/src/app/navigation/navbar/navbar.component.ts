@@ -2,6 +2,7 @@ import { Component, OnInit, EventEmitter, Output, OnDestroy, inject } from '@ang
 import { AuthService } from '../../auth/auth.service';
 import { Subject, takeUntil } from 'rxjs';
 import { getSharedImports } from 'src/app/shared/shared.module';
+import { MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
   selector: 'app-navbar',
@@ -67,5 +68,15 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   onLogout(): void {
     this.authService.logout();
+  }
+
+  // Add this method for menu interaction
+  closeMenuWithDelay(trigger: MatMenuTrigger): void {
+    // Using setTimeout instead of a class property for cleaner code
+    setTimeout(() => {
+      if (trigger.menuOpen) {
+        trigger.closeMenu();
+      }
+    }, 300); // 300ms delay before closing menu
   }
 }
