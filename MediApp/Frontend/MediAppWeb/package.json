@@ -32,7 +32,7 @@
     "bootstrap": "^5.3.6",
     "chartist": "^1.3.1",
     "core-js": "^3.42.0",
-    "express": "^5.1.0",
+    "express": "^5.2.1",
     "googleapis": "^150.0.1",
     "hammerjs": "^2.0.8",
     "jquery": "^3.7.1",
